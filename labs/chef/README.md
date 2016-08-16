@@ -1,12 +1,19 @@
-# Lab CloudFormation Templates
+# Chef Compliance Lab CloudFormation Template
 
 ## Purpose
+Chef Compliance Webapp Server Setup Template that uses a Chef Compliance AMI provided by Chef.
 
-Collection of Laboratory Templates.
+## Supported Regions
+* us-west-2
+* us-east-1
 
-## Templates
+## Requirements
+1. A VPC with a Public Subnet that has internet access
+2. An Available EIP
+3. AWS Permissions to create IAM roles
+4. EC2 Key Pair Setup
 
-### Labs
+## Chef Compliance Webapp
 
 <table>
     <tr>
@@ -112,90 +119,4 @@ Collection of Laboratory Templates.
             </table>
         </td>
     </tr>
-    <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/test_instances/rhel-ubuntu-win2012.template">Test Instances</a></h4></th>
-    </tr>
-    <tr>
-        <td valign="top">
-            <p>Creates three test instances in an existing VPC. Each instance is a different operating system. They are; Red Hat Enterprise Linux 7, Ubuntu 14 and Windows 2012 R2.</p>
-            <h6>Create Details</h6>
-            <ol>
-             <li>3 EC2 Instances</li>
-             <li>IAM Role</li>
-             <li>IAM Instance Profile</li>
-            </ol>
-        </td>
-        <td  nowrap width="200" valign="top">
-            <table>
-                <tr>
-                    <th align="left">Launch</th>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
-                        <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
-                        <p>us-east-1</p>
-                    </td>
-                </tr>
-            </table>
-            <table>
-                <tr>
-                    <th align="left">View in Designer</th>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/test-instances-200x200.jpg" width:100% alt="View in Designer"></a>
-                    </td>
-                </tr>
-            </table>
-            <table>
-                <tr>
-                    <th align="left">How To Video</th>
-                </tr>
-                <tr>
-                    <td>
-                        <img src="https://s3.amazonaws.com/bonusbits-public/media/images/screenshots/howto_bonusbits_youtube_144x81.jpg" width:100% alt="HowTo Video"></a>
-                        <p>COMING SOON</p>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <table>
-                <tr>
-                    <th align="left">AWS CLI Example</th>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.template"</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h5>Parameters</h5>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/test_instances/example-parameters.json">(Example Here)</a></h6>
-                        <code>--parameters file:///localpath/to/custom-parameters.json</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 2 - Pass Parameters on CLI</h6>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <code>--parameters ... COMING SOON</code>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+</table>    
