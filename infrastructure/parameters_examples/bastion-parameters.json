@@ -36,19 +36,19 @@
     "ParameterValue": "50.23.45.67/32"
   },
   {
-    "ParameterKey": "InstanceType",
-    "ParameterValue": "t2.small"
-  },
-  {
-    "ParameterKey": "Ec2KeyPair",
-    "ParameterValue": "bonusbits-dev"
-  },
-  {
     "ParameterKey": "AllowSshRdpToBastionRuleNumber",
     "ParameterValue": "200"
   },
   {
     "ParameterKey": "AllowIcmpToBastionRuleNumber",
     "ParameterValue": "205"
+  },
+  {
+    "ParameterKey": "Ec2KeyPair",
+    "ParameterValue": "bonusbits-dev"
+  },
+  {
+    "ParameterKey": "InstanceType",
+    "ParameterValue": "t2.small"
   }
 ]
