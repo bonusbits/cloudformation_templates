@@ -1,7 +1,7 @@
 [
   {
     "ParameterKey": "Owner",
-    "ParameterValue": "Levon Becker"
+    "ParameterValue": "Firstname Lastname"
   },
   {
     "ParameterKey": "Project",
@@ -9,27 +9,23 @@
   },
   {
     "ParameterKey": "DeleteAfter",
-    "ParameterValue": "08/01/2016"
+    "ParameterValue": "Never"
   },
   {
     "ParameterKey": "VPC",
-    "ParameterValue": "vpc-b9f488dd"
+    "ParameterValue": "vpc-00000000"
   },
   {
     "ParameterKey": "PrivateSubnet1",
-    "ParameterValue": "subnet-14197570"
+    "ParameterValue": "subnet-00000000"
   },
   {
     "ParameterKey": "PrivateSubnet2",
-    "ParameterValue": "subnet-14197571"
+    "ParameterValue": "subnet-00000000"
   },
   {
     "ParameterKey": "PrivateSubnet3",
-    "ParameterValue": "subnet-14197572"
-  },
-  {
-    "ParameterKey": "PublicNetworkAcl",
-    "ParameterValue": "acl-3d207459"
+    "ParameterValue": "subnet-00000000"
   },
   {
     "ParameterKey": "MasterUsername",
@@ -97,6 +93,6 @@
   },
   {
     "ParameterKey": "InstanceType",
-    "ParameterValue": "db.t2.medium"
+    "ParameterValue": "db.t2.small"
   }
 ]
