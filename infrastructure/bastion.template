@@ -66,6 +66,11 @@
       "Type": "Number",
       "Default": "205"
     },
+    "PackageList": {
+      "Description": "Enter Packages to install (Space Separated)",
+      "Type": "String",
+      "Default": "curl wget mlocate ca-certificates openssl vim git wireshark nmap mysql"
+    },
     "Ec2KeyPair": {
       "Description": "Select Keypair to Assign to EC2 Instances",
       "Type": "AWS::EC2::KeyPair::KeyName"
@@ -155,14 +160,12 @@
       "rhel": {
         "warmebs": "echo 'ACTION: Performing EBS Warming' && dd if=/dev/xvda of=/dev/xvda conv=notrunc bs=1M status=progress",
         "yumupdatenokernel": "yum update -y --exclude=kernel*",
-        "installpackages": "yum install -y curl wget mlocate ca-certificates openssl vim",
         "installchefdk": "yum install -y https://packages.chef.io/stable/el/7/chefdk-0.12.0-1.el7.x86_64.rpm",
-        "installbastionpackages": "yum install -y git wireshark nmap mysql"
+        "installpackagelist": "yum install -y "
       },
       "ubuntu": {
         "warmebs": "echo 'ACTION: Performing EBS Warming' && dd if=/dev/xvda of=/dev/xvda conv=notrunc bs=1M status=progress",
-        "installpackages": "apt-get update && apt-get install curl wget cloud-utils ca-certificates vim",
-        "installbastionpackages": "apt-get install mysql openssl"
+        "installpackagelist": "apt-get update && apt-get install "
       }
     }
   },
@@ -336,9 +339,7 @@
                     "\n",
                     {"Fn::FindInMap": ["bootstrap", "rhel", "yumupdatenokernel"]},
                     "\n",
-                    {"Fn::FindInMap": ["bootstrap", "rhel", "installpackages"]},
-                    "\n",
-                    {"Fn::FindInMap": ["bootstrap", "rhel", "installbastionpackages"]},
+                    {"Fn::Join": ["", [{"Fn::FindInMap": ["bootstrap", "rhel", "installpackagelist"]}, {"Ref": "PackageList"}]]},
                     "\n",
                     {"Fn::FindInMap": ["bootstrap", "rhel", "installchefdk"]},
                     "\n"
@@ -353,9 +354,7 @@
                       "#!/bin/bash\n",
                       {"Fn::FindInMap": ["bootstrap", "ubuntu", "warmebs"]},
                       "\n",
-                      {"Fn::FindInMap": ["bootstrap", "ubuntu", "installpackages"]},
-                      "\n",
-                      {"Fn::FindInMap": ["bootstrap", "ubuntu", "installbastionpackages"]},
+                      {"Fn::Join": ["", [{"Fn::FindInMap": ["bootstrap", "ubuntu", "installpackagelist"]}, {"Ref": "PackageList"}]]},
                       "\n"
                     ]
                   ]

@@ -44,6 +44,10 @@
     "ParameterValue": "205"
   },
   {
+    "ParameterKey": "PackageList",
+    "ParameterValue": "curl wget mlocate ca-certificates openssl vim git wireshark nmap mysql"
+  },
+  {
     "ParameterKey": "Ec2KeyPair",
     "ParameterValue": "bonusbits-dev"
   },
