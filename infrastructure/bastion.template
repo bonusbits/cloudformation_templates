@@ -142,16 +142,16 @@
       "us-west-2": {
         "AMIAmazon": "ami-b04e92d0",
         "AMICentos": "ami-d2c924b2",
-        "AMIRHEL": "ami-775e4f16",
-        "AMISUSE": "ami-d2627db3",
+        "AMIRhel": "ami-775e4f16",
+        "AMISuse": "ami-d2627db3",
         "AMIUbuntu": "ami-d732f0b7",
         "AMIWindows": "ami-2827f548"
       },
       "us-east-1": {
         "AMIAmazon": "ami-c481fad3",
         "AMICentos": "ami-6d1c2007",
-        "AMIRHEL": "ami-2051294a",
-        "AMISUSE": "ami-b7b4fedd",
+        "AMIRhel": "ami-2051294a",
+        "AMISuse": "ami-b7b4fedd",
         "AMIUbuntu": "ami-2d39803a",
         "AMIWindows": "ami-ee7805f9"
       }
@@ -286,7 +286,7 @@
         "ImageId": {
           "Fn::If": [
             "RhelHost",
-            {"Fn::FindInMap": ["RegionMap",  {"Ref": "AWS::Region"}, "AMIRHEL"]},
+            {"Fn::FindInMap": ["RegionMap",  {"Ref": "AWS::Region"}, "AMIRhel"]},
             {"Fn::If": [
               "UbuntuHost",
               {"Fn::FindInMap": ["RegionMap",  {"Ref": "AWS::Region"}, "AMIUbuntu"]},
