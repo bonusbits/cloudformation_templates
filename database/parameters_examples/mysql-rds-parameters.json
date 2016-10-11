@@ -92,6 +92,10 @@
     "ParameterValue": "true"
   },
   {
+    "ParameterKey": "ProvisionedIopsValue",
+    "ParameterValue": "1000"
+  },
+  {
     "ParameterKey": "InstanceType",
     "ParameterValue": "db.t2.medium"
   }
