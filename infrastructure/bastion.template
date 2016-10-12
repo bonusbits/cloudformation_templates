@@ -321,10 +321,8 @@
         "SubnetId": {"Ref": "PublicSubnet"},
         "BlockDeviceMappings": [
           {
-            "DeviceName": "/dev/sda1",
             "Ebs": {
-              "DeleteOnTermination": "true",
-              "VolumeType": "gp2"
+              "DeleteOnTermination": "true"
             }
           }
         ],
