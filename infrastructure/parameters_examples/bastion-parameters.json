@@ -48,6 +48,22 @@
     "ParameterValue": "curl wget mlocate ca-certificates openssl vim git wireshark nmap mysql"
   },
   {
+    "ParameterKey": "InstallChefdk",
+    "ParameterValue": "true"
+  },
+  {
+    "ParameterKey": "ChefdkVersion",
+    "ParameterValue": "0.18.30-1"
+  },
+  {
+    "ParameterKey": "InstallChefClient",
+    "ParameterValue": "false"
+  },
+  {
+    "ParameterKey": "ChefClientVersion",
+    "ParameterValue": "12.14.89"
+  },
+  {
     "ParameterKey": "Ec2KeyPair",
     "ParameterValue": "bonusbits-dev"
   },

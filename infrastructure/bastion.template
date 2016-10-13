@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Bastion Host by Levon Becker v20161011-1530",
+  "Description": "Bastion Host by Levon Becker v20161012-2100",
   "Parameters": {
     "Owner": {
       "Description": "Enter Team or Individual Name Responsible for the Stack.",
@@ -69,7 +69,35 @@
     "PackageList": {
       "Description": "Enter Packages to install (Space Separated)",
       "Type": "String",
-      "Default": "curl wget mlocate ca-certificates openssl vim git wireshark nmap mysql"
+      "Default": "curl wget mlocate ca-certificates openssl vim git wireshark nmap awscli mysql yum-utils nfs-utils cloud-init"
+    },
+    "InstallChefdk": {
+      "Description": "Install ChefDK?",
+      "Type": "String",
+      "Default": "true",
+      "AllowedValues": [
+        "true",
+        "false"
+      ]
+    },
+    "ChefdkVersion": {
+      "Description": "Enter ChefDK (Skip if Not Installing ChefDK)",
+      "Type": "String",
+      "Default": "0.18.30-1"
+    },
+    "InstallChefClient": {
+      "Description": "Install Chef Client?",
+      "Type": "String",
+      "Default": "false",
+      "AllowedValues": [
+        "true",
+        "false"
+      ]
+    },
+    "ChefClientVersion": {
+      "Description": "Enter ChefDK (Skip if Not Installing Chef Client)",
+      "Type": "String",
+      "Default": "12.14.89"
     },
     "Ec2KeyPair": {
       "Description": "Select Keypair to Assign to EC2 Instances",
@@ -159,13 +187,20 @@
     "bootstrap": {
       "rhel": {
         "warmebs": "echo 'ACTION: Performing EBS Warming' && dd if=/dev/xvda of=/dev/xvda conv=notrunc bs=1M status=progress",
-        "yumupdatenokernel": "yum update -y --exclude=kernel*",
-        "installchefdk": "yum install -y https://packages.chef.io/stable/el/7/chefdk-0.12.0-1.el7.x86_64.rpm",
+        "yumupdate": "yum update -y",
         "installpackagelist": "yum install -y "
       },
       "ubuntu": {
         "warmebs": "echo 'ACTION: Performing EBS Warming' && dd if=/dev/xvda of=/dev/xvda conv=notrunc bs=1M status=progress",
         "installpackagelist": "apt-get update && apt-get install "
+      },
+      "linux": {
+        "installchefdk": "curl -L https://omnitruck.chef.io/install.sh | bash -s -- -P chefdk -v ",
+        "installchefclient": "curl -L https://omnitruck.chef.io/install.sh | bash -s -- -P chef -v "
+      },
+      "windows": {
+        "installchefdk": ". { iwr -useb https://omnitruck.chef.io/install.ps1 } | iex; install -project chefdk -version ",
+        "installchefclient": ". { iwr -useb https://omnitruck.chef.io/install.ps1 } | iex; install -project chef -version "
       }
     }
   },
@@ -189,7 +224,9 @@
         {"Fn::Equals": [{"Ref": "OsType"}, "rhel"]}
       ]
     },
-    "WindowsHost": { "Fn::Equals": [ { "Ref": "OsType" }, "windows" ] }
+    "WindowsHost": { "Fn::Equals": [ { "Ref": "OsType" }, "windows" ] },
+    "SetupChefdk": { "Fn::Equals": [{"Ref": "InstallChefdk"}, "true"]},
+    "SetupChefClient": { "Fn::Equals": [{"Ref": "InstallChefClient"}, "true"]}
   },
   "Resources": {
     "IamRole": {
@@ -319,13 +356,6 @@
           {"Ref": "InternalAccessSecurityGroup"}
         ],
         "SubnetId": {"Ref": "PublicSubnet"},
-        "BlockDeviceMappings": [
-          {
-            "Ebs": {
-              "DeleteOnTermination": "true"
-            }
-          }
-        ],
         "UserData": {
           "Fn::If": [
             "RhelFamily",
@@ -335,32 +365,63 @@
                     "#!/bin/bash\n",
                     {"Fn::FindInMap": ["bootstrap", "rhel", "warmebs"]},
                     "\n",
-                    {"Fn::FindInMap": ["bootstrap", "rhel", "yumupdatenokernel"]},
+                    {"Fn::FindInMap": ["bootstrap", "rhel", "yumupdate"]},
                     "\n",
-                    {"Fn::Join": ["", [{"Fn::FindInMap": ["bootstrap", "rhel", "installpackagelist"]}, {"Ref": "PackageList"}]]},
-                    "\n",
-                    {"Fn::FindInMap": ["bootstrap", "rhel", "installchefdk"]},
-                    "\n"
+                    {"Fn::Join": ["", [{"Fn::FindInMap": ["bootstrap", "rhel", "installpackagelist"]}, {"Ref": "PackageList"}, "\n"]]},
+                    {"Fn::If": [
+                      "SetupChefClient",
+                      {"Fn::Join": ["", [{"Fn::FindInMap": ["bootstrap", "linux", "installchefclient"]},  {"Ref": "ChefClientVersion"}, "\n"]]},
+                      {"Ref": "AWS::NoValue"}
+                    ]},
+                    {"Fn::If": [
+                      "SetupChefdk",
+                      {"Fn::Join": ["", [{"Fn::FindInMap": ["bootstrap", "linux", "installchefdk"]},  {"Ref": "ChefdkVersion"}, "\n"]]},
+                      {"Ref": "AWS::NoValue"}
+                    ]}
                   ]
                 ]
               }},
-            {"Fn::If": [
-              "UbuntuHost",
+              {"Fn::If": [
+                "UbuntuHost",
+                  {"Fn::Base64": {
+                    "Fn::Join": [
+                      "", [
+                        "#!/bin/bash\n",
+                        {"Fn::FindInMap": ["bootstrap", "ubuntu", "warmebs"]},
+                        "\n",
+                        {"Fn::Join": ["", [{"Fn::FindInMap": ["bootstrap", "ubuntu", "installpackagelist"]}, {"Ref": "PackageList"}, "\n"]]},
+                        {"Fn::If": [
+                          "SetupChefClient",
+                          {"Fn::Join": ["", [{"Fn::FindInMap": ["bootstrap", "linux", "installchefclient"]},  {"Ref": "ChefClientVersion"}, "\n"]]},
+                          {"Ref": "AWS::NoValue"}
+                        ]},
+                        {"Fn::If": [
+                          "SetupChefdk",
+                          {"Fn::Join": ["", [{"Fn::FindInMap": ["bootstrap", "linux", "installchefdk"]},  {"Ref": "ChefdkVersion"}, "\n"]]},
+                          {"Ref": "AWS::NoValue"}
+                        ]}
+                      ]
+                    ]
+                  }},
+              {"Fn::If": [
+                "WindowsHost",
                 {"Fn::Base64": {
                   "Fn::Join": [
                     "", [
-                      "#!/bin/bash\n",
-                      {"Fn::FindInMap": ["bootstrap", "ubuntu", "warmebs"]},
-                      "\n",
-                      {"Fn::Join": ["", [{"Fn::FindInMap": ["bootstrap", "ubuntu", "installpackagelist"]}, {"Ref": "PackageList"}]]},
-                      "\n"
+                      {"Fn::If": [
+                        "SetupChefClient",
+                        {"Fn::Join": ["", [{"Fn::FindInMap": ["bootstrap", "windows", "installchefclient"]},  {"Ref": "ChefClientVersion"}, "\n"]]},
+                        {"Ref": "AWS::NoValue"}
+                      ]},
+                      {"Fn::If": [
+                        "SetupChefdk",
+                        {"Fn::Join": ["", [{"Fn::FindInMap": ["bootstrap", "windows", "installchefdk"]},  {"Ref": "ChefdkVersion"}, "\n"]]},
+                        {"Ref": "AWS::NoValue"}
+                      ]}
                     ]
                   ]
                 }},
-              {"Fn::If": [
-                "WindowsHost",
-                  {"Fn::Base64": "# PowerShell Goes Here"},
-                  {"Ref": "AWS::NoValue"}
+                {"Ref": "AWS::NoValue"}
               ]}
             ]}
           ]
@@ -450,6 +511,14 @@
       "Description": "It is ok to delete the Formation after this date",
       "Value": {"Ref": "DeleteAfter"}
     },
+    "PublicDns": {
+      "Description": "Bastion Public DNS Name",
+      "Value": {"Fn::GetAtt": ["EC2Instance", "PublicDnsName"]}
+    },
+    "EIP": {
+      "Description": "Bastion External IP Address",
+      "Value": {"Ref": "EIP"}
+    },
     "OsType": {
       "Description": "OS Type.",
       "Value": {"Ref": "OsType"}
@@ -458,17 +527,31 @@
       "Description": "Instance Type.",
       "Value": {"Ref": "InstanceType"}
     },
-    "KeyPairLoaded": {
+    "Ec2KeyPair": {
       "Description": "Key Pair used.",
       "Value": {"Ref": "Ec2KeyPair"}
     },
-    "PublicDns": {
-      "Description": "Bastion Public DNS Name",
-      "Value": {"Fn::GetAtt": ["EC2Instance", "PublicDnsName"]}
+    "PackageList": {
+      "Description": "Package List Installed",
+      "Value": {"Ref": "PackageList"}
     },
-    "EIP": {
-      "Description": "Bastion External IP Address",
-      "Value": {"Ref": "EIP"}
+    "InstallChefdk": {
+      "Description": "Install ChefDK",
+      "Value": {"Ref": "InstallChefdk"}
+    },
+    "ChefdkVersion": {
+      "Condition": "SetupChefdk",
+      "Description": "Installed ChefDK Version",
+      "Value": {"Ref": "ChefdkVersion"}
+    },
+    "InstallChefClient": {
+      "Description": "Install Chef Client",
+      "Value": {"Ref": "InstallChefClient"}
+    },
+    "ChefClientVersion": {
+      "Condition": "SetupChefdk",
+      "Description": "Installed Chef Client Version",
+      "Value": {"Ref": "ChefClientVersion"}
     },
     "BastionSecurityGroup": {
       "Description": "Bastion Security Group to Allow Remote Access",
@@ -482,7 +565,7 @@
       "Description": "VPC Used",
       "Value": {"Ref": "VPC"}
     },
-    "DeployedToSubnet": {
+    "PublicSubnet": {
       "Description": "Public Subnet the Bastion Host was Deployed on.",
       "Value": {"Ref": "PublicSubnet"}
     }
@@ -499,7 +582,12 @@
           "Parameters" : [
             "Ec2KeyPair",
             "OsType",
-            "InstanceType"
+            "InstanceType",
+            "PackageList",
+            "InstallChefdk",
+            "ChefdkVersion",
+            "InstallChefClient",
+            "ChefClientVersion"
           ]
         },
         {
@@ -530,7 +618,12 @@
         "OsType" : { "default" : "OS Type" },
         "AllowSshRdpToBastionRuleNumber" : { "default" : "Remote to Public SSH/RDP" },
         "AllowIcmpToBastionRuleNumber" : { "default" : "Remote to Public ICMP" },
-        "InstanceType" : { "default" : "Instance Type" }
+        "InstanceType" : { "default" : "Instance Type" },
+        "PackageList" : { "default" : "Package List" },
+        "InstallChefdk" : { "default" : "Instance ChefDK" },
+        "ChefdkVersion" : { "default" : "ChefDK Version" },
+        "InstallChefClient" : { "default" : "Install Chef Client" },
+        "ChefClientVersion" : { "default" : "Chef Client Version" }
       }
     }
   }
