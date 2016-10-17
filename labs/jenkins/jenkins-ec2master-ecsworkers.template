@@ -314,6 +314,7 @@ Resources:
             #
             aws s3 cp s3://${S3DeployBucketName}/cookbooks/c1_federated_jenkins-${CookbookVersion}.tar.gz /tmp/cookbooks.tar.gz && tar -zxf /tmp/cookbooks.tar.gz
             chef-client -z -o c1_federated_jenkins
+            /opt/chef/bin/chef-client --local-mode --config /tmp/kitchen/client.rb --log_level auto --force-formatter --no-color --json-attributes /tmp/kitchen/dna.json --chef-zero-port 8889
   MasterELB:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
