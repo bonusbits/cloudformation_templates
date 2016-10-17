@@ -1,0 +1,614 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Description: Jenkins Stack Core Template with EC2 Master and ECS Workers. v20161017-0900
+Parameters:
+  # Tags
+  TagOwnerContact:
+    Description: Owner Contact Tag
+    Type: String
+  TagASV:
+    Description: ASV Tag
+    Type: String
+  TagCMDBEnvironment:
+    Description: CMDBEnvironment Tag
+    Type: String
+  TagApplicationName:
+    Description: Application Name Tag
+    Type: String
+  TagEnvironmentName:
+    Description: Environment Name Tag
+    Type: String
+  # Shared
+  VpcId:
+    Description: VPC ID to use.
+    Type: AWS::EC2::VPC::Id
+  S3DeployBucketName:
+    Description: S3 Bucket Name for Jenkins Launcher Deployment
+    Type: String
+    Default: jenkins-launcher
+  S3DeployBucketRegion:
+    Description: Region where the artifact bucket exists
+    Type: String
+    Default: us-west-2
+  CookbookVersion:
+    Description: Version of cookbook to deploy
+    Type: String
+    Default: 1.0.0
+  # Master
+  MasterAmiId:
+    Description: Master AMI ID
+    Type: String
+    Default: ami-00000000
+  MasterSubnetId1:
+    Description: Master Subnet ID 1
+    Type: AWS::EC2::Subnet::Id
+  MasterSubnetId2:
+    Description: Master Subnet ID 2
+    Type: AWS::EC2::Subnet::Id
+  MasterSubnetId2:
+    Description: Master Subnet ID 3
+    Type: AWS::EC2::Subnet::Id
+  MasterSecurityGroupId:
+    Description: Master EC2 Instance Security Group
+    Type: AWS::EC2::SecurityGroup::Id
+  MasterElbSecurityGroupId:
+    Description: Master ELB Security Group
+    Type: AWS::EC2::SecurityGroup::Id
+  MasterEc2Key:
+    Description: Master EC2 keypair to use (Leave blank for no SSH access)
+    Type: String
+  MasterIamProfile:
+    Description: Master IAM Role EC2 Instance Profile
+    Type: String
+  InstallBasePlugins:
+    Description: Select whether to install Base plugins on Master or not
+    Type: String
+    Default: true
+    AllowedValues:
+      - true
+      - false
+  MasterElbSubnetId1:
+    Description: ELB Subnet ID 1
+    Type: AWS::EC2::Subnet::Id
+  MasterElbSubnetId2:
+    Description: ELB Subnet ID 2
+    Type: AWS::EC2::Subnet::Id
+  MasterElbSubnetId3:
+    Description: ELB Subnet ID 3
+    Type: AWS::EC2::Subnet::Id
+  MasterInstanceType:
+    Description: Master Instance Type
+    Type: String
+    Default: m3.medium
+    AllowedValues:
+      - t2.nano
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t2.large
+      - m1.small
+      - m1.medium
+      - m1.large
+      - m1.xlarge
+      - m2.xlarge
+      - m2.2xlarge
+      - m2.4xlarge
+      - m3.medium
+      - m3.large
+      - m3.xlarge
+      - m3.2xlarge
+      - m4.large
+      - m4.xlarge
+      - m4.2xlarge
+      - m4.4xlarge
+      - m4.10xlarge
+      - c1.medium
+      - c1.xlarge
+      - c3.large
+      - c3.xlarge
+      - c3.2xlarge
+      - c3.4xlarge
+      - c3.8xlarge
+      - c4.large
+      - c4.xlarge
+      - c4.2xlarge
+      - c4.4xlarge
+      - c4.8xlarge
+      - g2.2xlarge
+      - g2.8xlarge
+      - r3.large
+      - r3.xlarge
+      - r3.2xlarge
+      - r3.4xlarge
+      - r3.8xlarge
+      - i2.xlarge
+      - i2.2xlarge
+      - i2.4xlarge
+      - i2.8xlarge
+      - d2.xlarge
+      - d2.2xlarge
+      - d2.4xlarge
+      - d2.8xlarge
+      - hi1.4xlarge
+      - hs1.8xlarge
+      - cr1.8xlarge
+      - cc2.8xlarge
+      - cg1.4xlarge
+  # Worker
+  WorkerAmiId:
+    Description: Worker AMI ID
+    Type: String
+    Default: ami-0b00471c
+  WorkerSubnetId1:
+    Description: Worker Subnet ID
+    Type: AWS::EC2::Subnet::Id
+  WorkerSubnetId2:
+    Description: Worker Subnet ID
+    Type: AWS::EC2::Subnet::Id
+  WorkerSubnetId3:
+    Description: Worker Subnet ID
+    Type: AWS::EC2::Subnet::Id
+  WorkerSecurityGroupId:
+    Description: Worker EC2 Instance Security Group
+    Type: AWS::EC2::SecurityGroup::Id
+  WorkerEc2Key:
+    Description: Worker EC2 keypair to use (Leave blank for no SSH access)
+    Type: String
+  WorkerIamProfile:
+    Description: Worker IAM Role EC2 Instance Profile
+    Type: String
+  WorkerMinCount:
+    Type: Number
+    Default: 1
+    Description: Worker minimum instance count for autoscaling
+  WorkerMaxCount:
+    Type: Number
+    Default: 4
+    Description: Worker maximum instance count for autoscaling
+  WorkerInstanceType:
+    Description: Worker Instance Type
+    Type: String
+    Default: m3.medium
+    AllowedValues:
+      - t2.nano
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t2.large
+      - m1.small
+      - m1.medium
+      - m1.large
+      - m1.xlarge
+      - m2.xlarge
+      - m2.2xlarge
+      - m2.4xlarge
+      - m3.medium
+      - m3.large
+      - m3.xlarge
+      - m3.2xlarge
+      - m4.large
+      - m4.xlarge
+      - m4.2xlarge
+      - m4.4xlarge
+      - m4.10xlarge
+      - c1.medium
+      - c1.xlarge
+      - c3.large
+      - c3.xlarge
+      - c3.2xlarge
+      - c3.4xlarge
+      - c3.8xlarge
+      - c4.large
+      - c4.xlarge
+      - c4.2xlarge
+      - c4.4xlarge
+      - c4.8xlarge
+      - g2.2xlarge
+      - g2.8xlarge
+      - r3.large
+      - r3.xlarge
+      - r3.2xlarge
+      - r3.4xlarge
+      - r3.8xlarge
+      - i2.xlarge
+      - i2.2xlarge
+      - i2.4xlarge
+      - i2.8xlarge
+      - d2.xlarge
+      - d2.2xlarge
+      - d2.4xlarge
+      - d2.8xlarge
+      - hi1.4xlarge
+      - hs1.8xlarge
+      - cr1.8xlarge
+      - cc2.8xlarge
+      - cg1.4xlarge
+Conditions:
+  HasMasterEc2Key:
+    !Not [!Equals [ !Ref MasterEc2Key, '' ]]
+  HasWorkerEc2Key:
+    !Not [!Equals [ !Ref WorkerEc2Key, '' ]]
+  SetupPlugins: !Equals [!Ref InstallBasePlugins, true]
+Resources:
+  MasterAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    DependsOn:
+      - MasterELB
+      - WorkerInstances
+    Properties:
+      VPCZoneIdentifier:
+        - !Ref MasterSubnetId1
+        - !Ref MasterSubnetId2
+        - !Ref MasterSubnetId3
+      LaunchConfigurationName: !Ref MasterInstances
+      MinSize: 1
+      MaxSize: 1
+      DesiredCapacity: 1
+      Tags:
+        - Key: Name
+          Value: !Join [ '', [ !Ref "AWS::StackName", -master ] ]
+          PropagateAtLaunch: true
+        - Key: OwnerContact
+          Value: !Ref TagOwnerContact
+          PropagateAtLaunch: true
+        - Key: ASV
+          Value: !Ref TagASV
+          PropagateAtLaunch: true
+        - Key: CMDBEnvironment
+          Value: !Ref TagCMDBEnvironment
+          PropagateAtLaunch: true
+        - Key: ApplicationName
+          Value: !Ref TagApplicationName
+          PropagateAtLaunch: true
+        - Key: EnvironmentName
+          Value: !Ref TagEnvironmentName
+          PropagateAtLaunch: true
+      LoadBalancerNames:
+        - !Ref MasterELB
+    UpdatePolicy:
+      AutoScalingRollingUpdate:
+        MinInstancesInService: 1
+        MaxBatchSize: 1
+  MasterInstances:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Metadata:
+      AWS::CloudFormation::Init:
+        config:
+          files:
+            /etc/cfn/cfn-hup.conf:
+              content: !Sub |
+                [main]
+                stack=${AWS::StackId}
+                region=${AWS::Region}
+              mode: 000400
+              owner: root
+              group: root
+            /etc/cfn/hooks.d/cfn-auto-reloader.conf:
+              content: !Sub |
+                [cfn-auto-reloader-hook]
+                triggers=post.update
+                path=Resources.MasterInstances.Metadata.AWS::CloudFormation::Init
+                action=/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource MasterInstances --region ${AWS::Region}
+                runas=root
+          services:
+            sysvinit:
+              cfn-hup:
+                enabled: true
+                ensureRunning: true
+                files:
+                  - /etc/cfn/cfn-hup.conf
+                  - /etc/cfn/hooks.d/cfn-auto-reloader.conf
+    Properties:
+      ImageId: !Ref MasterAmiId
+      SecurityGroups:
+        - !Ref MasterSecurityGroupId
+      InstanceType: !Ref MasterInstanceType
+      IamInstanceProfile: !Ref MasterIamProfile
+      KeyName: !If [ HasMasterEc2Key, !Ref MasterEc2Key, !Ref "AWS::NoValue"]
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -xe
+            #/opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource MasterAutoScalingGroup --region ${AWS::Region}
+            cd /tmp
+            echo "#Requests from outside" >> /etc/rc.local
+            echo "iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080" >> /etc/rc.local
+            echo "#Requests from localhost" >> /etc/rc.local
+            echo "iptables -t nat -I OUTPUT -p tcp -d 127.0.0.1 --dport 80 -j REDIRECT --to-ports 8080" >> /etc/rc.local
+            #
+            sh /etc/rc.local
+            #
+            aws s3 cp s3://${S3DeployBucketName}/cookbooks/c1_federated_jenkins-${CookbookVersion}.tar.gz /tmp/cookbooks.tar.gz && tar -zxf /tmp/cookbooks.tar.gz
+            chef-client -z -o c1_federated_jenkins
+  MasterELB:
+    Type: AWS::ElasticLoadBalancing::LoadBalancer
+    Properties:
+      CrossZone: true
+      Scheme: internal
+      Subnets:
+        - !Ref MasterElbSubnetId1
+        - !Ref MasterElbSubnetId2
+        - !Ref MasterElbSubnetId3
+      SecurityGroups:
+        - !Ref MasterElbSecurityGroupId
+      Listeners:
+        - LoadBalancerPort: 80
+          InstancePort: 80
+          Protocol: HTTP
+        - LoadBalancerPort: 5000
+          InstancePort: 5000
+          Protocol: TCP
+      HealthCheck:
+        Target: TCP:80
+        HealthyThreshold: 3
+        UnhealthyThreshold: 5
+        Interval: 10
+        Timeout: 5
+      LoadBalancerName: !Ref "AWS::StackName"
+      Tags:
+        - Key: Name
+          Value: !Ref "AWS::StackName"
+        - Key: OwnerContact
+          Value: !Ref TagOwnerContact
+        - Key: ASV
+          Value: !Ref TagASV
+        - Key: CMDBEnvironment
+          Value: !Ref TagCMDBEnvironment
+        - Key: ApplicationName
+          Value: !Ref TagApplicationName
+        - Key: EnvironmentName
+          Value: !Ref TagEnvironmentName
+  WorkerCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Ref "AWS::StackName"
+  WorkerAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      VPCZoneIdentifier:
+        - !Ref WorkerSubnetId1
+        - !Ref WorkerSubnetId2
+        - !Ref WorkerSubnetId3
+      LaunchConfigurationName: !Ref WorkerInstances
+      MinSize: !Ref WorkerMinCount
+      MaxSize: !Ref WorkerMaxCount
+      DesiredCapacity: !Ref WorkerMinCount
+      Tags:
+        - Key: Name
+          Value: !Join [ "", [ !Ref "AWS::StackName", -workers ] ]
+          PropagateAtLaunch: true
+        - Key: OwnerContact
+          Value: !Ref TagOwnerContact
+          PropagateAtLaunch: true
+        - Key: ASV
+          Value: !Ref TagASV
+          PropagateAtLaunch: true
+        - Key: CMDBEnvironment
+          Value: !Ref TagCMDBEnvironment
+          PropagateAtLaunch: true
+        - Key: ApplicationName
+          Value: !Ref TagApplicationName
+          PropagateAtLaunch: true
+        - Key: EnvironmentName
+          Value: !Ref TagEnvironmentName
+          PropagateAtLaunch: true
+    UpdatePolicy:
+      AutoScalingRollingUpdate:
+        MinInstancesInService: 1
+        MaxBatchSize: 1
+  WorkerInstances:
+    DependsOn:
+      - WorkerCluster
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Metadata:
+      AWS::CloudFormation::Init:
+        config:
+          commands:
+            01_add_instance_to_cluster:
+              command: !Sub |
+                #!/bin/bash
+                echo ECS_CLUSTER=${WorkerCluster}  >> /etc/ecs/ecs.config
+          files:
+            /etc/cfn/cfn-hup.conf:
+              content: !Sub |
+                [main]
+                stack=${AWS::StackId}
+                region=${AWS::Region}
+              mode: '000400'
+              owner: root
+              group: root
+            /etc/cfn/hooks.d/cfn-auto-reloader.conf:
+              content: !Sub |
+                [cfn-auto-reloader-hook]
+                triggers=post.update
+                path=Resources.WorkerInstances.Metadata.AWS::CloudFormation::Init
+                action=/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WorkerInstances --region ${AWS::Region}
+                runas=root
+          services:
+            sysvinit:
+              cfn-hup:
+                enabled: 'true'
+                ensureRunning: 'true'
+                files:
+                  - /etc/cfn/cfn-hup.conf
+                  - /etc/cfn/hooks.d/cfn-auto-reloader.conf
+    Properties:
+      ImageId: !Ref WorkerAmiId
+      SecurityGroups:
+        - !Ref WorkerSecurityGroupId
+      InstanceType: !Ref WorkerInstanceType
+      IamInstanceProfile: !Ref WorkerIamProfile
+      KeyName: !If [ HasWorkerEc2Key, !Ref WorkerEc2Key, !Ref "AWS::NoValue"]
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -xe
+            yum install -y aws-cfn-bootstrap
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WorkerInstances --region ${AWS::Region}
+            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WorkerAutoScalingGroup --region ${AWS::Region}
+  WorkerScaleUpPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AdjustmentType: ChangeInCapacity
+      AutoScalingGroupName: !Ref WorkerAutoScalingGroup
+      Cooldown: 300
+      ScalingAdjustment: 1
+  WorkerScaleDownPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AdjustmentType: ChangeInCapacity
+      AutoScalingGroupName: !Ref WorkerAutoScalingGroup
+      Cooldown: 300
+      ScalingAdjustment: -1
+  WorkerMemoryAlarmHigh:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Scale-up if Memory > 80% for 5 minutes
+      MetricName: MemoryReservation
+      Namespace: AWS/ECS
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 80
+      AlarmActions:
+        - !Ref WorkerScaleUpPolicy
+      Dimensions:
+        - Name: ClusterName
+          Value: !Ref WorkerCluster
+      ComparisonOperator: GreaterThanThreshold
+  WorkerMemoryAlarmLow:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Scale-down if Memory < 30% for 5 minutes
+      MetricName: MemoryReservation
+      Namespace: AWS/ECS
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 30
+      AlarmActions:
+        - !Ref WorkerScaleDownPolicy
+      Dimensions:
+        - Name: ClusterName
+          Value: !Ref WorkerCluster
+      ComparisonOperator: LessThanThreshold
+Outputs:
+  MasterURL:
+    Description: Jenkins Master ELB URL
+    Value: !Sub http://${MasterELB.DNSName}
+  WorkerCluster:
+    Description: Worker Cluster
+    Value: !Ref WorkerCluster
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    -
+      Label:
+        default: Tags (Required)
+      Parameters:
+        - TagOwnerContact
+        - TagASV
+        - TagCMDBEnvironment
+        - TagApplicationName
+        - TagEnvironmentName
+    -
+      Label:
+        default: Jenkins Master
+      Parameters:
+        - MasterAmiId
+        - MasterInstanceType
+        - MasterSubnetId1
+        - MasterSubnetId2
+        - MasterEc2Key
+        - MasterSecurityGroupId
+        - MasterIamProfile
+        - InstallBasePlugins
+        - MasterElbSubnetId1
+        - MasterElbSubnetId2
+        - MasterElbSecurityGroupId
+    -
+      Label:
+        default: Jenkins Worker
+      Parameters:
+        - WorkerAmiId
+        - WorkerInstanceType
+        - WorkerSubnetId1
+        - WorkerSubnetId2
+        - WorkerEc2Key
+        - WorkerSecurityGroupId
+        - WorkerIamProfile
+        - WorkerMinCount
+        - WorkerMaxCount
+    -
+      Label:
+        default: Shared Configuration
+      Parameters:
+        - VpcId
+        - S3DeployBucketName
+        - S3DeployBucketRegion
+        - CookbookVersion
+    ParameterLabels:
+      TagOwnerContact:
+        default: Team or Individual Contact Owner
+      TagASV:
+        default: ASV
+      TagCMDBEnvironment:
+        default: CM DB Environment
+      TagApplicationName:
+        default: Application Name
+      TagEnvironmentName:
+        default: Environment Name
+      MasterAmiId:
+        default: Master - AMI
+      MasterInstanceType:
+        default: Master - Instance Type
+      MasterSubnetId1:
+        default: Master - Subnet ID 1
+      MasterSubnetId2:
+        default: Master - Subnet ID 2
+      MasterSubnetId3:
+        default: Master - Subnet ID 3
+      MasterEc2Key:
+        default: Master - EC2 SSH Key
+      MasterSecurityGroupId:
+        default: Master - Security Group ID
+      MasterIamProfile:
+        default: Master - IAM Instance Profile
+      InstallBasePlugins:
+        default: Master - Install Base Plugins
+      MasterElbSubnetId1:
+        default: Master - ELB Subnet ID 1
+      MasterElbSubnetId2:
+        default: Master - ELB Subnet ID 2
+      MasterElbSubnetId3:
+        default: Master - ELB Subnet ID 3
+      MasterElbSecurityGroupId:
+        default: Master - ELB Security Group ID
+      WorkerAmiId:
+        default: Worker - AMI
+      WorkerInstanceType:
+        default: Worker - Instance Type
+      WorkerSubnetId1:
+        default: Worker - Subnet ID 1
+      WorkerSubnetId2:
+        default: Worker - Subnet ID 2
+      WorkerSubnetId3:
+        default: Worker - Subnet ID 3
+      WorkerEc2Key:
+        default: Worker - EC2 SSH Key
+      WorkerSecurityGroupId:
+        default: Worker - Security Group ID
+      WorkerIamProfile:
+        default: Worker - IAM Instance Profile
+      WorkerMinCount:
+        default: Worker - Minimum Cluster Instance Count
+      WorkerMaxCount:
+        default: Worker - Maximum Cluster Instance Count
+      VpcId:
+        default: Shared - VPC ID
+      S3DeployBucketName:
+        default: Shared - S3 Deploy Bucket Name
+      S3DeployBucketRegion:
+        default: Shared - S3 Deploy Bucket Region
+      CookbookVersion:
+        default: Shared - Chef Cookbook Version
