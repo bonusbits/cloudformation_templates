@@ -3,20 +3,14 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Jenkins Stack Core Template with EC2 Master and ECS Workers. v20161017-0900
 Parameters:
   # Tags
-  TagOwnerContact:
+  TagOwner:
     Description: Owner Contact Tag
     Type: String
-  TagASV:
-    Description: ASV Tag
+  TagProject:
+    Description: Project Name Tag
     Type: String
-  TagCMDBEnvironment:
-    Description: CMDBEnvironment Tag
-    Type: String
-  TagApplicationName:
-    Description: Application Name Tag
-    Type: String
-  TagEnvironmentName:
-    Description: Environment Name Tag
+  TagDeleteAfter:
+    Description: Delete After Name Tag
     Type: String
   # Shared
   VpcId:
@@ -504,13 +498,11 @@ Metadata:
     ParameterGroups:
     -
       Label:
-        default: Tags (Required)
+        default: Tags
       Parameters:
-        - TagOwnerContact
-        - TagASV
-        - TagCMDBEnvironment
-        - TagApplicationName
-        - TagEnvironmentName
+        - TagOwner
+        - TagProject
+        - TagDeleteAfter
     -
       Label:
         default: Jenkins Master
@@ -548,16 +540,12 @@ Metadata:
         - S3DeployBucketRegion
         - CookbookVersion
     ParameterLabels:
-      TagOwnerContact:
-        default: Team or Individual Contact Owner
-      TagASV:
-        default: ASV
-      TagCMDBEnvironment:
-        default: CM DB Environment
-      TagApplicationName:
-        default: Application Name
-      TagEnvironmentName:
-        default: Environment Name
+      TagOwner:
+        default: Tag - Team or Individual Contact Owner
+      TagProject:
+        default: Tag - Project Name
+      TagDeleteAfter:
+        default: Tag - Delete After
       MasterAmiId:
         default: Master - AMI
       MasterInstanceType:
