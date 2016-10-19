@@ -1,0 +1,114 @@
+[
+  {
+    "ParameterKey": "TagOwner",
+    "ParameterValue": "First Last"
+  },
+  {
+    "ParameterKey": "TagProject",
+    "ParameterValue": "Jenkins Lab"
+  },
+  {
+    "ParameterKey": "TagDeleteAfter",
+    "ParameterValue": "11/01/2016"
+  },
+  {
+    "ParameterKey": "VpcId",
+    "ParameterValue": "vpc-00000000"
+  },
+  {
+    "ParameterKey": "S3DeployBucketName",
+    "ParameterValue": "bonusbits-jenkins-launcher"
+  },
+  {
+    "ParameterKey": "S3DeployBucketRegion",
+    "ParameterValue": "us-west-2"
+  },
+  {
+    "ParameterKey": "CookbookVersion",
+    "ParameterValue": "1.0.0"
+  },
+  {
+    "ParameterKey": "MasterAmiId",
+    "ParameterValue": "ami-00000000"
+  },
+  {
+    "ParameterKey": "MasterSubnetId1",
+    "ParameterValue": "subnet-00000000"
+  },
+  {
+    "ParameterKey": "MasterSubnetId2",
+    "ParameterValue": "subnet-00000000"
+  },
+  {
+    "ParameterKey": "MasterSecurityGroupId",
+    "ParameterValue": "sg-00000000"
+  },
+  {
+    "ParameterKey": "MasterElbSecurityGroupId",
+    "ParameterValue": "sg-00000000"
+  },
+  {
+    "ParameterKey": "MasterEc2Key",
+    "ParameterValue": "bonusbits-lab"
+  },
+  {
+    "ParameterKey": "MasterIamProfile",
+    "ParameterValue": "jenkins-master-ec2instance-profile"
+  },
+  {
+    "ParameterKey": "JenkinsVersion",
+    "ParameterValue": "2.7.4-1.1"
+  },
+  {
+    "ParameterKey": "InstallBasePlugins",
+    "ParameterValue": "true"
+  },
+  {
+    "ParameterKey": "MasterElbSubnetId1",
+    "ParameterValue": "subnet-00000000"
+  },
+  {
+    "ParameterKey": "MasterElbSubnetId2",
+    "ParameterValue": "subnet-00000000"
+  },
+  {
+    "ParameterKey": "MasterInstanceType",
+    "ParameterValue": "m3.medium"
+  },
+  {
+    "ParameterKey": "WorkerAmiId",
+    "ParameterValue": "ami-00000000"
+  },
+  {
+    "ParameterKey": "WorkerSubnetId1",
+    "ParameterValue": "subnet-00000000"
+  },
+  {
+    "ParameterKey": "WorkerSubnetId2",
+    "ParameterValue": "subnet-00000000"
+  },
+  {
+    "ParameterKey": "WorkerSecurityGroupId",
+    "ParameterValue": "sg-00000000"
+  },
+  {
+    "ParameterKey": "WorkerEc2Key",
+    "ParameterValue": "bonusbits-lab"
+  },
+  {
+    "ParameterKey": "WorkerIamProfile",
+    "ParameterValue": "jenkins-worker-ec2instance-profile"
+  },
+  {
+    "ParameterKey": "WorkerMinCount",
+    "ParameterValue": "1"
+  },
+  {
+    "ParameterKey": "WorkerMaxCount",
+    "ParameterValue": "4"
+  },
+  {
+    "ParameterKey": "WorkerInstanceType",
+    "ParameterValue": "m3.medium"
+  }
+]
