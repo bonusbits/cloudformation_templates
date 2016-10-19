@@ -9,7 +9,7 @@ aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack
 ```
 
 #### Parameters
-##### Option 1 (Recommended) - Customer Parameters JSON File ([Example Here](https://github.com/bonusbits/cloudformation_templates/blob/master/parameter_examples/jenkins-ec2master-ecsworkers.json))
+##### Option 1 (Recommended) - Customer Parameters JSON File ([Example Here](https://github.com/bonusbits/cloudformation_templates/blob/master/labs/jenkins/parameter_examples/jenkins-ec2master-ecsworkers.json))
 ```
 --parameters file:///localpath/to/custom-parameters.json
 ```

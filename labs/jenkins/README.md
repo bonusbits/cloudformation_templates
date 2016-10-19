@@ -37,7 +37,7 @@ This repository contains a comprehensive solution to deliver an automated on-dem
             * username: jenkinsadmin
             * password: Password!
     2. Option 2: ([cfn_launcher.sh](https://github.com/bonusbits/cloudformation_templates/blob/master/extras/cfn_launcher_script/cfn_launcher.sh))
-    3. Option 3: ([AWS CLI](https://github.com/bonusbits/cloudformation_templates/blob/master/parameters_examples/))
+    3. Option 3: ([AWS CLI](https://github.com/bonusbits/cloudformation_templates/blob/master/extras/aws_clid_examples/))
 2. Fetch Master URL
     1. Open CloudFormation Web Console
     2. Select the new Stack
