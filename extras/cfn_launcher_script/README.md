@@ -1,15 +1,13 @@
-# CloudFormation Shell Launcher Script
+# Launcher Script Examples
 ### !! WIP !!
-
-## Purpose
-A shell script that uses the AWS CLI to create and update CloudFormation Stacks.
 
 # Prerequisites
 * BASH Shell
 * **tee** command installed
-* AWS CLI installed and configured
 
+## Purpose
 
 ## Usage
+* Can not use underscores of hyphens in yaml properties file key names.
 
 **Coming Soon**
