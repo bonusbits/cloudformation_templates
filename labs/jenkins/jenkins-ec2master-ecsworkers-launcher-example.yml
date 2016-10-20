@@ -1,0 +1,10 @@
+stackname: jenkins-lab
+profilename: bonusbits
+templateurl: https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/jenkins-ec2master-ecsworkers.template
+templatelocal: ./jenkins-ec2master-ecsworkers.template
+parametersfilepath: ./jenkins-ec2master-ecsworkers.json
+iamaccess: false
+createstack: true
+deletecreatefailures: true
+uses3template: false
+logfile: ./cfn_launcher.log
