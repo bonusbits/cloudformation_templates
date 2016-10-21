@@ -227,182 +227,191 @@ Conditions:
     !Not [!Equals [ !Ref WorkerEc2Key, '' ]]
   SetupPlugins: !Equals [!Ref InstallBasePlugins, true]
 Resources:
-  MasterELB:
-    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
-    Properties:
-      Name: !Ref "AWS::StackName"
-      Scheme: internal
-      Subnets:
-        - !Ref MasterElbSubnetId1
-        - !Ref MasterElbSubnetId2
-      SecurityGroups:
-        - !Ref MasterElbSecurityGroupId
-      Listeners:
-        - LoadBalancerPort: 80
-          InstancePort: 80
-          Protocol: HTTP
-        - LoadBalancerPort: 5000
-          InstancePort: 5000
-          Protocol: TCP
-      HealthCheck:
-        Target: TCP:80
-        HealthyThreshold: 3
-        UnhealthyThreshold: 5
-        Interval: 10
-        Timeout: 5
-      Tags:
-        - Key: Owner
-          Value: !Ref TagOwner
-        - Key: Project
-          Value: !Ref TagProject
-        - Key: DeleteAfter
-          Value: !Ref TagDeleteAfter
-  MasterAutoScalingGroup:
-    Type: AWS::AutoScaling::AutoScalingGroup
-    DependsOn:
-      - MasterELB
-      - WorkerInstances
-    Properties:
-      VPCZoneIdentifier:
-        - !Ref MasterSubnetId1
-        - !Ref MasterSubnetId2
-      LaunchConfigurationName: !Ref MasterInstances
-      MinSize: 1
-      MaxSize: 1
-      DesiredCapacity: 1
-      Tags:
-        - Key: Name
-          Value: !Join [ '', [ !Ref "AWS::StackName", -master ] ]
-          PropagateAtLaunch: true
-        - Key: Owner
-          Value: !Ref TagOwner
-          PropagateAtLaunch: true
-        - Key: Project
-          Value: !Ref TagProject
-          PropagateAtLaunch: true
-        - Key: DeleteAfter
-          Value: !Ref TagDeleteAfter
-          PropagateAtLaunch: true
-      LoadBalancerNames:
-        - !Ref MasterELB
-    UpdatePolicy:
-      AutoScalingRollingUpdate:
-        MinInstancesInService: 1
-        MaxBatchSize: 1
-  MasterInstances:
-    Type: AWS::AutoScaling::LaunchConfiguration
-    DependsOn:
-      - MasterELB
-      - WorkerInstances
-    Metadata:
-      AWS::CloudFormation::Init:
-        config:
-          commands:
-            01_mkdir_chef_repo:
-              command: "mkdir /opt/chef-repo"
-            02_mkdir_chef_repo_subdirs:
-              cwd: /opt/chef-repo
-              command: "mkdir cookbooks checksums environments cache backup data_bags roles"
-            03_deploy_cookbooks:
-              cwd: /opt/chef-repo
-              command: !Sub "aws s3 sync s3://${S3DeployBucketName}/cookbooks/cookbooks-${CookbookVersion}.tar.gz /opt/chef-repo/cookbooks.tar.gz && tar -zxf /opt/chef-repo/cookbooks.tar.gz -C /opt/chef-repo"
-            04_run_chef:
-              cwd: /opt/chef-repo
-              command: "/opt/chef/bin/chef-client -z -o 'role[bonusbits_jenkins]' --environment bonusbits_jenkins_master --config /opt/chef-repo/client.rb --log_level info --force-formatter --chef-zero-port 8889"
-          files:
-            "/opt/chef-repo/client.rb":
-              content: !Sub |
-                node_name 'federated-jenkins-launcher'
-                checksum_path '/opt/chef-repo/checksums'
-                file_cache_path '/opt/chef-repo/cache'
-                file_backup_path '/opt/chef-repo/backup'
-                cookbook_path '/opt/chef-repo/cookbooks'
-                data_bag_path '/opt/chef-repo/data_bags'
-                environment_path '/opt/chef-repo/environments'
-                role_path '/opt/chef-repo/roles'
-                chef_server_url 'http://127.0.0.1:8889'
-                encrypted_data_bag_secret '/opt/chef-repo/encrypted_data_bag_secret'
-            "/opt/chef-repo/environments/bonusbits_jenkins_master.json":
-              content: !Sub |
-                {
-                  "name": "bonusbits_jenkins_master",
-                  "description": "Example Environment",
-                  "cookbook_versions": {},
-                  "json_class": "Chef::Environment",
-                  "chef_type": "environment",
-                  "default_attributes": {
-                  },
-                  "override_attributes": {
-                    "bonusbits_jenkins": {
-                      "role": "master",
-                      "master": {
-                        "users": {
-                          "create_default_admin": true
+  MasterLoadBalancer:
+      Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+      Properties:
+        Scheme: internal
+        Subnets:
+          - !Ref MasterElbSubnetId1
+          - !Ref MasterElbSubnetId2
+        SecurityGroups:
+          - !Ref MasterElbSecurityGroupId
+    MasterLoadBalancerListener:
+      Type: AWS::ElasticLoadBalancingV2::Listener
+      DependsOn:
+        - MasterLoadBalancer
+        - MasterLoadBalancerTargetGroup
+      Properties:
+        DefaultActions:
+          - Type: forward
+            TargetGroupArn: !Ref MasterLoadBalancerTargetGroup
+        LoadBalancerArn: !Ref MasterLoadBalancer
+        Port: 80
+        Protocol: HTTP
+    MasterLoadBalancerTargetGroup:
+      Type: AWS::ElasticLoadBalancingV2::TargetGroup
+      Properties:
+        HealthCheckIntervalSeconds: 10
+        HealthCheckProtocol: HTTP
+        HealthCheckPort: 8080
+        HealthCheckTimeoutSeconds: 5
+        HealthyThresholdCount: 3
+        UnhealthyThresholdCount: 6
+        Port: 8080
+        Protocol: HTTP
+        VpcId: !Ref VpcId
+    MasterAutoScalingGroup:
+      Type: AWS::AutoScaling::AutoScalingGroup
+      DependsOn:
+        - MasterLoadBalancerTargetGroup
+        - MasterInstances
+      Properties:
+        VPCZoneIdentifier:
+          - !Ref MasterSubnetId1
+          - !Ref MasterSubnetId2
+        LaunchConfigurationName: !Ref MasterInstances
+        MinSize: 1
+        MaxSize: 1
+        DesiredCapacity: 1
+        Tags:
+          - Key: Name
+            Value: !Join [ '', [ !Ref "AWS::StackName", -master ] ]
+            PropagateAtLaunch: true
+          - Key: OwnerContact
+            Value: !Ref TagOwnerContact
+            PropagateAtLaunch: true
+          - Key: ASV
+            Value: !Ref TagASV
+            PropagateAtLaunch: true
+          - Key: CMDBEnvironment
+            Value: !Ref TagCMDBEnvironment
+            PropagateAtLaunch: true
+          - Key: ApplicationName
+            Value: !Ref TagApplicationName
+            PropagateAtLaunch: true
+          - Key: EnvironmentName
+            Value: !Ref TagEnvironmentName
+            PropagateAtLaunch: true
+        TargetGroupARNs:
+          - !Ref MasterLoadBalancerTargetGroup
+      UpdatePolicy:
+        AutoScalingRollingUpdate:
+          MinInstancesInService: 1
+          MaxBatchSize: 1
+    MasterInstances:
+      Type: AWS::AutoScaling::LaunchConfiguration
+      DependsOn:
+        - MasterLoadBalancer
+        - WorkerAutoScalingGroup
+      Metadata:
+        AWS::CloudFormation::Init:
+          config:
+            commands:
+              01_mkdir_chef_repo:
+                command: "mkdir /opt/chef-repo"
+              02_mkdir_chef_repo_subdirs:
+                cwd: /opt/chef-repo
+                command: "mkdir cookbooks checksums environments cache backup data_bags roles"
+              03_deploy_cookbooks:
+                cwd: /opt/chef-repo
+                command: !Sub "aws s3 sync s3://${S3DeployBucketName}/cookbooks/bonusbits_jenkins_cookbooks-${CookbookVersion}.tar.gz /opt/chef-repo/cookbooks.tar.gz && tar -zxf /opt/chef-repo/cookbooks.tar.gz -C /opt/chef-repo"
+              04_run_chef:
+                cwd: /opt/chef-repo
+                command: "/opt/chef/bin/chef-client -z -o 'role[bonusbits_jenkins]' --environment bonusbits_jenkins_master --config /opt/chef-repo/client.rb --log_level info --force-formatter --chef-zero-port 8889"
+            files:
+              "/opt/chef-repo/client.rb":
+                content: !Sub |
+                  node_name 'federated-jenkins-launcher'
+                  checksum_path '/opt/chef-repo/checksums'
+                  file_cache_path '/opt/chef-repo/cache'
+                  file_backup_path '/opt/chef-repo/backup'
+                  cookbook_path '/opt/chef-repo/cookbooks'
+                  data_bag_path '/opt/chef-repo/data_bags'
+                  environment_path '/opt/chef-repo/environments'
+                  role_path '/opt/chef-repo/roles'
+                  chef_server_url 'http://127.0.0.1:8889'
+                  encrypted_data_bag_secret '/opt/chef-repo/cookbooks/bonusbits_jenkins/test/data_bags/encrypted_data_bag_secret'
+              "/opt/chef-repo/environments/bonusbits_jenkins_master.json":
+                content: !Sub |
+                  {
+                    "name": "bonusbits_jenkins_master",
+                    "description": "Example Environment",
+                    "cookbook_versions": {},
+                    "json_class": "Chef::Environment",
+                    "chef_type": "environment",
+                    "default_attributes": {
+                    },
+                    "override_attributes": {
+                      "bonusbits-jenkins": {
+                        "role": "master",
+                        "master": {
+                          "users": {
+                            "create_default_admin": true
+                          },
+                          "plugins": {
+                            "deploy_base": true
+                          },
+                          "setup_wizard": {
+                            "disable": true
+                          },
+                          "rpm": {
+                            "version": "${!Ref JenkinsVersion}"
+                          },
+                          "ecs_cluster": {
+                            "configure": true
+                          }
                         },
-                        "plugins": {
-                          "deploy_base": true
+                        "worker": {
+                          "ecs_agent": {
+                            "configure": false
+                          },
+                          "cluster_url": "${WorkerCluster}"
                         },
-                        "setup_wizard": {
-                          "disable": true
-                        },
-                        "rpm": {
-                          "version": "${!Ref JenkinsVersion}"
-                        },
-                        "ecs_cluster": {
-                          "configure": true
+                        "gem_source": {
+                          "use_internal": true
                         }
-                      },
-                      "worker": {
-                        "ecs_agent": {
-                          "configure": false
-                        },
-                        "cluster_url": ""
-                      },
-                      "gem_source": {
-                        "use_internal": true
                       }
                     }
                   }
-                }
-            "/opt/chef-repo/roles/bonusbits_jenkins.json":
-              content: !Sub |
-                {
-                  "name": "bonusbits_jenkins",
-                  "description": "Default Role",
-                  "json_class": "Chef::Role",
-                  "default_attributes": {},
-                  "override_attributes": {
-                  },
-                  "chef_type": "role",
-                  "run_list": [
-                    "recipe[bonusbits_jenkins]"
-                  ],
-                  "env_run_lists": {
+              "/opt/chef-repo/roles/bonusbits_jenkins.json":
+                content: !Sub |
+                  {
+                    "name": "bonusbits-jenkins",
+                    "description": "Default Role",
+                    "json_class": "Chef::Role",
+                    "default_attributes": {},
+                    "override_attributes": {
+                    },
+                    "chef_type": "role",
+                    "run_list": [
+                      "recipe[bonusbits-jenkins]"
+                    ],
+                    "env_run_lists": {
+                    }
                   }
-                }
-            "/etc/cfn/cfn-hup.conf":
-              content: !Sub |
-                [main]
-                stack=${AWS::StackId}
-                region=${AWS::Region}
-              mode: '000400'
-              owner: root
-              group: root
-            "/etc/cfn/hooks.d/cfn-auto-reloader.conf":
-              content: !Sub |
-                [cfn-auto-reloader-hook]
-                triggers=post.update
-                path=Resources.MasterInstances.Metadata.AWS::CloudFormation::Init
-                action=/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource MasterInstances --region ${AWS::Region}
-                runas=root
-            services:
-              sysvinit:
-                cfn-hup:
-                  enabled: true
-                  ensureRunning: true
-                  files:
-                    - /etc/cfn/cfn-hup.conf
-                    - /etc/cfn/hooks.d/cfn-auto-reloader.conf
+              "/etc/cfn/cfn-hup.conf":
+                content: !Sub |
+                  [main]
+                  stack=${AWS::StackId}
+                  region=${AWS::Region}
+                mode: '000400'
+                owner: root
+                group: root
+              "/etc/cfn/hooks.d/cfn-auto-reloader.conf":
+                content: !Sub |
+                  [cfn-auto-reloader-hook]
+                  triggers=post.update
+                  path=Resources.MasterInstances.Metadata.AWS::CloudFormation::Init
+                  action=/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource MasterInstances --region ${AWS::Region}
+                  runas=root
+              services:
+                sysvinit:
+                  cfn-hup:
+                    enabled: true
+                    ensureRunning: true
+                    files:
+                      - /etc/cfn/cfn-hup.conf
+                      - /etc/cfn/hooks.d/cfn-auto-reloader.conf
     Properties:
       ImageId: !Ref MasterAmiId
       SecurityGroups:
@@ -419,8 +428,6 @@ Resources:
             /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource MasterAutoScalingGroup --region ${AWS::Region}
   WorkerCluster:
     Type: AWS::ECS::Cluster
-#    Properties:
-#      ClusterName: !Ref "AWS::StackName"
   WorkerAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
