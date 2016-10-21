@@ -4,27 +4,28 @@
 
 # Static Variables
 successful=false
-script_version=1.1.0_10-19-2016
+script_version=1.1.1_10-20-2016
 # unset stack_name
 # read -p "Enter Stack Name: " stack_name
 
 function usage() {
 usagemessage="
-usage: $0 -p ./properties_file.yml
+usage: $0 -p ./example-config.yml
 
 -p YAML Properties File  :  (Required)
 
 YAML FILE FORMAT:
-stackname: bonusbits-dev-jenkins-test
-profilename: bonusbits
-templateurl: https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/jenkins-ec2master-ecsworkers.template
-templatelocal: ../../labs/jenkins/jenkins-ec2master-ecsworkers.template
-parametersfilepath: ../../labs/jenkins/parameter_examples/jenkins-ec2master-ecsworkers.json
+stackname: My Stack
+profilename: my_aws_cli_profile
+templateurl: https://s3.amazonaws.com/federated-jenkins-launcher/cloudformation-templates/federated-jenkins-horizontal-dev.template
+templatelocal: /Users/gsm987/Development/github/capone/federated_jenkins_launcher/cloudformation_templates/core_templates/federated-jenkins-core-ec2master-ecsworkers.template
+parametersfilepath: ${HOME}/Development/github/capone/federated_jenkins_launcher/cloudformation_templates/parameter_examples/horizontal-dev.json
 iamaccess: false
 createstack: true
 deletecreatefailures: true
 uses3template: false
-logfile: ./cfn_launcher.log
+logfile: ${HOME}/Development/github/capone/federated_jenkins_launcher/cfn_launcher_script/cfn_launcher.log
+verbose: false
 "
     echo ${usagemessage};
 }
@@ -199,13 +200,21 @@ function monitor_stack_status {
     elif [ "$STATUS" == "ROLLBACK_IN_PROGRESS" ]; then
       if [[ "$task_type" == "create-stack" && ${yaml_deletecreatefailures} == "true" ]]; then
         message 'ERROR: Failed and Rolling Back!'
-#        aws cloudformation describe-stack-events --stack-name ${yaml_stackname}
+        if [ ${yaml_verbose} == "true" ]; then
+#            aws cloudformation describe-stack-events --stack-name ${yaml_stackname}
+            aws cloudformation describe-stack-events --stack-name ${yaml_stackname} --query 'StackEvents[?ResourceStatus==`CREATE_COMPLETE`]'
+            echo '' | tee -a ${yaml_logfile}
+        fi
         aws cloudformation describe-stack-events --stack-name ${yaml_stackname} --query 'StackEvents[?ResourceStatus==`CREATE_FAILED`]'
-        # aws cloudformation describe-stack-events --stack-name ${yaml_stackname} --query 'StackEvents[?ResourceStatus==`CREATE_FAILED`]' --query 'StackEvents[*].{Timestamp:Timestamp,Error:ResourceStatusReason}'
         delete_stack_command
         successful=false
       else
         # So don't delete on update-stack
+        if [ ${yaml_verbose} == "true" ]; then
+#            aws cloudformation describe-stack-events --stack-name ${yaml_stackname}
+           aws cloudformation describe-stack-events --stack-name ${yaml_stackname} --query 'StackEvents[?ResourceStatus==`CREATE_COMPLETE`]'
+            echo '' | tee -a ${yaml_logfile}
+        fi
         aws cloudformation describe-stack-events --stack-name ${yaml_stackname} --query 'StackEvents[?ResourceStatus==`CREATE_FAILED`]'
         message 'ERROR: Failed and Rolling Back!'
         message "REPORT: Rollback not complete!"

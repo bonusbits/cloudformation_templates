@@ -8,3 +8,4 @@ createstack: true
 deletecreatefailures: true
 uses3template: false
 logfile: ./cfn_launcher.log
+verbose: true
