@@ -34,8 +34,7 @@ Parameters:
     Default: rdsroot
   MasterUserPassword:
     NoEcho: 'true'
-    Description: Database administration password. Minimum of 8 alphanumeric characters
-      (pattern of [a-zA-Z0-9]).
+    Description: Database administration password. Minimum of 8 alphanumeric characters (pattern of [a-zA-Z0-9]).
     Type: String
     MinLength: '8'
     AllowedPattern: "[a-zA-Z0-9!?]*"
