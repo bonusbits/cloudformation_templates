@@ -40,7 +40,7 @@ command using various foundational templates that I've creates to be used togeth
 
 <table>
     <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/orchestrators/infrastructure.template">Infrastructure</a></h4></th>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/orchestrators/infrastructure.yml">Infrastructure</a></h4></th>
     </tr>
     <tr>
         <td valign="top">
@@ -60,9 +60,9 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-east-1</p>
                     </td>
                 </tr>
@@ -73,7 +73,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/infra-orchestrator-600x600.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/infrastructure.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/infra-orchestrator-600x600.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -99,7 +99,7 @@ command using various foundational templates that I've creates to be used togeth
                 <tr>
                     <td>
                         <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github.template"</code>
+                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/infrastructure.yml"</code>
                     </td>
                 </tr>
                 <tr>
@@ -133,7 +133,7 @@ command using various foundational templates that I've creates to be used togeth
 
 <table>
     <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc.template">VPC (Virtual Private Cloud)</a></h4></th>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc.yml">VPC (Virtual Private Cloud)</a></h4></th>
     </tr>
     <tr>
         <td valign="top">
@@ -169,9 +169,9 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpc.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpc.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpc.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpc.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-east-1</p>
                     </td>
                 </tr>
@@ -182,7 +182,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpc.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/vpc-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpc.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/vpc-200x200.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -207,7 +207,7 @@ command using various foundational templates that I've creates to be used togeth
                 <tr>
                     <td>
                         <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpc.template"</code>
+                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpc.yml"</code>
                     </td>
                 </tr>
                 <tr>
@@ -235,7 +235,7 @@ command using various foundational templates that I've creates to be used togeth
         </td>
     </tr>
     <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/nat-gateway.template">NAT Gateway (Network Addresss Translation)</a></h4></th>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/nat-gateway.yml">NAT Gateway (Network Addresss Translation)</a></h4></th>
     </tr>
     <tr>
         <td valign="top">
@@ -245,7 +245,7 @@ command using various foundational templates that I've creates to be used togeth
              <li>VPC</li>
              <ul>
                <li>Public Subnet, IGW, Private Subnet/s.</li>
-               <li>Either use an existing VPC Infrastructure or you can use the following <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc/vpc.template" target="_blank">VPC Template</a> to create a one.</li>
+               <li>Either use an existing VPC Infrastructure or you can use the following <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc/vpc.yml" target="_blank">VPC Template</a> to create a one.</li>
              </ul>
             <li>AWS Privileges</li>
             </ol>
@@ -268,9 +268,9 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/nat-gateway.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/nat-gateway.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/nat-gateway.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/nat-gateway.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-east-1</p>
                     </td>
                 </tr>
@@ -281,7 +281,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/nat-gateway.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/nat-gateway-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/nat-gateway.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/nat-gateway-200x200.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -306,7 +306,7 @@ command using various foundational templates that I've creates to be used togeth
                 <tr>
                     <td>
                         <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/nat-gateway.template"</code>
+                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/nat-gateway.yml"</code>
                     </td>
                 </tr>
                 <tr>
@@ -334,7 +334,7 @@ command using various foundational templates that I've creates to be used togeth
         </td>
     </tr>
     <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpn-bgp.template">VPN BGP (Virtual Private Network using Border Gateway Protocol)</a></h4></th>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpn-bgp.yml">VPN BGP (Virtual Private Network using Border Gateway Protocol)</a></h4></th>
     </tr>
     <tr>
         <td valign="top">
@@ -350,7 +350,7 @@ command using various foundational templates that I've creates to be used togeth
                 <li>VPC</li>
                 <ul>
                   <li>Public Subnet, IGW, Private Subnet/s.</li>
-                  <li>Either use an existing VPC Infrastructure or you can use the following <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc.template" target="_blank">VPC Template</a> to create a one.</li>
+                  <li>Either use an existing VPC Infrastructure or you can use the following <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc.yml" target="_blank">VPC Template</a> to create a one.</li>
                 </ul>
               <li>Remote Network (Office) VPN Device WAN IP</li>
               <li>Remote Network CIDR Block to Allow Access and Propagate.</li>
@@ -371,9 +371,9 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpn-bgp.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpn-bgp.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpn-bgp.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpn-bgp.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-east-1</p>
                     </td>
                 </tr>
@@ -384,7 +384,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpn-bgp.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/vpn-bgp-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpn-bgp.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/vpn-bgp-200x200.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -409,7 +409,7 @@ command using various foundational templates that I've creates to be used togeth
                 <tr>
                     <td>
                         <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpn-bgp.template"</code>
+                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpn-bgp.yml"</code>
                     </td>
                 </tr>
                 <tr>
@@ -437,7 +437,7 @@ command using various foundational templates that I've creates to be used togeth
         </td>
     </tr>
     <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/bastion.template">Bastion</a></h4></th>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/bastion.yml">Bastion</a></h4></th>
     </tr>
     <tr>
         <td valign="top">
@@ -447,7 +447,7 @@ command using various foundational templates that I've creates to be used togeth
              <li>VPC</li>
              <ul>
                <li>Public Subnet, IGW, Private Subnet/s.</li>
-               <li>Either use an existing VPC Infrastructure or you can use the following <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc/vpc.template" target="_blank">VPC Template</a> to create a one.</li>
+               <li>Either use an existing VPC Infrastructure or you can use the following <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc/vpc.yml" target="_blank">VPC Template</a> to create a one.</li>
              </ul>
             <li>Available EIP</li>
             </ol>
@@ -467,9 +467,9 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bastion.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png" width:144 alt="us-west-2"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bastion.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png" width:144 alt="us-west-2"></a>
                         <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bastion.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bastion.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-east-1</p>
                     </td>
                 </tr>
@@ -480,7 +480,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bastion.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/bastion-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bastion.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/bastion-200x200.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -506,7 +506,7 @@ command using various foundational templates that I've creates to be used togeth
                 <tr>
                     <td>
                         <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bastion.template"</code>
+                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bastion.yml"</code>
                     </td>
                 </tr>
                 <tr>
@@ -540,7 +540,7 @@ command using various foundational templates that I've creates to be used togeth
 
 <table>
     <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/database/mysql-rds.template">MySQL RDS</a></h4></th>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/database/mysql-rds.yml">MySQL RDS</a></h4></th>
     </tr>
     <tr>
         <td valign="top">
@@ -550,7 +550,7 @@ command using various foundational templates that I've creates to be used togeth
              <li>VPC</li>
              <ul>
                <li>Public Subnet, IGW, Private Subnet/s.</li>
-               <li>Either use an existing VPC Infrastructure or you can use the following <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/database/mysql-rds.template" target="_blank">VPC Template</a> to create a one.</li>
+               <li>Either use an existing VPC Infrastructure or you can use the following <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc.yml" target="_blank">VPC Template</a> to create a one.</li>
              </ul>
             </ol>
             <h6>Create Details</h6>
@@ -569,9 +569,9 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-east-1</p>
                     </td>
                 </tr>
@@ -582,7 +582,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/mysql-rds-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/mysql-rds-200x200.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -608,7 +608,7 @@ command using various foundational templates that I've creates to be used togeth
                 <tr>
                     <td>
                         <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.template"</code>
+                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.yml"</code>
                     </td>
                 </tr>
                 <tr>
@@ -642,7 +642,7 @@ command using various foundational templates that I've creates to be used togeth
 
 <table>
     <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/webapp/autoscaling-bakedami-rdsbackend.template">Baked AMI, RDS Backend</a></h4></th>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/webapp/autoscaling-bakedami-rdsbackend.yml">Baked AMI, RDS Backend</a></h4></th>
     </tr>
     <tr>
         <td valign="top">
@@ -674,9 +674,9 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-east-1</p>
                     </td>
                 </tr>
@@ -687,7 +687,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/autoscaling-bakedami-rdsbackend-200x181.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/autoscaling-bakedami-rdsbackend-200x181.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -713,7 +713,7 @@ command using various foundational templates that I've creates to be used togeth
                 <tr>
                     <td>
                         <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.template"</code>
+                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.yml"</code>
                     </td>
                 </tr>
                 <tr>
@@ -741,7 +741,7 @@ command using various foundational templates that I've creates to be used togeth
         </td>
     </tr>
     <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/webapp/autoscaling-bakedami.template">Baked AMI</a></h4></th>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/webapp/autoscaling-bakedami.yml">Baked AMI</a></h4></th>
     </tr>
     <tr>
         <td valign="top">
@@ -772,9 +772,9 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-east-1</p>
                     </td>
                 </tr>
@@ -785,7 +785,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/autoscaling-bakedami-200x181.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/autoscaling-bakedami-200x181.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -811,7 +811,7 @@ command using various foundational templates that I've creates to be used togeth
                 <tr>
                     <td>
                         <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.template"</code>
+                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.yml"</code>
                     </td>
                 </tr>
                 <tr>
@@ -856,7 +856,7 @@ command using various foundational templates that I've creates to be used togeth
              <li>VPC</li>
              <ul>
                <li>Public Subnet, IGW, Private Subnet/s.</li>
-               <li>Either use an existing VPC Infrastructure or you can use the following <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc.template" target="_blank">VPC Template</a> to create a one.</li>
+               <li>Either use an existing VPC Infrastructure or you can use the following <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc.yml" target="_blank">VPC Template</a> to create a one.</li>
              </ul>
             <li>Available EIP</li>
             </ol>
@@ -881,9 +881,9 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/chef-compliance.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/chef-compliance.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/chef-compliance.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/chef-compliance.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-east-1</p>
                     </td>
                 </tr>
@@ -894,7 +894,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/chef-compliance.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/chef-compliance-lab-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/chef-compliance.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/chef-compliance-lab-200x200.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -920,7 +920,7 @@ command using various foundational templates that I've creates to be used togeth
                 <tr>
                     <td>
                         <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/chef-compliance.template"</code>
+                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/chef-compliance.yml"</code>
                     </td>
                 </tr>
                 <tr>
@@ -948,7 +948,7 @@ command using various foundational templates that I've creates to be used togeth
         </td>
     </tr>
     <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/bitbucket/bitbucket.template">Bitbucket Lab</a></h4></th>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/bitbucket/bitbucket.yml">Bitbucket Lab</a></h4></th>
     </tr>
     <tr>
         <td valign="top">
@@ -959,7 +959,7 @@ command using various foundational templates that I've creates to be used togeth
               <ul>
                 <li>Public or Private Subnet</li>
                 <li>Internal Instance Access Security Group</li>
-                <li>Either use an existing VPC Infrastructure or you can use the following <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc.template" target="_blank">VPC Template</a> to create a one.</li>
+                <li>Either use an existing VPC Infrastructure or you can use the following <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc.yml" target="_blank">VPC Template</a> to create a one.</li>
               </ul>
               <li>Internet Access from the EC2 Instance or Yum access solution</li>
               <li>EC2 Key Pair</li>
@@ -996,9 +996,9 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bitbucket.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bitbucket.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bitbucket.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bitbucket.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-east-1</p>
                     </td>
                 </tr>
@@ -1009,7 +1009,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bitbucket.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/bitbucket-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bitbucket.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/bitbucket-200x200.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -1035,7 +1035,7 @@ command using various foundational templates that I've creates to be used togeth
                 <tr>
                     <td>
                         <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bitbucket.template"</code>
+                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bitbucket.yml"</code>
                     </td>
                 </tr>
                 <tr>
@@ -1063,7 +1063,7 @@ command using various foundational templates that I've creates to be used togeth
         </td>
     </tr>
     <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/test_instances/rhel-ubuntu-win2012.template">Test Instances</a></h4></th>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/test_instances/rhel-ubuntu-win2012.yml">Test Instances</a></h4></th>
     </tr>
     <tr>
         <td valign="top">
@@ -1082,9 +1082,9 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-east-1</p>
                     </td>
                 </tr>
@@ -1095,7 +1095,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/test-instances-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/test-instances-200x200.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -1121,7 +1121,7 @@ command using various foundational templates that I've creates to be used togeth
                 <tr>
                     <td>
                         <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.template"</code>
+                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.yml"</code>
                     </td>
                 </tr>
                 <tr>

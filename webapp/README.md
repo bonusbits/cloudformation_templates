@@ -10,7 +10,7 @@ Collection of Generic Webapp Templates.
 
 <table>
     <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/webapp/autoscaling-bakedami-rdsbackend.template">Baked AMI, RDS Backend</a></h4></th>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/webapp/autoscaling-bakedami-rdsbackend.yml">Baked AMI, RDS Backend</a></h4></th>
     </tr>
     <tr>
         <td valign="top">
@@ -42,9 +42,9 @@ Collection of Generic Webapp Templates.
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-east-1</p>
                     </td>
                 </tr>
@@ -55,7 +55,7 @@ Collection of Generic Webapp Templates.
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/autoscaling-bakedami-rdsbackend-200x181.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/autoscaling-bakedami-rdsbackend-200x181.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -81,7 +81,7 @@ Collection of Generic Webapp Templates.
                 <tr>
                     <td>
                         <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.template"</code>
+                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.yml"</code>
                     </td>
                 </tr>
                 <tr>
@@ -109,7 +109,7 @@ Collection of Generic Webapp Templates.
         </td>
     </tr>
     <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/webapp/autoscaling-bakedami.template">Baked AMI</a></h4></th>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/webapp/autoscaling-bakedami.yml">Baked AMI</a></h4></th>
     </tr>
     <tr>
         <td valign="top">
@@ -140,9 +140,9 @@ Collection of Generic Webapp Templates.
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-east-1</p>
                     </td>
                 </tr>
@@ -153,7 +153,7 @@ Collection of Generic Webapp Templates.
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/autoscaling-bakedami-200x181.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/autoscaling-bakedami-200x181.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -179,7 +179,7 @@ Collection of Generic Webapp Templates.
                 <tr>
                     <td>
                         <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.template"</code>
+                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.yml"</code>
                     </td>
                 </tr>
                 <tr>

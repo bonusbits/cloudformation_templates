@@ -2,7 +2,7 @@
 
 <table>
     <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/bitbucket/bitbucket.template">Bitbucket Lab</a></h4></th>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/bitbucket/bitbucket.yml">Bitbucket Lab</a></h4></th>
     </tr>
     <tr>
         <td valign="top">
@@ -13,7 +13,7 @@
               <ul>
                 <li>Public or Private Subnet</li>
                 <li>Internal Instance Access Security Group</li>
-                <li>Either use an existing VPC Infrastructure or you can use the following <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc.template" target="_blank">VPC Template</a> to create a one.</li>
+                <li>Either use an existing VPC Infrastructure or you can use the following <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc.yml" target="_blank">VPC Template</a> to create a one.</li>
               </ul>
               <li>Internet Access from the EC2 Instance or Yum access solution</li>
               <li>EC2 Key Pair</li>
@@ -54,9 +54,9 @@
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/labs/bitbucket/bitbucket.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/labs/bitbucket/bitbucket.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/labs/bitbucket/bitbucket.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/labs/bitbucket/bitbucket.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-east-1</p>
                     </td>
                 </tr>
@@ -67,7 +67,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/labs/bitbucket/bitbucket.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/bitbucket-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/labs/bitbucket/bitbucket.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/bitbucket-200x200.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -93,7 +93,7 @@
                 <tr>
                     <td>
                         <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/labs/bitbucket/bitbucket.template"</code>
+                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/labs/bitbucket/bitbucket.yml"</code>
                     </td>
                 </tr>
                 <tr>

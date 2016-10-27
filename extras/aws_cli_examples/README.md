@@ -5,7 +5,7 @@
 ### Jenkins Lab Example
 #### Base Create Command
 ```
-aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/jenkins-ec2master-ecsworkers.template"
+aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/jenkins-ec2master-ecsworkers.yml"
 ```
 
 #### Parameters

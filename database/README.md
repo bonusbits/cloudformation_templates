@@ -10,7 +10,7 @@ Collection of Database Templates that use various nested templates from this rep
 
 <table>
     <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/database/mysql-rds.template">MySQL RDS</a></h4></th>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/database/mysql-rds.yml">MySQL RDS</a></h4></th>
     </tr>
     <tr>
         <td valign="top">
@@ -20,7 +20,7 @@ Collection of Database Templates that use various nested templates from this rep
              <li>VPC</li>
              <ul>
                <li>Public Subnet, IGW, Private Subnet/s.</li>
-               <li>Either use an existing VPC Infrastructure or you can use the following <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/database/mysql-rds.template" target="_blank">VPC Template</a> to create a one.</li>
+               <li>Either use an existing VPC Infrastructure or you can use the following <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc.yml" target="_blank">VPC Template</a> to create a one.</li>
              </ul>
             </ol>
             <h6>Create Details</h6>
@@ -39,9 +39,9 @@ Collection of Database Templates that use various nested templates from this rep
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/images/buttons/cloudformation-launch-stack-button.png"></a>
                         <p>us-east-1</p>
                     </td>
                 </tr>
@@ -52,7 +52,7 @@ Collection of Database Templates that use various nested templates from this rep
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.template" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/mysql-rds-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/mysql-rds-200x200.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -78,7 +78,7 @@ Collection of Database Templates that use various nested templates from this rep
                 <tr>
                     <td>
                         <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.template"</code>
+                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.yml"</code>
                     </td>
                 </tr>
                 <tr>

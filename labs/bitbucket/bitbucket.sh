@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # User Variables
-template_url=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bitbucket.template
+template_url=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bitbucket.yml
 
 
 # Static Variables
