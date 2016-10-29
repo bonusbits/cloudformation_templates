@@ -7,7 +7,7 @@ Collection of Storage Templates that can use various nested templates from this 
 ### Storage
 [Back to Top](#purpose)
 
-<table>
+<table width="100%">
     <tr>
         <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/storage/efs.yml">EFS</a></h4></th>
     </tr>
@@ -25,7 +25,7 @@ Collection of Storage Templates that can use various nested templates from this 
              <li>3 Mount Targets</li>
             </ol>
         </td>
-        <td  nowrap width="200" valign="top">
+        <td nowrap width="200" valign="top">
             <table>
                 <tr>
                     <th align="left">Launch</th>
