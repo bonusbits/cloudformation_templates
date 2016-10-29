@@ -34,8 +34,7 @@ Parameters:
     Default: rdsroot
   MasterUserPassword:
     NoEcho: 'true'
-    Description: Database administration password. Minimum of 8 alphanumeric characters
-      (pattern of [a-zA-Z0-9]).
+    Description: Database administration password. Minimum of 8 alphanumeric characters (pattern of [a-zA-Z0-9]).
     Type: String
     MinLength: '8'
     AllowedPattern: "[a-zA-Z0-9!?]*"
@@ -56,8 +55,7 @@ Parameters:
     Type: Number
     Default: '3306'
   ConfigureDns:
-    Description: Configure Route 53 DNS Alias for RDS? Be sure a matching record doesn't
-      already exist.
+    Description: Configure Route 53 DNS Alias for RDS? Be sure a matching record doesn't already exist.
     Type: String
     Default: 'false'
     AllowedValues:
@@ -92,8 +90,7 @@ Parameters:
     MaxValue: '6144'
     ConstraintDescription: Must be between 5-6144
   ConfigureProvisionedIops:
-    Description: Configure Route 53 DNS Alias for RDS? Be sure a matching record doesn't
-      already exist.
+    Description: Configure Route 53 DNS Alias for RDS? Be sure a matching record doesn't already exist.
     Type: String
     Default: 'false'
     AllowedValues:
