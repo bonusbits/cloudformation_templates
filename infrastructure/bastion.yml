@@ -70,7 +70,7 @@ Parameters:
     - 'true'
     - 'false'
   ChefdkVersion:
-    Description: Enter ChefDK (Skip if Not Installing ChefDK)
+    Description: Enter ChefDK Version (Skip if Not Installing ChefDK)
     Type: String
     Default: 0.18.30-1
   InstallChefClient:
@@ -81,9 +81,9 @@ Parameters:
     - 'true'
     - 'false'
   ChefClientVersion:
-    Description: Enter ChefDK (Skip if Not Installing Chef Client)
+    Description: Enter Chef Client Version (Skip if Not Installing Chef Client)
     Type: String
-    Default: 12.14.89
+    Default: 12.15.19
   Ec2KeyPair:
     Description: Select Keypair to Assign to EC2 Instances
     Type: AWS::EC2::KeyPair::KeyName
