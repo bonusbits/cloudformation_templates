@@ -53,6 +53,10 @@ command using various foundational templates that I've creates to be used togeth
              <li>Bastion Host (Optinoal)</li>
              <li>VPN (Optional)</li></li>
             </ol>
+            <h6>Public S3 URL</h6>
+            <ol>
+             <oi>https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/infrastructure.yml</li>
+            </ol>
         </td>
         <td  nowrap width="200" valign="top">
             <table>
@@ -75,53 +79,6 @@ command using various foundational templates that I've creates to be used togeth
                 <tr>
                     <td>
                         <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/infrastructure.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/infra-orchestrator-600x600.jpg" width:100% alt="View in Designer"></a>
-                    </td>
-                </tr>
-            </table>
-            <table>
-                <tr>
-                    <th align="left">How To Video</th>
-                </tr>
-                <tr>
-                    <td>
-                        <img src="https://s3.amazonaws.com/bonusbits-public/media/images/screenshots/howto_bonusbits_youtube_144x81.jpg" width:100% alt="HowTo Video"></a>
-                        <p>COMING SOON</p>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <table>
-                <tr>
-                    <th align="left">AWS CLI Example</th>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/infrastructure.yml"</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h5>Parameters</h5>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/orchestrators/parameters_examples/infrastructure-parameters.json">(Example Here)</a></h6>
-                        <code>--parameters file:///localpath/to/custom-parameters.json</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 2 - Pass Parameters on CLI</h6>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <code>--parameters COMING SOON</code>
                     </td>
                 </tr>
             </table>
@@ -162,6 +119,10 @@ command using various foundational templates that I've creates to be used togeth
               <li>This can be used for to allow site-to-site VPN or Direct Connect Networks access to instances.</li>
             </ul>
            </ol>
+            <h6>Public S3 URL</h6>
+            <ol>
+             <oi>https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpc.yml</li>
+            </ol>
         </td>
         <td nowrap width="200" valign="top">
             <table>
@@ -227,6 +188,10 @@ command using various foundational templates that I've creates to be used togeth
             <ol>
              <li>Redundancy built in.</li>
              <li>Easier setup and management.</li>
+            </ol>
+            <h6>Public S3 URL</h6>
+            <ol>
+             <oi>https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/nat-gateway.yml</li>
             </ol>
         </td>
         <td  nowrap width="200" valign="top">
@@ -298,6 +263,10 @@ command using various foundational templates that I've creates to be used togeth
              <li>Enable Route Propagation on Route Table/s</li>
              <li>Add Network ACL to Allow Remote Network</li>
             </ol>
+            <h6>Public S3 URL</h6>
+            <ol>
+             <oi>https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpn-bgp.yml</li>
+            </ol>
         </td>
         <td  nowrap width="200" valign="top">
             <table>
@@ -361,6 +330,10 @@ command using various foundational templates that I've creates to be used togeth
              <li>IAM Instance Profile</li>
              <li>Security Group</li>
             </ol>
+            <h6>Public S3 URL</h6>
+            <ol>
+             <oi>https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bastion.yml</li>
+            </ol>
         </td>
         <td  nowrap width="200" valign="top">
             <table>
@@ -410,6 +383,10 @@ command using various foundational templates that I've creates to be used togeth
              <li>EFS Filesystem</li>
              <li>3 Mount Targets</li>
             </ol>
+            <h6>Public S3 URL</h6>
+            <ol>
+             <oi>https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/efs.yml</li>
+            </ol>
         </td>
         <td  nowrap width="200" valign="top">
             <table>
@@ -455,6 +432,10 @@ command using various foundational templates that I've creates to be used togeth
             <li>Cloud Watch Alarms</li>
             <li>Route 53 Record Set (Optional)</li>
            </ol>
+            <h6>Public S3 URL</h6>
+            <ol>
+             <oi>https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.yml</li>
+            </ol>
         </td>
         <td nowrap width="200" valign="top">
             <table>
@@ -501,6 +482,10 @@ command using various foundational templates that I've creates to be used togeth
                  <li>Can't select what DB Engine</li>
                  <li>Can't set allocated storage</li>
                 </ol>
+            </ol>
+            <h6>Public S3 URL</h6>
+            <ol>
+             <oi>https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/create-rds-from-snapshot.yml</li>
             </ol>
         </td>
         <td nowrap width="200" valign="top">
@@ -550,6 +535,10 @@ command using various foundational templates that I've creates to be used togeth
              <li>S3 Bucket (Optional)</li>
              <li>S3 Bucket Policy (Optional)</li>
             </ol>
+            <h6>Public S3 URL</h6>
+            <ol>
+             <oi>https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.yml</li>
+            </ol>
         </td>
         <td  nowrap width="200" valign="top">
             <table>
@@ -575,55 +564,11 @@ command using various foundational templates that I've creates to be used togeth
                     </td>
                 </tr>
             </table>
-            <table>
-                <tr>
-                    <th align="left">How To Video</th>
-                </tr>
-                <tr>
-                    <td>
-                        <img src="https://s3.amazonaws.com/bonusbits-public/media/images/screenshots/howto_bonusbits_youtube_144x81.jpg" width:100% alt="HowTo Video"></a>
-                        <p>COMING SOON</p>
-                    </td>
-                </tr>
-            </table>
         </td>
     </tr>
-    <tr>
-        <td colspan="2">
-            <table>
-                <tr>
-                    <th align="left">AWS CLI Example</th>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.yml"</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h5>Parameters</h5>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/webapp/parameters_examples/autoscaling-bakedami-rdsbackend-parameters.json">(Example Here)</a></h6>
-                        <code>--parameters file:///localpath/to/custom-parameters.json</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 2 - Pass Parameters on CLI</h6>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <code>--parameters ParameterKey=Owner,ParameterValue="Levon Becker" ParameterKey=Project,ParameterValue="Autoscaling Baked AMI Webapp Stack Creation" ParameterKey=DeleteAfter,ParameterValue="08/01/2016" ParameterKey=VPC,ParameterValue="vpc-b9f488dd" ParameterKey=PublicSubnet1,ParameterValue="subnet-24197570" ParameterKey=PublicSubnet2,ParameterValue="subnet-24197571" ParameterKey=PublicSubnet3,ParameterValue="subnet-24197572" ParameterKey=PrivateSubnet1,ParameterValue="subnet-14197570" ParameterKey=PrivateSubnet2,ParameterValue="subnet-14197571" ParameterKey=PrivateSubnet3,ParameterValue="subnet-14197572" ParameterKey=PublicNetworkAcl,ParameterValue="acl-3d207459" ParameterKey=InstanceType,ParameterValue="t2.small" ParameterKey=AMI,ParameterValue="ami-00000000" ParameterKey=Ec2KeyPair,ParameterValue="bonusbits-dev" ParameterKey=MinAutoScaleCount,ParameterValue="3" ParameterKey=MaxAutoScaleCount,ParameterValue="6" ParameterKey=InternalAccessSecurityGroup,ParameterValue="sg-69d8410f" ParameterKey=RemoteSecurityGroup,ParameterValue="sg-50d8410d" ParameterKey=RDSAccessSecurityGroup,ParameterValue="sg-40d8410e" ParameterKey=ConfigureDns,ParameterValue="true" ParameterKey=Route53ElbAlias,ParameterValue="www.hecklejeckle.com" ParameterKey=UseSsl,ParameterValue="true" ParameterKey=ElbSslCertArn,ParameterValue="arn:aws:iam::0000000000000:server-certificate/www.hecklejeckle.com" ParameterKey=ElbHttpListeningPort,ParameterValue="443" ParameterKey=InstanceHttpListeningPort,ParameterValue="8443" ParameterKey=ListenOnBothPorts,ParameterValue="false" ParameterKey=SetupElbLogging,ParameterValue="true"</code>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
+</table>    
+
+<table>
     <tr>
         <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/webapp/autoscaling-bakedami.yml">Baked AMI</a></h4></th>
     </tr>
@@ -647,6 +592,10 @@ command using various foundational templates that I've creates to be used togeth
              <li>Route 53 Record Set (Optional)</li>
              <li>S3 Bucket (Optional)</li>
              <li>S3 Bucket Policy (Optional)</li>
+            </ol>
+            <h6>Public S3 URL</h6>
+            <ol>
+             <oi>https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.yml</li>
             </ol>
         </td>
         <td  nowrap width="200" valign="top">
@@ -673,53 +622,6 @@ command using various foundational templates that I've creates to be used togeth
                     </td>
                 </tr>
             </table>
-            <table>
-                <tr>
-                    <th align="left">How To Video</th>
-                </tr>
-                <tr>
-                    <td>
-                        <img src="https://s3.amazonaws.com/bonusbits-public/media/images/screenshots/howto_bonusbits_youtube_144x81.jpg" width:100% alt="HowTo Video"></a>
-                        <p>COMING SOON</p>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <table>
-                <tr>
-                    <th align="left">AWS CLI Example</th>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami.yml"</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h5>Parameters</h5>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/webapp/parameters_examples/autoscaling-bakedami-parameters.json">(Example Here)</a></h6>
-                        <code>--parameters file:///localpath/to/custom-parameters.json</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 2 - Pass Parameters on CLI</h6>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <code>--parameters ParameterKey=Owner,ParameterValue="Levon Becker" ParameterKey=Project,ParameterValue="Autoscaling Baked AMI Webapp Stack Creation" ParameterKey=DeleteAfter,ParameterValue="08/01/2016" ParameterKey=VPC,ParameterValue="vpc-b9f488dd" ParameterKey=PublicSubnet1,ParameterValue="subnet-24197570" ParameterKey=PublicSubnet2,ParameterValue="subnet-24197571" ParameterKey=PublicSubnet3,ParameterValue="subnet-24197572" ParameterKey=PrivateSubnet1,ParameterValue="subnet-14197570" ParameterKey=PrivateSubnet2,ParameterValue="subnet-14197571" ParameterKey=PrivateSubnet3,ParameterValue="subnet-14197572" ParameterKey=PublicNetworkAcl,ParameterValue="acl-3d207459" ParameterKey=InstanceType,ParameterValue="t2.small" ParameterKey=AMI,ParameterValue="ami-00000000" ParameterKey=Ec2KeyPair,ParameterValue="bonusbits-dev" ParameterKey=MinAutoScaleCount,ParameterValue="3" ParameterKey=MaxAutoScaleCount,ParameterValue="6" ParameterKey=InternalAccessSecurityGroup,ParameterValue="sg-69d8410f" ParameterKey=RemoteSecurityGroup,ParameterValue="sg-50d8410d" ParameterKey=ConfigureDns,ParameterValue="true" ParameterKey=Route53ElbAlias,ParameterValue="www.hecklejeckle.com" ParameterKey=UseSsl,ParameterValue="true" ParameterKey=ElbSslCertArn,ParameterValue="arn:aws:iam::0000000000000:server-certificate/www.hecklejeckle.com" ParameterKey=ElbHttpListeningPort,ParameterValue="443" ParameterKey=InstanceHttpListeningPort,ParameterValue="8443" ParameterKey=ListenOnBothPorts,ParameterValue="false" ParameterKey=SetupElbLogging,ParameterValue="true"</code>
-                    </td>
-                </tr>
-            </table>
         </td>
     </tr>
 </table>
@@ -729,7 +631,7 @@ command using various foundational templates that I've creates to be used togeth
 
 <table>
     <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/chef_compliance">Chef Compliance Lab</a></h4></th>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/chef">Chef Compliance Lab</a></h4></th>
     </tr>
     <tr>
         <td valign="top">
@@ -757,6 +659,10 @@ command using various foundational templates that I've creates to be used togeth
              <li>IAM Instance Profile</li>
              <li>Security Group</li>
             </ol>
+            <h6>Public S3 URL</h6>
+            <ol>
+             <oi>https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/chef-compliance.yml</li>
+            </ol>
         </td>
         <td  nowrap width="200" valign="top">
             <table>
@@ -782,55 +688,11 @@ command using various foundational templates that I've creates to be used togeth
                     </td>
                 </tr>
             </table>
-            <table>
-                <tr>
-                    <th align="left">How To Video</th>
-                </tr>
-                <tr>
-                    <td>
-                        <img src="https://s3.amazonaws.com/bonusbits-public/media/images/screenshots/howto_bonusbits_youtube_144x81.jpg" width:100% alt="HowTo Video"></a>
-                        <p>COMING SOON</p>
-                    </td>
-                </tr>
-            </table>
         </td>
     </tr>
-    <tr>
-        <td colspan="2">
-            <table>
-                <tr>
-                    <th align="left">AWS CLI Example</th>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/chef-compliance.yml"</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h5>Parameters</h5>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/chef_compliance/example-parameters.json">(Example Here)</a></h6>
-                        <code>--parameters file:///localpath/to/custom-parameters.json</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 2 - Pass Parameters on CLI</h6>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <code>--parameters ... COMING SOON</code>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
+</table> 
+    
+<table>    
     <tr>
         <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/bitbucket/bitbucket.yml">Bitbucket Lab</a></h4></th>
     </tr>
@@ -872,6 +734,10 @@ command using various foundational templates that I've creates to be used togeth
              <li>IAM Instance Profile</li>
              <li>Security Group</li>
             </ol>
+            <h6>Public S3 URL</h6>
+            <ol>
+             <oi>https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bitbucket.yml</li>
+            </ol>
         </td>
         <td  nowrap width="200" valign="top">
             <table>
@@ -897,55 +763,11 @@ command using various foundational templates that I've creates to be used togeth
                     </td>
                 </tr>
             </table>
-            <table>
-                <tr>
-                    <th align="left">How To Video</th>
-                </tr>
-                <tr>
-                    <td>
-                        <img src="https://s3.amazonaws.com/bonusbits-public/media/images/screenshots/howto_bonusbits_youtube_144x81.jpg" width:100% alt="HowTo Video"></a>
-                        <p>COMING SOON</p>
-                    </td>
-                </tr>
-            </table>
         </td>
     </tr>
-    <tr>
-        <td colspan="2">
-            <table>
-                <tr>
-                    <th align="left">AWS CLI Example</th>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bitbucket.yml"</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h5>Parameters</h5>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/bitbucket/bitbucket-parameters.json">(Example Here)</a></h6>
-                        <code>--parameters file:///localpath/to/custom-parameters.json</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 2 - Pass Parameters on CLI</h6>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <code>--parameters ... COMING SOON</code>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
+</table> 
+    
+<table>    
     <tr>
         <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/test_instances/rhel-ubuntu-win2012.yml">Test Instances</a></h4></th>
     </tr>
@@ -957,6 +779,10 @@ command using various foundational templates that I've creates to be used togeth
              <li>3 EC2 Instances</li>
              <li>IAM Role</li>
              <li>IAM Instance Profile</li>
+            </ol>
+            <h6>Public S3 URL</h6>
+            <ol>
+             <oi>https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.yml</li>
             </ol>
         </td>
         <td  nowrap width="200" valign="top">
@@ -980,53 +806,6 @@ command using various foundational templates that I've creates to be used togeth
                 <tr>
                     <td>
                         <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/test-instances-200x200.jpg" width:100% alt="View in Designer"></a>
-                    </td>
-                </tr>
-            </table>
-            <table>
-                <tr>
-                    <th align="left">How To Video</th>
-                </tr>
-                <tr>
-                    <td>
-                        <img src="https://s3.amazonaws.com/bonusbits-public/media/images/screenshots/howto_bonusbits_youtube_144x81.jpg" width:100% alt="HowTo Video"></a>
-                        <p>COMING SOON</p>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <table>
-                <tr>
-                    <th align="left">AWS CLI Example</th>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --capabilities CAPABILITY_IAM --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.yml"</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h5>Parameters</h5>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/test_instances/example-parameters.json">(Example Here)</a></h6>
-                        <code>--parameters file:///localpath/to/custom-parameters.json</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 2 - Pass Parameters on CLI</h6>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <code>--parameters ... COMING SOON</code>
                     </td>
                 </tr>
             </table>
