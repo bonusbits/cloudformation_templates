@@ -8,38 +8,38 @@ Collection of Foundational Infrastructure Templates.
 
 ### Infrastructure
 
-<table>
+<table width="100%">
     <tr>
         <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc.yml">VPC (Virtual Private Cloud)</a></h4></th>
     </tr>
     <tr>
-        <td valign="top">
-            <p>Creates an entire VPC from scratch for Lab or Permanent.</p>
-            <h6>Create Details</h6>
-            <ol>
-             <li>Single VPC</li>
-             <li>3 Public Subnets</li>
-             <li>3 Private Subnets</li>
-             <li>Public Route Table</li>
-             <li>Private Route Table</li>
-             <li>Internet Gateway</li>
-             <ul>
-               <li>Attached to the Public Route Table</li>
-             </ul>
-             <li>Public Network ACL</li>
-             <li>Private Network ACL</li>
-             <li>VPC Endpoint</li>
-             <li>Instance Access Security Group</li>
-             <ul>
-               <li>Instance to Instance Access</li>
-             </ul>
-             <li>Remote Access Security Group</li>
-             <ul>
-               <li>This can be used for to allow site-to-site VPN or Direct Connect Networks access to instances.</li>
-             </ul>
-            </ol>
+        <td width="100%" valign="top">
+           <p>Creates an entire VPC from scratch for Lab or Permanent.</p>
+           <h6>Create Details</h6>
+           <ol>
+            <li>Single VPC</li>
+            <li>3 Public Subnets</li>
+            <li>3 Private Subnets</li>
+            <li>Public Route Table</li>
+            <li>Private Route Table</li>
+            <li>Internet Gateway</li>
+            <ul>
+              <li>Attached to the Public Route Table</li>
+            </ul>
+            <li>Public Network ACL</li>
+            <li>Private Network ACL</li>
+            <li>VPC Endpoint</li>
+            <li>Instance Access Security Group</li>
+            <ul>
+              <li>Instance to Instance Access</li>
+            </ul>
+            <li>Remote Access Security Group</li>
+            <ul>
+              <li>This can be used for to allow site-to-site VPN or Direct Connect Networks access to instances.</li>
+            </ul>
+           </ol>
         </td>
-        <td  nowrap width="200" valign="top">
+        <td nowrap width="200" valign="top">
             <table>
                 <tr>
                     <th align="left">Launch</th>
@@ -59,7 +59,7 @@ Collection of Foundational Infrastructure Templates.
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpc.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/vpc-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpc.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/vpc-200x200.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -75,42 +75,9 @@ Collection of Foundational Infrastructure Templates.
             </table>
         </td>
     </tr>
-    <tr>
-        <td colspan="2">
-            <table>
-                <tr>
-                    <th align="left">AWS CLI Example</th>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpc.yml"</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h5>Parameters</h5>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/parameters_examples/vpc-parameters.json">(Example Here)</a></h6>
-                        <code>--parameters file:///localpath/to/custom-parameters.json</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 2 - Pass Parameters on CLI</h6>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <code>--parameters ParameterKey=Owner,ParameterValue="Levon Becker" ParameterKey=Project,ParameterValue="VPC Creation" ParameterKey=DeleteAfter,ParameterValue="Never" ParameterKey=VPCSubnetCidrBlock,ParameterValue="10.20.0.0/16" ParameterKey=AvailabilityZone1,ParameterValue="a" ParameterKey=AvailabilityZone2,ParameterValue="b" ParameterKey=AvailabilityZone3,ParameterValue="c" ParameterKey=PublicSubnetCidrBlock1,ParameterValue="10.20.1.0/24" ParameterKey=PublicSubnetCidrBlock2,ParameterValue="10.20.2.0/24" ParameterKey=PublicSubnetCidrBlock3,ParameterValue="10.20.3.0/24" ParameterKey=PrivateSubnetCidrBlock1,ParameterValue="10.20.4.0/24" ParameterKey=PrivateSubnetCidrBlock2,ParameterValue="10.20.5.0/24" ParameterKey=PrivateSubnetCidrBlock3,ParameterValue="10.20.6.0/24" ParameterKey=RemoteAccessNetwork,ParameterValue="50.12.34.56/32"</code>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
+</table>
+
+<table>
     <tr>
         <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/nat-gateway.yml">NAT Gateway (Network Addresss Translation)</a></h4></th>
     </tr>
@@ -174,42 +141,9 @@ Collection of Foundational Infrastructure Templates.
             </table>
         </td>
     </tr>
-    <tr>
-        <td colspan="2">
-            <table>
-                <tr>
-                    <th align="left">AWS CLI Example</th>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/nat-gateway.yml"</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h5>Parameters</h5>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/parameters_examples/nat-gateway-parameters.json">(Example Here)</a></h6>
-                        <code>--parameters file:///localpath/to/custom-parameters.json</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 2 - Pass Parameters on CLI</h6>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <code>--parameters ParameterKey=Owner,ParameterValue="Levon Becker" ParameterKey=Project,ParameterValue="NAT Gateway Creation" ParameterKey=DeleteAfter,ParameterValue="Never" ParameterKey=VPC,ParameterValue="vpc-b9f488dd" ParameterKey=PublicSubnet,ParameterValue="subnet-14197570" ParameterKey=PrivateRouteTable,ParameterValue="rtb-d5cce3b1" ParameterKey=PublicNetworkAcl,ParameterValue="acl-3d207459"</code>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
+</table>
+
+<table>
     <tr>
         <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpn-bgp.yml">VPN BGP (Virtual Private Network using Border Gateway Protocol)</a></h4></th>
     </tr>
@@ -277,42 +211,9 @@ Collection of Foundational Infrastructure Templates.
             </table>
         </td>
     </tr>
-    <tr>
-        <td colspan="2">
-            <table>
-                <tr>
-                    <th align="left">AWS CLI Example</th>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpn-bgp.json"</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h5>Parameters</h5>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/parameters_examples/vpn-bgp-parameters.json">(Example Here)</a></h6>
-                        <code>--parameters file:///localpath/to/custom-parameters.json</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 2 - Pass Parameters on CLI</h6>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <code>--parameters ParameterKey=Owner,ParameterValue="Levon Becker" ParameterKey=Project,ParameterValue="VPN Creation" ParameterKey=DeleteAfter,ParameterValue="Never" ParameterKey=VPC,ParameterValue="vpc-b9f488dd" ParameterKey=PublicRouteTable,ParameterValue="rtb-d6cce3b2" ParameterKey=PrivateRouteTable,ParameterValue="rtb-d5cce3b1" ParameterKey=PublicNetworkAcl,ParameterValue="acl-3d207459" ParameterKey=PrivateNetworkAcl,ParameterValue="acl-3c207458" ParameterKey=RemoteVpnDeviceIp,ParameterValue="50.23.45.67" ParameterKey=RemoteNetworkCidr,ParameterValue="192.168.100.0/24" ParameterKey=IncludePublicSubnets,ParameterValue="true"</code>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
+</table>
+
+<table>
     <tr>
         <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/bastion.yml">Bastion</a></h4></th>
     </tr>
@@ -358,53 +259,6 @@ Collection of Foundational Infrastructure Templates.
                 <tr>
                     <td>
                         <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bastion.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/bastion-200x200.jpg" width:100% alt="View in Designer"></a>
-                    </td>
-                </tr>
-            </table>
-            <table>
-                <tr>
-                    <th align="left">How To Video</th>
-                </tr>
-                <tr>
-                    <td>
-                        <img src="https://s3.amazonaws.com/bonusbits-public/media/images/screenshots/howto_bonusbits_youtube_144x81.jpg" width:100% alt="HowTo Video"></a>
-                        <p>COMING SOON</p>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <table>
-                <tr>
-                    <th align="left">AWS CLI Example</th>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Base Command</h6>
-                        <code>aws cloudformation create-stack --profile {AWS Profile Name} --stack-name {Stack Name} --template-url "https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bastion.yml"</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h5>Parameters</h5>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/parameters_examples/bastion-parameters.json">(Example Here)</a></h6>
-                        <code>--parameters file:///localpath/to/custom-parameters.json</code>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6>Option 2 - Pass Parameters on CLI</h6>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <code>--parameters ParameterKey=Owner,ParameterValue="Levon Becker" ParameterKey=Project,ParameterValue="Bastion Creation" ParameterKey=DeleteAfter,ParameterValue="Never" ParameterKey=VPC,ParameterValue="vpc-b9f488dd" ParameterKey=PublicSubnet,ParameterValue="subnet-14197570" ParameterKey=PublicNetworkAcl,ParameterValue="acl-3d207459" ParameterKey=InternalAccessSecurityGroup,ParameterValue="sg-69d8410f" ParameterKey=OsType,ParameterValue="rhel" ParameterKey=NetworkAccessIP,ParameterValue="50.23.45.67/32" ParameterKey=InstanceType,ParameterValue="t2.small" ParameterKey=Ec2KeyPair,ParameterValue="bonusbits-dev"</code>
                     </td>
                 </tr>
             </table>
