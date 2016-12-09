@@ -1,0 +1,114 @@
+[
+  {
+    "ParameterKey": "Owner",
+    "ParameterValue": "First Last"
+  },
+  {
+    "ParameterKey": "Project",
+    "ParameterValue": "My Cool Jenkins Stack"
+  },
+  {
+    "ParameterKey": "DeleteAfter",
+    "ParameterValue": "01/01/2017"
+  },
+  {
+    "ParameterKey": "VpcId",
+    "ParameterValue": "vpc-00000000"
+  },
+  {
+    "ParameterKey": "S3DeployBucketName",
+    "ParameterValue": "bonusbits-public"
+  },
+  {
+    "ParameterKey": "S3DeployBucketRegion",
+    "ParameterValue": "us-west-2"
+  },
+  {
+    "ParameterKey": "CookbookVersion",
+    "ParameterValue": "0.13.0"
+  },
+  {
+    "ParameterKey": "MasterAdminUserName",
+    "ParameterValue": "jenkinsmaster"
+  },
+  {
+    "ParameterKey": "MasterAdminPassword",
+    "ParameterValue": "SuperSecret!"
+  },
+  {
+    "ParameterKey": "MasterAmiId",
+    "ParameterValue": "ami-00000000"
+  },
+  {
+    "ParameterKey": "MasterSubnetIdList",
+    "ParameterValue": "subnet-00000000,subnet-00000000"
+  },
+  {
+    "ParameterKey": "MasterSecurityGroupIdList",
+    "ParameterValue": "sg-00000000"
+  },
+  {
+    "ParameterKey": "MasterElbSubnetIdList",
+    "ParameterValue": "subnet-00000000,subnet-00000000"
+  },
+  {
+    "ParameterKey": "MasterElbSecurityGroupIdList",
+    "ParameterValue": "sg-00000000"
+  },
+  {
+    "ParameterKey": "MasterEc2Key",
+    "ParameterValue": "jenkins-dev-uswest2"
+  },
+  {
+    "ParameterKey": "MasterIamProfile",
+    "ParameterValue": "Jenkins-Master-Role"
+  },
+  {
+    "ParameterKey": "JenkinsVersion",
+    "ParameterValue": "2.7.4-1.1"
+  },
+  {
+    "ParameterKey": "InstallPluginsOption",
+    "ParameterValue": "minimum"
+  },
+  {
+    "ParameterKey": "PluginBundleVersion",
+    "ParameterValue": "1.0.0"
+  },
+  {
+    "ParameterKey": "MasterInstanceType",
+    "ParameterValue": "m3.medium"
+  },
+  {
+    "ParameterKey": "WorkerAmiId",
+    "ParameterValue": "ami-00000000"
+  },
+  {
+    "ParameterKey": "WorkerSubnetIdList",
+    "ParameterValue": "subnet-00000000,subnet-00000000"
+  },
+  {
+    "ParameterKey": "WorkerSecurityGroupIdList",
+    "ParameterValue": "sg-00000000"
+  },
+  {
+    "ParameterKey": "WorkerEc2Key",
+    "ParameterValue": "jenkins-dev-uswest2"
+  },
+  {
+    "ParameterKey": "WorkerIamProfile",
+    "ParameterValue": "ECS-Cluster"
+  },
+  {
+    "ParameterKey": "WorkerMinCount",
+    "ParameterValue": "1"
+  },
+  {
+    "ParameterKey": "WorkerMaxCount",
+    "ParameterValue": "4"
+  },
+  {
+    "ParameterKey": "WorkerInstanceType",
+    "ParameterValue": "m3.medium"
+  }
+]
