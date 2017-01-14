@@ -265,3 +265,53 @@ Collection of Foundational Infrastructure Templates.
         </td>
     </tr>
 </table>
+
+<table width="100%">
+    <tr>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/storage/proxy-awsapi-devops-access.yml">Proxy AWSAPI & DevOps Sites Access for Private Instances</a></h4></th>
+    </tr>
+    <tr>
+        <td width="100%" valign="top">
+            <p>Create EC2 Single Proxy Instance</p>
+            <h6>Prerequisites</h6>
+            <ol>
+             <li>VPC</li>
+             <li>1 Public Subnet</li>
+            </ol>
+            <h6>CloudFormation Tasks</h6>
+            <ol>
+             <li>Create Single EC2 Instance on Public Network with Public IP</li>
+             <li>Create Autoscaling Group of 1 for DR</li>
+             <li>Create Proxy Access Security Group</li>
+             <li>Install Chef Client</li>
+             <li>Create Chef Configurations Files (environment, roles, etc.)</li>
+             <li>Download Cookbooks from Github Repo</li>
+             <li>Checkout Specific Version of Cookbook</li>
+             <li>Run Chef Client using Chef Zero</li>
+             <li>Warm EBS Volume</li>
+            </ol>
+            <h6>Chef Cookbook Tasks</h6>
+            <ol>
+             <li>Install, Configure and Start Squid Proxy</li>
+             <li>Setup CloudWatch Logs</li>
+             <li>Create Route53 DNS Update Script</li>
+             <li>Configure DNS Update Cron Job</li>
+            </ol>
+        </td>
+        <td nowrap width="200" valign="top">
+            <table>
+                <tr>
+                    <th align="left">Launch</th>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/proxy-awsapi-devops-access.yml" target="_blank"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"></a>
+                        <p>us-west-2</p>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/proxy-awsapi-devops-access.yml" target="_blank"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"></a>
+                        <p>us-east-1</p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
