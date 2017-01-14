@@ -91,7 +91,7 @@ Collection of Generic Webapp Templates.
                 </tr>
                 <tr>
                     <td>
-                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/webapp/parameters_examples/autoscaling-bakedami-rdsbackend-parameters.json">(Example Here)</a></h6>
+                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/webapp/example_parameters/autoscaling-bakedami-rdsbackend-parameters.json">(Example Here)</a></h6>
                         <code>--parameters file:///localpath/to/custom-parameters.json</code>
                     </td>
                 </tr>
@@ -189,7 +189,7 @@ Collection of Generic Webapp Templates.
                 </tr>
                 <tr>
                     <td>
-                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/webapp/parameters_examples/autoscaling-bakedami-parameters.json">(Example Here)</a></h6>
+                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/webapp/example_parameters/autoscaling-bakedami-parameters.json">(Example Here)</a></h6>
                         <code>--parameters file:///localpath/to/custom-parameters.json</code>
                     </td>
                 </tr>
