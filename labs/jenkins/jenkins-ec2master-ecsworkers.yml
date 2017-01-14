@@ -252,6 +252,7 @@ Resources:
       MinSize: 1
       MaxSize: 1
       DesiredCapacity: 1
+      HealthCheckType: EC2
       Tags:
         - Key: Name
           Value: !Join [ '', [ !Ref "AWS::StackName", -master ] ]

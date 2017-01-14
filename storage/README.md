@@ -42,9 +42,10 @@ Collection of Storage Templates that can use various nested templates from this 
         </td>
     </tr>
 </table>
+
 <table width="100%">
     <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/storage/s3-backup-bucket.yml">S3 Backup Bucket</a></h4></th>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/storage/s3-backup-bucket-delete-previous.yml">S3 Backup Bucket</a></h4></th>
     </tr>
     <tr>
         <td width="100%" valign="top">
@@ -58,6 +59,7 @@ Collection of Storage Templates that can use various nested templates from this 
             <ol>
              <li>Single S3 Bucket</li>
              <li>Enabled Versioning</li>
+             <li>Enforced Encryption</li>
              <li>Creates LifeCycle to Delete Previous Versions after X Days</li>
             </ol>
         </td>
@@ -68,9 +70,9 @@ Collection of Storage Templates that can use various nested templates from this 
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/s3-backup-bucket.yml" target="_blank"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/s3-backup-bucket-delete-previous.yml" target="_blank"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"></a>
                         <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/s3-backup-bucket.yml" target="_blank"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/s3-backup-bucket-delete-previous.yml" target="_blank"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"></a>
                         <p>us-east-1</p>
                     </td>
                 </tr>

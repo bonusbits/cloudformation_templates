@@ -95,7 +95,7 @@ Collection of Laboratory Templates.
                 </tr>
                 <tr>
                     <td>
-                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/chef_compliance/example-parameters.json">(Example Here)</a></h6>
+                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/chef_compliance/chef-compliance.json">(Example Here)</a></h6>
                         <code>--parameters file:///localpath/to/custom-parameters.json</code>
                     </td>
                 </tr>
