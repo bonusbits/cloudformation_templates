@@ -268,7 +268,7 @@ Collection of Foundational Infrastructure Templates.
 
 <table width="100%">
     <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/storage/proxy-awsapi-devops-access.yml">Proxy AWSAPI & DevOps Sites Access for Private Instances</a></h4></th>
+        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/proxy-awsapi-devops-access.yml">Proxy AWSAPI & DevOps Sites Access for Private Instances</a></h4></th>
     </tr>
     <tr>
         <td width="100%" valign="top">
