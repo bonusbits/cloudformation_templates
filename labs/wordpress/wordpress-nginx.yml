@@ -201,7 +201,7 @@ Resources:
         - !Ref RdsSecurityGroup
         - !Ref EfsSecurityGroup
       ImageId: !FindInMap [ RegionMap, !Ref "AWS::Region", EBS ]
-      InstanceMonitoring: false
+      Monitoring: false
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
           Ebs:
