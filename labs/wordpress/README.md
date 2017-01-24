@@ -24,7 +24,7 @@ Create an EC2 Instance with Wordpress on Nginx
              <li>Single Amazon Linux EC2 Instance</li>
              <li>Create Web Access Security Group</li>
              <li>Create IAM Instance Profile Role</li>
-             <li>Add External IP (Optional)</li>
+             <li>No External IP</li>
             </ol>
             <h6>Deploy Details</h6>
             <ol>

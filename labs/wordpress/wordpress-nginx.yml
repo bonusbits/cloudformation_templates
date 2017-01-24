@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Single EC2 Running Wordpress on Nginx, RDS Backed, Behind LB by Levon Becker v20170123-1430
+Description: Single EC2 Running Wordpress on Nginx, RDS Backed, Behind LB by Levon Becker v20170123-1730
 Parameters:
   # Ownership
   Owner:
@@ -13,8 +13,7 @@ Parameters:
   # Network
   VPC:
     Type: AWS::EC2::VPC::Id
-  PublicSubnetId:
-    Description: Public Subnet ID
+  SubnetId:
     Type: AWS::EC2::Subnet::Id
   InternalAccessSecurityGroup:
     Type: AWS::EC2::SecurityGroup::Id
@@ -192,10 +191,9 @@ Resources:
       - IamInstanceProfile
     Properties:
       IamInstanceProfile: !Ref IamInstanceProfile
-      AssociatePublicIpAddress: false
       InstanceType: !Ref InstanceType
       KeyName: !Ref KeyPairName
-      SubnetId: !Ref PublicSubnetId
+      SubnetId: !Ref SubnetId
       SecurityGroupIds:
         - !Ref SecurityGroup
         - !Ref InternalAccessSecurityGroup
@@ -328,8 +326,8 @@ Outputs:
   # Network
   VPC:
     Value: !Ref VPC
-  PublicSubnetId:
-    Value: !Ref PublicSubnetId
+  SubnetId:
+    Value: !Ref SubnetId
   SecurityGroup:
     Value: !Ref SecurityGroup
   InternalAccessSecurityGroup:
@@ -372,7 +370,7 @@ Metadata:
           default: Network
         Parameters:
           - VPC
-          - PublicSubnetId
+          - SubnetId
           - SecurityGroup
           - InternalAccessSecurityGroup
           - RemoteSecurityGroup
@@ -395,8 +393,8 @@ Metadata:
       # Network
       VPC:
         default: VPC ID
-      PublicSubnetId:
-        default: Public Subnet ID
+      SubnetId:
+        default: Subnet ID
       InternalAccessSecurityGroup:
         default: Internal Access Security Group
       RemoteSecurityGroup:
