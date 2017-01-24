@@ -25,16 +25,10 @@ Parameters:
     Type: AWS::EC2::SecurityGroup::Id
 
   # DNS
-  ConfigureDns:
+  HostedZoneId:
     Type: String
-    Default: 'true'
-    AllowedValues:
-      - 'true'
-      - 'false'
-  HostedZoneName:
-    Type: String
-    Description: Hosted Route53 Domain FQDN (example.com)
-    Default: example.com
+    Description: Route53 Hosted Zone ID (Z1234567890).
+    Default: Z1234567890
   RecordName:
     Type: String
     Description: DNS Record Name (www.example.com)
@@ -95,9 +89,6 @@ Mappings:
     cn-north-1:
       InstanceStore: ami-81eb3fec
       EBS: ami-7c15c111
-
-Conditions:
-  ConfigureRoute53: !Equals [ !Ref ConfigureDns, 'true' ]
 
 Resources:
   # CloudWatch
@@ -202,18 +193,6 @@ Resources:
         - Key: DeleteAfter
           Value: !Ref DeleteAfter
 
-  RecordSet:
-    Condition: ConfigureRoute53
-    Type: AWS::Route53::RecordSet
-    DependsOn: EC2Instance
-    Properties:
-      Name: !Join [ "", [ !Ref RecordName, "." ] ]
-      HostedZoneName: !Join [ "", [ !Ref HostedZoneName, "." ] ]
-      ResourceRecords:
-        - !GetAtt EC2Instance.PrivateIp
-      Type: A
-      TTL: 300
-
   # EC2 Instance
   EC2Instance:
     Type: AWS::EC2::Instance
@@ -261,6 +240,8 @@ Resources:
             - install_packages
             - config_wordpress
             - start_services
+            - dns_update_script
+            - update_dns
             - warm_ebs
         config_cfn:
           files:
@@ -339,6 +320,39 @@ Resources:
               command: "chkconfig nginx on"
             04_onboot_nginx:
               command: "chkconfig php-fpm-7.0 on"
+        dns_update_script:
+          files:
+            "/usr/sbin/update-dns":
+              content: !Sub |
+                #!/bin/bash
+
+                cat <<EOF > /tmp/route53-upsert.json
+                {
+                  "Comment": "string",
+                  "Changes": [
+                    {
+                      "Action": "UPSERT",
+                      "ResourceRecordSet": {
+                        "Name": "${RecordName}",
+                        "Type": "A",
+                        "TTL": 60,
+                        "ResourceRecords": [
+                          {
+                            "Value": "$(curl http://169.254.169.254/latest/meta-data/local-ipv4/)"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+                EOF
+
+                aws route53 change-resource-record-sets --hosted-zone-id "${HostedZoneId}" --change-batch "file:///tmp/route53-upsert.json"
+              mode: 000755
+        update_dns:
+          commands:
+            01_run_script:
+              command: "/usr/sbin/update-dns"
         warm_ebs:
           commands:
             01_warm_ebs:
@@ -385,6 +399,14 @@ Outputs:
     Description: IAM Instance Profile Role Created.
     Value: !Ref IamRole
 
+  # DNS
+  RecordName:
+    Description: Record Name.
+    Value: !Ref RecordName
+  HostedZoneId:
+    Description: Hosted Zone ID.
+    Value: !Ref HostedZoneId
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -418,9 +440,8 @@ Metadata:
       - Label:
           default: DNS
         Parameters:
-          - ConfigureDns
-          - HostedZoneName
           - RecordName
+          - HostedZoneId
 
     ParameterLabels:
       # Ownership
@@ -448,3 +469,9 @@ Metadata:
         default: EC2 Key Pair Name
       InstanceType:
         default: Instance Type
+
+      # DNS
+      RecordName:
+        default: Record Name
+      HostedZoneId:
+        default: Hosted Zone ID

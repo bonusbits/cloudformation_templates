@@ -5,14 +5,14 @@
   },
   {
     "ParameterKey": "DeleteAfter",
-    "ParameterValue": "Never"
+    "ParameterValue": "00/00/201x"
   },
   {
     "ParameterKey": "VPC",
     "ParameterValue": "vpc-00000000"
   },
   {
-    "ParameterKey": "PublicSubnetId",
+    "ParameterKey": "SubnetId",
     "ParameterValue": "subnet-00000000"
   },
   {
@@ -30,6 +30,14 @@
   {
     "ParameterKey": "EfsSecurityGroup",
     "ParameterValue": "sg-0000000"
+  },
+  {
+    "ParameterKey": "HostedZoneId",
+    "ParameterValue": "Z1234567890"
+  },
+  {
+    "ParameterKey": "RecordName",
+    "ParameterValue": "www.example.com"
   },
   {
     "ParameterKey": "KeyPairName",
