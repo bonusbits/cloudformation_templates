@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Single EC2 Running Wordpress on Nginx, RDS Backed, Behind LB by Levon Becker v20170123-1730
+Description: Single EC2 Running Wordpress on Nginx, RDS Backed, Behind LB by Levon Becker v20170124-0030
 Parameters:
   # Ownership
   Owner:
@@ -323,6 +323,7 @@ Resources:
         dns_update_script:
           files:
             "/usr/sbin/update-dns":
+              mode: "000755"
               content: !Sub |
                 #!/bin/bash
 
@@ -348,7 +349,6 @@ Resources:
                 EOF
 
                 aws route53 change-resource-record-sets --hosted-zone-id "${HostedZoneId}" --change-batch "file:///tmp/route53-upsert.json"
-              mode: 000755
         update_dns:
           commands:
             01_run_script:
