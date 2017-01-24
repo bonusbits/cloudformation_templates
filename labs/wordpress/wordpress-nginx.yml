@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Single EC2 Running Wordpress on Nginx, RDS Backed, Behind LB by Levon Becker v20170124-0030
+Description: Single EC2 Running Wordpress on Nginx, RDS Backed, Behind LB by Levon Becker v20170124-1600
 Parameters:
   # Ownership
   Owner:
@@ -49,6 +49,20 @@ Parameters:
     - c3.medium
     - c4.medium
     Default: t2.small
+
+  # Database
+  DbHost:
+    Type: String
+  DbName:
+    Type: String
+  DbUser:
+    Type: String
+  DbPassword:
+    Type: String
+    NoEcho: 'true'
+    MinLength: '8'
+    AllowedPattern: "[a-zA-Z0-9!?]*"
+    ConstraintDescription: Must only contain upper and lowercase letters, numbers and contain a minimum of 8 characters
 
 Mappings:
   RegionMap:
@@ -239,6 +253,7 @@ Resources:
             - config_cfn
             - install_packages
             - config_wordpress
+            - config_php_fpm
             - start_services
             - dns_update_script
             - update_dns
@@ -290,26 +305,122 @@ Resources:
               content: !Sub |
                 server {
                         listen 80;
-                        server_name www.example.com;
+                        server_name ${RecordName};
                         root   /usr/share/nginx/html/wordpress;
-                        index index.php index.html;
+                        index index.php index.html index.htm;
+                        #access_log /var/log/nginx/wordpress_access.log;
+                        #error_log /var/log/nginx/wordpress_error.log;
+
                         location / {
-                                     try_files $uri $uri/ @handler;
-                                    }
+                            if ($http_x_forwarded_proto != 'https') {
+                                    rewrite ^ https://$host$request_uri? permanent;
+                            }
+                            try_files $uri $uri/ @handler;
+                        }
+
                         location @handler {
-                                fastcgi_pass 127.0.0.1:9000;
-                                fastcgi_param SCRIPT_FILENAME /usr/share/nginx/html/wordpress/index.php;
-                                include /etc/nginx/fastcgi_params;
-                                fastcgi_param SCRIPT_NAME /index.php;
-                                          }
+                            fastcgi_pass 127.0.0.1:9000;
+                            fastcgi_param SCRIPT_FILENAME /usr/share/nginx/html/wordpress/index.php;
+                            include /etc/nginx/fastcgi_params;
+                            fastcgi_param SCRIPT_NAME /index.php;
+                        }
+
                         location ~ .php$ {
-                                try_files $uri @handler;
-                                fastcgi_pass    127.0.0.1:9000;
-                                fastcgi_index   index.php;
-                                fastcgi_param SCRIPT_FILENAME /usr/share/nginx/html/wordpress$fastcgi_script_name;
-                                include fastcgi_params;
-                                        }
+                            try_files $uri @handler;
+                            fastcgi_pass    127.0.0.1:9000;
+                            fastcgi_index   index.php;
+                            fastcgi_param SCRIPT_FILENAME /usr/share/nginx/html/wordpress$fastcgi_script_name;
+                            include fastcgi_params;
+                        }
+
+                        location = /favicon.ico {
+                            log_not_found off;
+                            access_log off;
+                         }
+
+                        location = /robots.txt {
+                            allow all;
+                            log_not_found off;
+                            access_log off;
+                        }
+
+                        location ~ /\. {
+                            deny all;
+                        }
+
+                        location ~* /(?:uploads|files)/.*\.php$ {
+                            deny all;
+                        }
                 }
+            "/usr/share/nginx/html/wordpress/wp-config.php":
+              mode: "000444"
+              content: !Sub |
+                <?php
+
+                // Override Site URL Links So can Change if Lose Access
+                define('WP_HOME','https://${RecordName}');
+                define('WP_SITEURL','https://${RecordName}');
+
+                // Use X-Forwarded-For HTTP Header to Get Visitor's Real IP Address
+                if ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+                    $http_x_headers = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR'] );
+                    $_SERVER['REMOTE_ADDR'] = $http_x_headers[0];
+                };
+
+                // Important for HTTPS with Reverse Proxy (WAF) !!!!
+                if ($_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+                    $_SERVER['HTTPS']='on';
+                    define('FORCE_SSL_ADMIN', true);
+                };
+
+                //** MySQL settings **//
+
+                //define('WP_CACHE', true); //Added by WP-Cache Manager
+                //define( 'WPCACHEHOME', '/usr/share/nginx/html/fitnessjerk/wordpress/wp-content/plugins/wp-super-cache/' ); //Added by WP-Cache Manager
+                define('DB_NAME', '${DbName}');
+                define('DB_USER', '${DbUser}');
+                define('DB_PASSWORD', '${DbPassword}');
+                define('DB_HOST', '${DbHost}');
+                define('DB_CHARSET', 'utf8');
+                define('DB_COLLATE', '');
+
+                // Authentication Unique Keys and Salts.
+                // !! GENERATE NEW KEYS HERE https://api.wordpress.org/secret-key/1.1/salt/ !!
+                // * You can change these at any point in time to invalidate all existing cookies. This will force all users to have to log in again.
+                define('AUTH_KEY',         '*Hr_p^*t]Udv,#h5Gkr8lmH305x|]zY|8FPq@W;o1+F3:1$il2riUD]xDa<5!-Dm');
+                define('SECURE_AUTH_KEY',  'pPR%Ko>mcxArjx|~R4>(d,m|j8CHbC=[H,?H-u}+AUe-r+z|yN5RCX4u#wxv~-3w');
+                define('LOGGED_IN_KEY',    '0,4qFm(U 1z$KgvO7O3Jw`WFQ^|9S,ncWU~}**CcLEp.NKS$-X>8t~Qs}^k &Xw}');
+                define('NONCE_KEY',        'K{Jqq;1Ht|Dvb8h:8VU+0c~SX:>6{tov>;|5r6_Ion HnC*Z{[(DF2~Cj8oNaRS-');
+                define('AUTH_SALT',        'X,!UHJ|*T-Q|ETI18<E^g,iwj*DR~T4tPaycs8g0SpKK/n!a=}=Qm<GT-U!;xvpY');
+                define('SECURE_AUTH_SALT', 'Q5AyCu^VXmSF:J$RkjLdXR7a2Wzue_,1u=c8e[~>y#BH;5WLvdt|tZIhd@SWJZG&');
+                define('LOGGED_IN_SALT',   'e-l|RXjB03R5n|S-;C4AV;jjrUA>B%| (g0E+-6{hei%D:OiARo+T@Pa=Rv}V+R8');
+                define('NONCE_SALT',       '<evTKny<laV}0i%RJ2`OL;FqUb&?([0rciK|r1>,,-<!R-Ex&vGNVlV_DXjJpx^Q');
+
+                $table_prefix  = 'wp_';
+
+                define('WP_DEBUG', false);
+
+                // Absolute path to the WordPress directory.
+                if ( !defined('ABSPATH') )
+                    define('ABSPATH', dirname(__FILE__) . '/');
+
+                define('WP_MEMORY_LIMIT', '128M');
+
+                // Sets up WordPress vars and included files.
+                require_once(ABSPATH . 'wp-settings.php');
+
+                // Disable Automatic Updating
+                define('WP_AUTO_UPDATE_CORE', false);
+                add_filter( 'auto_update_plugin', '__return_false' );
+                add_filter( 'auto_update_theme', '__return_false' );
+
+                ?>
+        config_php_fpm:
+          commands:
+            01_replace_apache_with_nginx_user:
+              command: "sed -i 's/apache/nginx/g' /etc/php-fpm-7.0.d/www.conf"
+            02_set_ownership_logs_dir:
+              command: "chown -R nginx:nginx /var/log/php-fpm"
         start_services:
           commands:
             01_start_php_fpm:
@@ -382,8 +493,10 @@ Outputs:
     Value: !Ref RdsSecurityGroup
   EfsSecurityGroup:
     Value: !Ref EfsSecurityGroup
-  WebURL:
+  InstanceURL:
     Value: !Join [ "", [ "http://", !GetAtt EC2Instance.PrivateDnsName ] ]
+  DnsURL:
+    Value: !Join [ "", [ "http://", !Ref RecordName ] ]
 
   # Instance Settings
   AMI:
@@ -443,6 +556,15 @@ Metadata:
           - RecordName
           - HostedZoneId
 
+      # Database
+      - Label:
+          default: Database Config
+        Parameters:
+          - DbHost
+          - DbName
+          - DbUser
+          - DbPassword
+
     ParameterLabels:
       # Ownership
       Owner:
@@ -475,3 +597,13 @@ Metadata:
         default: Record Name
       HostedZoneId:
         default: Hosted Zone ID
+
+      # Database
+      DbHost:
+        default: Database Host
+      DbName:
+        default: Database Name
+      DbUser:
+        default: Database User
+      DbPassword:
+        default: Database Password
