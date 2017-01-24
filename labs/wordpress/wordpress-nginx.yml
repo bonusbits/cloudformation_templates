@@ -1,0 +1,413 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Single EC2 Running Wordpress on Nginx, RDS Backed, Behind LB by Levon Becker v20170123-1430
+Parameters:
+  # Ownership
+  Owner:
+    Type: String
+    Default: FirstName LastName
+  DeleteAfter:
+    Type: String
+    Default: 00/00/201x
+
+  # Network
+  VPC:
+    Type: AWS::EC2::VPC::Id
+  PublicSubnetId:
+    Description: Public Subnet ID
+    Type: AWS::EC2::Subnet::Id
+  InternalAccessSecurityGroup:
+    Type: AWS::EC2::SecurityGroup::Id
+  RemoteSecurityGroup:
+    Type: AWS::EC2::SecurityGroup::Id
+  RdsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup::Id
+  EfsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup::Id
+
+  # Instance
+  KeyPairName:
+    Type: AWS::EC2::KeyPair::KeyName
+  InstanceType:
+    Type: String
+    AllowedValues:
+    - t2.nano
+    - t2.micro
+    - t2.small
+    - t2.medium
+    - m3.medium
+    - m4.large
+    - c3.medium
+    - c4.medium
+    Default: t2.small
+
+Mappings:
+  RegionMap:
+    # Amazon Linux AMI 2016.09.0 was released on 2016-09-27
+    us-east-1:
+      InstanceStore: ami-de3860c9
+      EBS: ami-b73b63a0
+    us-west-2:
+      InstanceStore: ami-44c36524
+      EBS: ami-5ec1673e
+    us-west-1:
+      InstanceStore: ami-34e9a254
+      EBS: ami-23e8a343
+    eu-west-1:
+      InstanceStore: ami-d998d3aa
+      EBS: ami-9398d3e0
+    eu-central-1:
+      InstanceStore: ami-0f639b60
+      EBS: ami-f9619996
+    ap-southeast-1:
+      InstanceStore: ami-7a54f519
+      EBS: ami-b953f2da
+    ap-northeast-1:
+      InstanceStore: ami-0a12b16b
+      EBS: ami-0c11b26d
+    ap-northeast-2:
+      InstanceStore: ami-ba35e1d4
+      EBS: ami-983ce8f6
+    ap-southeast-2:
+      InstanceStore: ami-41754922
+      EBS: ami-db704cb8
+    sa-east-1:
+      InstanceStore: ami-59bd2135
+      EBS: ami-97831ffb
+    us-gov-west-1:
+      InstanceStore: ami-e0b10981
+      EBS: ami-7cb1091d
+    cn-north-1:
+      InstanceStore: ami-81eb3fec
+      EBS: ami-7c15c111
+
+Resources:
+  # CloudWatch
+  CloudWatchLogsGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Ref "AWS::StackName"
+      RetentionInDays: '30'
+
+  # IAM
+  IamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref AWS::StackName
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/ReadOnlyAccess
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+
+  IamPolicies:
+    Type: AWS::IAM::Policy
+    DependsOn: IamRole
+    Properties:
+      PolicyName: !Join [ '', [ !Ref "AWS::StackName", -instance-policy ] ]
+      Roles: [!Ref IamRole]
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        # Allow Full S3 Access
+        - Effect: Allow
+          Action:
+          - s3:*
+          Resource: "*"
+        # Allow Read/Write Route53 for Userdata Script DNS A Record Set
+        - Effect: Allow
+          Action:
+          - route53:ChangeResourceRecordSets
+          - route53:Get*
+          - route53:List*
+          Resource: "*"
+        # Allow Write CloudWatch Logs
+        - Effect: Allow
+          Action:
+          - cloudwatch:PutMetricData
+          Resource: "*"
+        - Effect: Allow
+          Action:
+          - logs:PutLogEvents
+          - logs:CreateLogStream
+          - logs:DescribeLogStreams
+          - logs:CreateLogGroup
+          Resource:
+            Fn::Join:
+            - ''
+            - - 'arn:aws:logs:'
+              - !Ref AWS::Region
+              - ":"
+              - !Ref AWS::AccountId
+              - ":log-group:"
+              - !Ref CloudWatchLogsGroup
+              - ":log-stream:*"
+
+  IamInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    DependsOn: IamRole
+    Properties:
+      Path: "/"
+      Roles: [!Ref IamRole]
+
+  # Security Groups
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow Web Traffic to Instance
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+      - IpProtocol: "-1"
+        FromPort: "-1"
+        ToPort: "-1"
+        CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Ref "AWS::StackName"
+        - Key: Owner
+          Value: !Ref Owner
+        - Key: DeleteAfter
+          Value: !Ref DeleteAfter
+
+  # EC2 Instance
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    DependsOn:
+      - SecurityGroup
+      - IamInstanceProfile
+    Properties:
+      IamInstanceProfile: !Ref IamInstanceProfile
+      AssociatePublicIpAddress: false
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyPairName
+      SubnetId: !Ref PublicSubnetId
+      SecurityGroupIds:
+        - !Ref SecurityGroup
+        - !Ref InternalAccessSecurityGroup
+        - !Ref RemoteSecurityGroup
+        - !Ref RdsSecurityGroup
+        - !Ref EfsSecurityGroup
+      ImageId: !FindInMap [ RegionMap, !Ref "AWS::Region", EBS ]
+      InstanceMonitoring: false
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            DeleteOnTermination: true
+            VolumeType: gp2
+            VolumeSize: 8
+      Tags:
+        - Key: Name
+          Value: !Ref "AWS::StackName"
+        - Key: Owner
+          Value: !Ref Owner
+        - Key: DeleteAfter
+          Value: !Ref DeleteAfter
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          yum update -y
+          yum install -y aws-cfn-bootstrap cloud-init aws-cli
+          /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource LaunchConfiguration --region ${AWS::Region} --configsets ec2_setup
+          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource AutoScalingGroup --region ${AWS::Region}
+
+    Metadata:
+      AWS::CloudFormation::Init:
+        configSets:
+          ec2_setup:
+            - config_cfn
+            - install_packages
+            - config_wordpress
+            - start_services
+            - warm_ebs
+        config_cfn:
+          files:
+            "/etc/cfn/cfn-hup.conf":
+              content: !Sub |
+                [main]
+                stack=${AWS::StackId}
+                region=${AWS::Region}
+              mode: '000400'
+              owner: root
+              group: root
+            "/etc/cfn/hooks.d/cfn-auto-reloader.conf":
+              content: !Sub |
+                [cfn-auto-reloader-hook]
+                triggers=post.update
+                path=Resources.LaunchConfiguration.Metadata.AWS::CloudFormation::Init
+                action=/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource LaunchConfiguration --region ${AWS::Region} --configsets ec2_setup
+                runas=root
+          services:
+            sysvinit:
+              cfn-hup:
+                enabled: true
+                ensureRunning: true
+                files:
+                  - /etc/cfn/cfn-hup.conf
+                  - /etc/cfn/hooks.d/cfn-auto-reloader.conf
+        install_packages:
+          commands:
+            01_install_nginx:
+              command: "yum install nginx mysql56 php70-fpm php70-mysqlnd php70-gd php70-mbstring php70-mcrypt"
+            02_download_wordpress:
+              cwd: /tmp/
+              command: "wget https://wordpress.org/latest.tar.gz"
+            03_extract_wordpress:
+              cwd: /tmp/
+              command: "tar -xvzf latest.tar.gz -C /usr/share/nginx/html/"
+            04_setup_wordpress:
+              cwd: /usr/share/nginx/html/
+              command: "chown -R nginx:nginx /usr/share/nginx/html/wordpress"
+            05_chmod_wordpress:
+              cwd: /usr/share/nginx/html/
+              command: "chown -R nginx:nginx /usr/share/nginx/html/wordpress"
+        config_wordpress:
+          files:
+            "/etc/nginx/conf.d/wordpress.conf":
+              content: !Sub |
+                server {
+                        listen 80;
+                        server_name www.example.com;
+                        root   /usr/share/nginx/html/wordpress;
+                        index index.php index.html;
+                        location / {
+                                     try_files $uri $uri/ @handler;
+                                    }
+                        location @handler {
+                                fastcgi_pass 127.0.0.1:9000;
+                                fastcgi_param SCRIPT_FILENAME /usr/share/nginx/html/wordpress/index.php;
+                                include /etc/nginx/fastcgi_params;
+                                fastcgi_param SCRIPT_NAME /index.php;
+                                          }
+                        location ~ .php$ {
+                                try_files $uri @handler;
+                                fastcgi_pass    127.0.0.1:9000;
+                                fastcgi_index   index.php;
+                                fastcgi_param SCRIPT_FILENAME /usr/share/nginx/html/wordpress$fastcgi_script_name;
+                                include fastcgi_params;
+                                        }
+                }
+        start_services:
+          commands:
+            01_start_php_fpm:
+              command: "service php-fpm-7.0 restart"
+            02_start_nginx:
+              command: "service nginx restart"
+            03_onboot_php_fpm:
+              command: "chkconfig nginx on"
+            04_onboot_nginx:
+              command: "chkconfig php-fpm-7.0 on"
+        warm_ebs:
+          commands:
+            01_warm_ebs:
+              command: "echo 'ACTION: Performing EBS Warming' && dd if=/dev/xvda of=/dev/xvda conv=notrunc bs=1M status=progress"
+
+Outputs:
+  # Ownership
+  Owner:
+    Description: Team or Individual that Owns this Formation.
+    Value: !Ref Owner
+  DeleteAfter:
+    Description: It is ok to delete the Formation after this date.
+    Value: !Ref DeleteAfter
+
+  # Network
+  VPC:
+    Value: !Ref VPC
+  PublicSubnetId:
+    Value: !Ref PublicSubnetId
+  SecurityGroup:
+    Value: !Ref SecurityGroup
+  InternalAccessSecurityGroup:
+    Value: !Ref InternalAccessSecurityGroup
+  RemoteSecurityGroup:
+    Value: !Ref RemoteSecurityGroup
+  RdsSecurityGroup:
+    Value: !Ref RdsSecurityGroup
+  EfsSecurityGroup:
+    Value: !Ref EfsSecurityGroup
+  WebURL:
+    Value: !Join [ "", [ "http://", !GetAtt EC2Instance.PublicDnsName ] ]
+
+  # Instance Settings
+  AMI:
+    Description: AMI Used.
+    Value: !FindInMap [ RegionMap, !Ref "AWS::Region", EBS ]
+  InstanceType:
+    Description: Instance Type Used.
+    Value: !Ref InstanceType
+  KeyPairName:
+    Description: Key Pair Name Used.
+    Value: !Ref KeyPairName
+  IAMRole:
+    Description: IAM Instance Profile Role Created.
+    Value: !Ref IamRole
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+     # Ownership
+      - Label:
+          default: Ownership
+        Parameters:
+          - Owner
+          - DeleteAfter
+
+      # Network
+      - Label:
+          default: Network
+        Parameters:
+          - VPC
+          - PublicSubnetId
+          - SecurityGroup
+          - InternalAccessSecurityGroup
+          - RemoteSecurityGroup
+          - RdsSecurityGroup
+          - EfsSecurityGroup
+
+      # Instance Settings
+      - Label:
+          default: Instance
+        Parameters:
+          - KeyPairName
+          - InstanceType
+    ParameterLabels:
+      # Ownership
+      Owner:
+        default: Team or Individual Owner
+      DeleteAfter:
+        default: Delete After Date
+
+      # Network
+      VPC:
+        default: VPC ID
+      PublicSubnetId:
+        default: Public Subnet ID
+      InternalAccessSecurityGroup:
+        default: Internal Access Security Group
+      RemoteSecurityGroup:
+        default: Remote Security Group
+      RdsSecurityGroup:
+        default: RDS Security Group
+      EfsSecurityGroup:
+        default: EFS Security Group
+
+      # Instance Settings
+      KeyPairName:
+        default: EC2 Key Pair Name
+      InstanceType:
+        default: Instance Type
