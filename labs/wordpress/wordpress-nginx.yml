@@ -24,6 +24,22 @@ Parameters:
   EfsSecurityGroup:
     Type: AWS::EC2::SecurityGroup::Id
 
+  # DNS
+  ConfigureDns:
+    Type: String
+    Default: 'true'
+    AllowedValues:
+      - 'true'
+      - 'false'
+  HostedZoneName:
+    Type: String
+    Description: Hosted Route53 Domain FQDN (example.com)
+    Default: example.com
+  RecordName:
+    Type: String
+    Description: DNS Record Name (www.example.com)
+    Default: www.example.com
+
   # Instance
   KeyPairName:
     Type: AWS::EC2::KeyPair::KeyName
@@ -79,6 +95,9 @@ Mappings:
     cn-north-1:
       InstanceStore: ami-81eb3fec
       EBS: ami-7c15c111
+
+Conditions:
+  ConfigureRoute53: !Equals [ !Ref ConfigureDns, 'true' ]
 
 Resources:
   # CloudWatch
@@ -183,6 +202,18 @@ Resources:
         - Key: DeleteAfter
           Value: !Ref DeleteAfter
 
+  RecordSet:
+    Condition: ConfigureRoute53
+    Type: AWS::Route53::RecordSet
+    DependsOn: EC2Instance
+    Properties:
+      Name: !Join [ "", [ !Ref RecordName, "." ] ]
+      HostedZoneName: !Join [ "", [ !Ref HostedZoneName, "." ] ]
+      ResourceRecords:
+        - !GetAtt EC2Instance.PrivateIp
+      Type: A
+      TTL: 300
+
   # EC2 Instance
   EC2Instance:
     Type: AWS::EC2::Instance
@@ -220,8 +251,7 @@ Resources:
           #!/bin/bash -xe
           yum update -y
           yum install -y aws-cfn-bootstrap cloud-init aws-cli
-          /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource LaunchConfiguration --region ${AWS::Region} --configsets ec2_setup
-          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource AutoScalingGroup --region ${AWS::Region}
+          /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource EC2Instance --region ${AWS::Region} --configsets ec2_setup
 
     Metadata:
       AWS::CloudFormation::Init:
@@ -260,7 +290,7 @@ Resources:
         install_packages:
           commands:
             01_install_nginx:
-              command: "yum install nginx mysql56 php70-fpm php70-mysqlnd php70-gd php70-mbstring php70-mcrypt"
+              command: "yum install -y nginx mysql56 php70-fpm php70-mysqlnd php70-gd php70-mbstring php70-mcrypt"
             02_download_wordpress:
               cwd: /tmp/
               command: "wget https://wordpress.org/latest.tar.gz"
@@ -339,7 +369,7 @@ Outputs:
   EfsSecurityGroup:
     Value: !Ref EfsSecurityGroup
   WebURL:
-    Value: !Join [ "", [ "http://", !GetAtt EC2Instance.PublicDnsName ] ]
+    Value: !Join [ "", [ "http://", !GetAtt EC2Instance.PrivateDnsName ] ]
 
   # Instance Settings
   AMI:
@@ -383,6 +413,15 @@ Metadata:
         Parameters:
           - KeyPairName
           - InstanceType
+
+      # DNS
+      - Label:
+          default: DNS
+        Parameters:
+          - ConfigureDns
+          - HostedZoneName
+          - RecordName
+
     ParameterLabels:
       # Ownership
       Owner:
