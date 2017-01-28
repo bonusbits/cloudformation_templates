@@ -1,0 +1,795 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: BonusBits Wiki ASG, ELBv2, Chef Zero, RDS Backed Stack v20161106-0100
+Parameters:
+  # Ownership
+  Owner:
+    Type: String
+    Default: FirstName LastName
+  Project:
+    Type: String
+    Default: BonusBits Wiki Web Stack Creation
+  DeleteAfter:
+    Type: String
+    Default: 00/00/201x
+  # Auto Scale Group
+  MinAutoScaleCount:
+    Type: Number
+    Default: 2
+  MaxAutoScaleCount:
+    Type: Number
+    Default: 4
+  AsgSnsTopicArn:
+    Type: String
+    Default: arn:aws:sns:us-west-2:000000000000:asg-alerts
+  # Instance Settings
+  AMI:
+    Type: String
+    Default: ami-5ec1673e
+  InstanceType:
+    Type: String
+    Default: t2.small
+    AllowedValues:
+      - t2.nano
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t2.large
+      - m3.medium
+      - m3.large
+  Ec2KeyPair:
+    Type: AWS::EC2::KeyPair::KeyName
+  InternalAccessSecurityGroup:
+    Type: AWS::EC2::SecurityGroup::Id
+  RemoteSecurityGroup:
+    Type: AWS::EC2::SecurityGroup::Id
+  RdsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup::Id
+  EfsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup::Id
+  # Network
+  VPC:
+    Type: AWS::EC2::VPC::Id
+  PublicSubnetList:
+    Type: CommaDelimitedList
+  PrivateSubnetList:
+    Type: CommaDelimitedList
+  # Load Balancer
+  ElbStickySessions:
+    Type: String
+    Default: 'true'
+    AllowedValues:
+      - 'true'
+      - 'false'
+  ElbSslCertArn:
+    Type: String
+    Default: arn:aws:iam::0000000000000:server-certificate/www.domain.com
+  CookieExpirationPeriod:
+    Type: Number
+    Default: 43200
+  SetupElbLogging:
+    Type: String
+    Default: 'false'
+    AllowedValues:
+      - 'true'
+      - 'false'
+  ElbLogBucket:
+    Type: String
+  ElbLogBucketPrefix:
+    Type: String
+  # EFS Mount
+  EfsMountPoint1:
+    Type: String
+    Default: /path/to/mount1
+  EfsMountPoint2:
+    Type: String
+    Default: /path/to/mount2
+  EfsFileSystemId1:
+    Type: String
+    Default: fs-00000000
+  EfsFileSystemId2:
+    Type: String
+    Default: fs-00000000
+  EfsMountOwner1:
+    Type: String
+    Default: ec2-user
+  EfsMountOwner2:
+    Type: String
+    Default: ec2-user
+  # Deployment
+  Environment:
+    Type: String
+    Default: 'dev'
+    AllowedValues:
+      - 'dev'
+      - 'prd'
+  ChefClientVersion:
+    Type: String
+    Default: 12.15.19-1
+  S3DeployBucketName:
+    Type: String
+    Default: bucket-name
+  CookbookName:
+    Type: String
+  CookbookVersion:
+    Type: String
+    Default: 0.1.0
+  ChefEnvironment:
+    Type: String
+  ChefRole:
+    Type: String
+  ChefDataBagSecret:
+    Type: String
+    NoEcho: true
+  WebContentVersion:
+    Type: String
+    Default: 1.0.1
+Conditions:
+  ConfigureStickiness: !Equals [ !Ref ElbStickySessions, 'true' ]
+  ConfigureElbLogging: !Equals [ !Ref SetupElbLogging, 'true' ]
+Resources:
+  IamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref AWS::StackName
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/ReadOnlyAccess
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+  IamPolicies:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Join [ '', [ !Ref "AWS::StackName", -instance-policy ] ]
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:*
+              - cloudwatch:*
+              - logs:*
+              - sns:*
+            Resource: "*"
+      Roles:
+       - !Ref IamRole
+  IamInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - !Ref IamRole
+  InternetToElbSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Web to ELB Access
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: "-1"
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Join [ "", [ !Ref "AWS::StackName", -internet-to-elb ] ]
+        - Key: Owner
+          Value: !Ref Owner
+        - Key: Project
+          Value: !Ref Project
+        - Key: DeleteAfter
+          Value: !Ref DeleteAfter
+  InstanceToElbSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ELB to Instance Access in VPC
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: "-1"
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Join [ "", [ !Ref "AWS::StackName", -elb-to-instance ] ]
+        - Key: Owner
+          Value: !Ref Owner
+        - Key: Project
+          Value: !Ref Project
+        - Key: DeleteAfter
+          Value: !Ref DeleteAfter
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    DependsOn:
+      - InstanceToElbSecurityGroup
+      - InternetToElbSecurityGroup
+    Properties:
+      Name: !Ref AWS::StackName
+      Scheme: internet-facing
+      Subnets: !Ref PublicSubnetList
+      SecurityGroups:
+        - !Ref InstanceToElbSecurityGroup
+        - !Ref InternetToElbSecurityGroup
+
+      LoadBalancerAttributes:
+        DestinationBucketName: !Ref ElbLoggingBucket
+        LogFilePrefix: !Ref ElbLogBucketPrefix
+      AccessLoggingPolicy:
+        Fn::If:
+        - ConfigureElbLogging
+        - S3BucketName: !Ref S3LoggingBucket
+          S3BucketPrefix: Logs
+          Enabled: 'true'
+          EmitInterval: '60'
+        - !Ref "AWS::NoValue"
+  LoadBalancerHttpListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    DependsOn:
+      - LoadBalancer
+      - LoadBalancerTargetGroup
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref LoadBalancerTargetGroup
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 80
+      Protocol: HTTP
+  LoadBalancerHttpsListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    DependsOn:
+      - LoadBalancer
+      - LoadBalancerTargetGroup
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref LoadBalancerTargetGroup
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 443
+      Protocol: HTTPS
+      Certificates:
+        - CertificateArn: !Ref ElbSslCertArn
+  LoadBalancerTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Ref AWS::StackName
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: /wiki/Main_Page
+      HealthyThresholdCount: 5
+      UnhealthyThresholdCount: 2
+      HealthCheckTimeoutSeconds: 5
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPort: 80
+      Port: 80
+      Protocol: HTTP
+      VpcId: !Ref VPC
+      TargetGroupAttributes:
+        - Key: stickiness.enabled
+          Value: true
+        - Key: stickiness.lb_cookie.duration_seconds
+          Value: !Ref CookieExpirationPeriod
+        - Key: stickiness.type
+          Value: lb_cookie
+        - Key: deregistration_delay.timeout_seconds
+          Value: 300
+      Tags:
+        - Key: Name
+          Value: !Ref AWS::StackName
+        - Key: Owner
+          Value: !Ref Owner
+        - Key: Project
+          Value: !Ref Project
+        - Key: DeleteAfter
+          Value: !Ref DeleteAfter
+  LaunchConfiguration:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    DependsOn:
+      - InstanceToElbSecurityGroup
+      - IamInstanceProfile
+    Properties:
+      AssociatePublicIpAddress: false
+      IamInstanceProfile: !Ref IamInstanceProfile
+      InstanceType: !Ref InstanceType
+      SecurityGroups:
+        - !Ref InstanceToElbSecurityGroup
+        - !Ref RdsSecurityGroup
+        - !Ref InternalAccessSecurityGroup
+        - !Ref RemoteSecurityGroup
+        - !Ref EfsSecurityGroup
+      ImageId: !Ref AMI
+      KeyName: !Ref Ec2KeyPair
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            DeleteOnTermination: true
+            VolumeType: gp2
+            VolumeSize: 8
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -xe
+            yum update -y
+            yum install -y aws-cli nfs-utils httpd24
+            # ! Begin ghetto workaround because can't use cfn init without internet access !
+            # Install Chef Client
+            rpm -Uvh https://s3-us-west-2.amazonaws.com/bonusbits-deploy/binaries/chef-${ChefClientVersion}.el6.x86_64.rpm
+            # Setup EFS Mounts
+            mkdir -p ${EfsMountPoint1}
+            mkdir -p ${EfsMountPoint2}
+            chown -R ${EfsMountOwner1}:${EfsMountOwner1} ${EfsMountPoint1}
+            chown -R ${EfsMountOwner2}:${EfsMountOwner2} ${EfsMountPoint2}
+            echo "efs-wiki-$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone).bonusbits-${Environment}-${AWS::Region}.com:/ ${EfsMountPoint1} nfs4 nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 0 0" >> /etc/fstab
+            echo "efs-fitnessjerk-$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone).bonusbits-${Environment}-${AWS::Region}.com:/ ${EfsMountPoint2} nfs4 nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 0 0" >> /etc/fstab
+            mount -a -t nfs4
+            # Chef Repo
+            mkdir -p /opt/chef-repo/data_bags/users
+            cd /opt/chef-repo
+            mkdir -p cookbooks checksums environments cache backup data_bags roles downloads
+            # Deploy Cookbooks
+            aws s3 cp s3://${S3DeployBucketName}/cookbooks/bonusbits_web_cookbooks-${CookbookVersion}.tgz /opt/chef-repo/downloads/ && tar -zxf /opt/chef-repo/downloads/bonusbits_web_cookbooks-${CookbookVersion}.tgz -C /opt/chef-repo
+            # Chef Client
+            echo "node_name 'bonusbits-web'" > /opt/chef-repo/client.rb
+            echo "checksum_path '/opt/chef-repo/checksums'" >> /opt/chef-repo/client.rb
+            echo "file_cache_path '/opt/chef-repo/cache'" >> /opt/chef-repo/client.rb
+            echo "file_backup_path '/opt/chef-repo/backup'" >> /opt/chef-repo/client.rb
+            echo "cookbook_path '/opt/chef-repo/cookbooks'" >> /opt/chef-repo/client.rb
+            echo "data_bag_path '/opt/chef-repo/data_bags'" >> /opt/chef-repo/client.rb
+            echo "environment_path '/opt/chef-repo/environments'" >> /opt/chef-repo/client.rb
+            echo "role_path '/opt/chef-repo/roles'" >> /opt/chef-repo/client.rb
+            echo "echef_server_url 'http://127.0.0.1:8889'" >> /opt/chef-repo/client.rb
+            echo "encrypted_data_bag_secret '/opt/chef-repo/data_bags/encrypted_data_bag_secret'" >> /opt/chef-repo/client.rb
+            # Chef Environment Dev
+            echo '{' > /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '  "name": "${ChefEnvironment}",' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '  "description": "Environment",' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '  "cookbook_versions": {},' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '  "json_class": "Chef::Environment",' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '  "chef_type": "environment",' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '  "default_attributes": {' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '  },' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '  "override_attributes": {' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '    "${CookbookName}": {' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '      "s3": {' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '        "deploy_bucket_name": "${S3DeployBucketName}"' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '      },' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '      "web_content": {' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '        "version": "${WebContentVersion}"' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '      }' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '      "efs": {' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '        "configure": true' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      },' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      "database": {' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '        "configure": true' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      },' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      "mediawiki": {' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '        "configure": true' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      },' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      "backups": {' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '        "configure": false' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      }' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '    }' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '  }' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            echo '}' >> /opt/chef-repo/environments/bonusbits_web_dev.json
+            # Chef Environment Prd
+            echo '{' > /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '  "name": "${ChefEnvironment}",' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '  "description": "Environment",' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '  "cookbook_versions": {},' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '  "json_class": "Chef::Environment",' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '  "chef_type": "environment",' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '  "default_attributes": {' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '  },' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '  "override_attributes": {' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '    "${CookbookName}": {' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      "s3": {' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '        "deploy_bucket_name": "${S3DeployBucketName}"' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      },' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      "web_content": {' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '        "version": "${WebContentVersion}"' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      },' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      "efs": {' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '        "configure": false' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      },' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      "database": {' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '        "configure": false' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      },' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      "mediawiki": {' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '        "configure": false' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      },' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      "backups": {' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '        "configure": true' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '      }' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '    }' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '  }' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            echo '}' >> /opt/chef-repo/environments/bonusbits_web_prd.json
+            # Chef Roles
+            echo '{' > /opt/chef-repo/roles/bonusbits_web.json
+            echo '  "name": "${ChefRole}",' >> /opt/chef-repo/roles/bonusbits_web.json
+            echo '  "description": "Role",' >> /opt/chef-repo/roles/bonusbits_web.json
+            echo '  "json_class": "Chef::Role",' >> /opt/chef-repo/roles/bonusbits_web.json
+            echo '  "default_attributes": {},' >> /opt/chef-repo/roles/bonusbits_web.json
+            echo '  "override_attributes": {' >> /opt/chef-repo/roles/bonusbits_web.json
+            echo '  },' >> /opt/chef-repo/roles/bonusbits_web.json
+            echo '  "chef_type": "role",' >> /opt/chef-repo/roles/bonusbits_web.json
+            echo '  "run_list": [' >> /opt/chef-repo/roles/bonusbits_web.json
+            echo '    "recipe[${CookbookName}]"' >> /opt/chef-repo/roles/bonusbits_web.json
+            echo '  ],' >> /opt/chef-repo/roles/bonusbits_web.json
+            echo '  "env_run_lists": {' >> /opt/chef-repo/roles/bonusbits_web.json
+            echo '  }' >> /opt/chef-repo/roles/bonusbits_web.json
+            echo '}' >> /opt/chef-repo/roles/bonusbits_web.json
+            # Data Bag Secret
+            echo ${ChefDataBagSecret} > /opt/chef-repo/data_bags/encrypted_data_bag_secret
+            # Run Chef
+            /opt/chef/bin/chef-client -z -o 'role[${ChefRole}]' --environment ${ChefEnvironment} --config /opt/chef-repo/client.rb --log_level info --force-formatter --chef-zero-port 8889
+            # Warm EBS
+            # echo 'ACTION: Performing EBS Warming' && dd if=/dev/xvda of=/dev/xvda conv=notrunc bs=1M status=progress
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    DependsOn:
+      - LaunchConfiguration
+      - LoadBalancer
+    Properties:
+      LaunchConfigurationName: !Ref LaunchConfiguration
+      MinSize: !Ref MinAutoScaleCount
+      MaxSize: !Ref MaxAutoScaleCount
+      DesiredCapacity: !Ref MinAutoScaleCount
+      HealthCheckType: EC2
+      TargetGroupARNs:
+        - !Ref LoadBalancerTargetGroup
+      MetricsCollection:
+        - Granularity: 1Minute
+          Metrics:
+            - GroupMinSize
+            - GroupMaxSize
+      NotificationConfigurations:
+        - TopicARN: !Ref AsgSnsTopicArn
+          NotificationTypes:
+            - autoscaling:EC2_INSTANCE_LAUNCH
+            - autoscaling:EC2_INSTANCE_LAUNCH_ERROR
+            - autoscaling:EC2_INSTANCE_TERMINATE
+            - autoscaling:EC2_INSTANCE_TERMINATE_ERROR
+      VPCZoneIdentifier: !Ref PrivateSubnetList
+      Tags:
+        - Key: Name
+          Value: !Ref AWS::StackName
+          PropagateAtLaunch: true
+        - Key: Owner
+          Value: !Ref Owner
+          PropagateAtLaunch: true
+        - Key: Project
+          Value: !Ref Project
+          PropagateAtLaunch: true
+        - Key: DeleteAfter
+          Value: !Ref DeleteAfter
+          PropagateAtLaunch: true
+  CPUAlarmHigh:
+    Type: AWS::CloudWatch::Alarm
+    DependsOn:
+      - AutoScalingGroup
+      - ScaleUpPolicy
+    Properties:
+      AlarmDescription: Scale-up if CPU > 60% for 10 minutes
+      MetricName: CPUUtilization
+      Namespace: AWS/EC2
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 60
+      AlarmActions:
+        - !Ref ScaleUpPolicy
+      Dimensions:
+        - Name: AutoScalingGroupName
+          Value: !Ref AutoScalingGroup
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+  CPUAlarmLow:
+    Type: AWS::CloudWatch::Alarm
+    DependsOn:
+      - AutoScalingGroup
+      - ScaleDownPolicy
+    Properties:
+      AlarmDescription: Scale-down if CPU < 30% for 10 minutes
+      MetricName: CPUUtilization
+      Namespace: AWS/EC2
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 30
+      AlarmActions:
+        - !Ref ScaleDownPolicy
+      Dimensions:
+        - Name: AutoScalingGroupName
+          Value: !Ref AutoScalingGroup
+      ComparisonOperator: LessThanOrEqualToThreshold
+  ScaleUpPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    DependsOn:
+      - AutoScalingGroup
+    Properties:
+      AdjustmentType: ChangeInCapacity
+      AutoScalingGroupName: !Ref AutoScalingGroup
+      Cooldown: 300
+      ScalingAdjustment: 1
+  ScaleDownPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    DependsOn:
+      - AutoScalingGroup
+    Properties:
+      AdjustmentType: ChangeInCapacity
+      AutoScalingGroupName:
+        !Ref AutoScalingGroup
+      Cooldown: 1800
+      ScalingAdjustment: -1
+Outputs:
+  # Ownership
+  Owner:
+    Description: Team or Individual that Owns this Formation.
+    Value: !Ref Owner
+  Project:
+    Description: The project name.
+    Value: !Ref Project
+  DeleteAfter:
+    Description: It is ok to delete the Formation after this date.
+    Value: !Ref DeleteAfter
+  # Auto Scale Group
+  MinAutoScaleCount:
+    Description: Minimum Instance Count.
+    Value: !Ref MinAutoScaleCount
+  MaxAutoScaleCount:
+    Description: Maximum Instance Count.
+    Value: !Ref MaxAutoScaleCount
+  AsgSnsTopicArn:
+    Description: ASG Alerts SNS Topic ARN Used.
+    Value: !Ref AsgSnsTopicArn
+  AutoScalingGroup:
+    Description: Auto Scaling Group.
+    Value: !Ref AutoScalingGroup
+  # Instance Settings
+  AMI:
+    Description: AMI Used.
+    Value: !Ref AMI
+  InstanceType:
+    Description: Instance Type Used.
+    Value: !Ref InstanceType
+  Ec2KeyPair:
+    Description: Key Pair Used.
+    Value: !Ref Ec2KeyPair
+  InternalAccessSecurityGroup:
+    Description: Instance to Instance Access Security Group Selected.
+    Value: !Ref InternalAccessSecurityGroup
+  RemoteSecurityGroup:
+    Description: Remote to Instance Access Security Group Selected.
+    Value: !Ref RemoteSecurityGroup
+  RdsSecurityGroup:
+    Description: RDS to Instance Access Security Group Selected.
+    Value: !Ref RdsSecurityGroup
+  EfsSecurityGroup:
+    Description: EFS to Instance Access Security Group Selected.
+    Value: !Ref EfsSecurityGroup
+  IAMRole:
+    Description: IAM Instance Profile Role Created.
+    Value: !Ref IamRole
+  # Network
+  VPC:
+    Description: VPC Used.
+    Value: !Ref VPC
+  PublicSubnets:
+    Description: Public Subnets ELB Deployed to.
+    Value: !Join [ ',' !Ref PublicSubnetList ]
+  PrivateSubnets:
+    Description: Private Subnets Webapp ASG Deployed to.
+    Value: !Join [ ',' !Ref PrivateSubnetList ]
+  # Load Balancer
+  ElbStickySessions:
+    Description: Enable ELB Stickiness Option.
+    Value: !Ref ElbStickySessions
+  ElbSslCertArn:
+    Description: ELB SSL Cert ARN
+    Value: !Ref ElbSslCertArn
+  CookieExpirationPeriod:
+    Condition: ConfigureStickiness
+    Description: Cookie Expireation Period for ELB Stickiness Option.
+    Value: !Ref CookieExpirationPeriod
+  SetupElbLogging:
+    Description: Configure ELB S3 Bucket Logging Option.
+    Value: !Ref SetupElbLogging
+  ElbFQDN:
+    Description: FQDN of ELB
+    Value: !GetAtt LoadBalancer.DNSName
+  LoadBalancer:
+    Description: Elastic Load Balancer.
+    Value: !Ref LoadBalancer
+  InternetToElbSecurityGroup:
+    Description: Internet To ELB Access Security Group.
+    Value: !Ref InternetToElbSecurityGroup
+  InstanceToElbSecurityGroup:
+    Description: Instance To ELB Access Security Group.
+    Value: !Ref InstanceToElbSecurityGroup
+  S3LoggingBucket:
+    Condition: ConfigureElbLogging
+    Description: Logging S3 Bucket.
+    Value: !Ref S3LoggingBucket
+  # EFS
+  EfsMountPoint1:
+    Description: EFS Mount Point 1
+    Value: !Ref EfsMountPoint1
+  EfsMountPoint2:
+    Description: EFS Mount Point 2
+    Value: !Ref EfsMountPoint2
+  EfsFileSystemId1:
+    Description: EFS Mount Point 1
+    Value: !Ref EfsFileSystemId1
+  EfsFileSystemId2:
+    Description: EFS Mount Point 2
+    Value: !Ref EfsFileSystemId2
+  EfsMountOwner1:
+    Description: EFS Mount Owner for FS 1
+    Value: !Ref EfsMountOwner1
+  EfsMountOwner2:
+    Description: EFS Mount Owner for FS 2
+    Value: !Ref EfsMountOwner2
+  # Deployment
+  ChefClientVersion:
+    Description: Chef Client Version
+    Value: !Ref ChefClientVersion
+  S3DeployBucketName:
+    Description: S3 Deployment Bucket Name
+    Value: !Ref S3DeployBucketName
+  CookbookVersion:
+    Description: CookbookVersion Version
+    Value: !Ref CookbookVersion
+  ChefEnvironment:
+    Description: Chef Environment
+    Value: !Ref ChefEnvironment
+  ChefRole:
+    Description: Chef Role
+    Value: !Ref ChefRole
+  WebContentVersion:
+    Description: Web Content Version
+    Value: !Ref WebContentVersion
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Ownership
+        Parameters:
+          - Owner
+          - Project
+          - DeleteAfter
+      - Label:
+          default: Auto Scale Group
+        Parameters:
+          - MinAutoScaleCount
+          - MaxAutoScaleCount
+          - AsgSnsTopicArn
+      - Label:
+          default: Instance Settings
+        Parameters:
+          - AMI
+          - InstanceType
+          - Ec2KeyPair
+          - InternalAccessSecurityGroup
+          - RemoteSecurityGroup
+          - RdsSecurityGroup
+          - EfsSecurityGroup
+      - Label:
+          default: Network
+        Parameters:
+          - VPC
+          - PublicSubnetList
+          - PrivateSubnetList
+      - Label:
+          default: Load Balancer
+        Parameters:
+          - ElbStickySessions
+          - ElbSslCertArn
+          - CookieExpirationPeriod
+          - SetupElbLogging
+      - Label:
+          default: EFS
+        Parameters:
+          - EfsMountPoint1
+          - EfsMountPoint2
+          - EfsFileSystemId1
+          - EfsFileSystemId2
+          - EfsMountOwner1
+          - EfsMountOwner2
+      - Label:
+          default: Deployment
+        Parameters:
+          - ChefClientVersion
+          - S3DeployBucketName
+          - CookbookName
+          - CookbookVersion
+          - ChefEnvironment
+          - ChefRole
+          - ChefDataBagSecret
+          - WebContentVersion
+    ParameterLabels:
+      # Ownership
+      Owner:
+        default: Team or Individual Owner
+      DeleteAfter:
+        default: Delete After Date
+      # Auto Scale Group
+      MinAutoScaleCount:
+        default: Minimum Count
+      MaxAutoScaleCount:
+        default: Maximum Count
+      AsgSnsTopicArn:
+        default: SNS Topic ARN
+      # Instance Settings
+      InstanceType:
+        default: Instance Type
+      Ec2KeyPair:
+        default: EC2 Keypair
+      InternalAccessSecurityGroup:
+        default: Instance-to-Instance SG
+      RemoteSecurityGroup:
+        default: Remote-to-Instance SG
+      RdsSecurityGroup:
+        default: RDS-to-Instance SG
+      EfsSecurityGroup:
+        default: EFS-to-Instance SG
+      IAMRole:
+        default: IAM Role
+      # Network
+      VPC:
+        default: VPC ID
+      PublicSubnetList:
+        default: Public Subnet List
+      PrivateSubnetList:
+        default: Private Subnet List
+      # Load Balancer
+      ElbStickySessions:
+        default: Stickiness
+      ElbSslCertArn:
+        default: SSL Cert ARN
+      CookieExpirationPeriod:
+        default: Cookie Expiration Period
+      SetupElbLogging:
+        default: Setup ELB Logging
+      AllowHttpToElbRuleNumber:
+        default: HTTP Internet to ELB
+      AllowHttpsToElbRuleNumber:
+        default: HTTPS Internet to ELB
+      # EFS
+      EfsMountPoint1:
+        default: EFS Mount Point 1
+      EfsMountPoint2:
+        default: EFS Mount Point 2
+      EfsFileSystemId1:
+        default: EFS FileMount Point 3
+      EfsFileSystemId1:
+        default: Maximum Count
+      AsgSnsTopicArn:
+        default: SNS Topic ARN
+      # Deployment
+      ChefClientVersion:
+        default: Chef Client Version
+      S3DeployBucketName:
+        default: S3 Deploy Bucket Name
+      CookbookVersion:
+        default: Cookbook Version
+      ChefEnvironment:
+        default: Chef Environment
+      ChefRole:
+        default: Chef Role
+      ChefDataBagSecret:
+        default: Chef Data Bag Secret
+      WebContentVersion:
+        default: Web Content Version
+
