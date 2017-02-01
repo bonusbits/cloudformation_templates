@@ -482,13 +482,13 @@ Resources:
               cwd: /var/www/html/mediawiki/skins
               command: "chown -R nginx:nginx Vector"
             003_desktop_logo:
-              cwd: /var/www/html/mediawiki/resources/assets
+              cwd: /var/www/html/mediawiki/images
               command: !Sub "aws s3 cp s3://${S3ContentPath}/logo17_128x128.png desktop_logo.png --sse"
             004_mobile_logo:
-              cwd: /var/www/html/mediawiki/resources/assets
+              cwd: /var/www/html/mediawiki/images
               command: !Sub "aws s3 cp s3://${S3ContentPath}/logo_mobile17.png mobile_logo.png --sse"
             005_chmod_logos:
-              cwd: /var/www/html/mediawiki/resources/assets
+              cwd: /var/www/html/mediawiki/images
               command: "chown -R nginx:nginx *.png"
             006_favicon:
               cwd: /var/www/html/mediawiki
@@ -508,12 +508,12 @@ Resources:
             011_chmod_mobilefrontend:
               cwd: /var/www/html/mediawiki/extensions/MobileFrontend/includes/skins
               command: "chown nginx:nginx MinervaTemplate.php"
-            012_news_fix_underscores:
-              cwd: /var/www/html/mediawiki/extensions/News
-              command: !Sub "aws s3 cp s3://${S3ContentPath}/NewsRenderer.php . --sse"
-            013_chmod_news:
-              cwd: /var/www/html/mediawiki/extensions/News
-              command: "chown nginx:nginx NewsRenderer.php"
+            #012_news_fix_underscores:
+            #  cwd: /var/www/html/mediawiki/extensions/News
+            #  command: !Sub "aws s3 cp s3://${S3ContentPath}/NewsRenderer.php . --sse"
+            #013_chmod_news:
+            #  cwd: /var/www/html/mediawiki/extensions/News
+            #  command: "chown nginx:nginx NewsRenderer.php"
         config_mediawiki:
           files:
             "/etc/nginx/conf.d/mediawiki.conf":
@@ -588,9 +588,11 @@ Resources:
                     location ^~ /includes/ { internal; }
                     location ^~ /maintenance/ { internal; }
                     location ^~ /mw-config/ { internal; } #Uncomment after installation
-                    location ^~ /resources/ { internal; }
+                    location ^~ /resources/ { internal; } # Breaks Default Logo (mv logo to images)
                     location ^~ /serialized/ { internal; }
                     location ^~ /tests/ { internal; }
+                    location ^~ /skins/ { internal; }
+                    location ^~ /vendor/ { internal; }
 
                     #    Force potentially-malicious files in the /images directory to be served
                     #    with a text/plain mime type, to prevent them from being executed by
@@ -606,6 +608,7 @@ Resources:
                         try_files $uri /index.php;
                     }
 
+                    # Deny direct access to uploads directory
                     location ~* /(?:uploads|nfsuploads|files)/.*\.php$ {
                         deny all;
                     }
@@ -671,7 +674,6 @@ Resources:
                 ## (like /w/index.php/Page_title to /wiki/Page_title) please see:
                 ## https://www.mediawiki.org/wiki/Manual:Short_URL
                 $wgScriptPath = "";
-                $wgScriptExtension = ".php";
 
                 ## The protocol and server name to use in fully-qualified URLs
                 $wgServer = "${SiteURL}";
@@ -681,7 +683,7 @@ Resources:
 
                 ## The relative URL path to the logo.  Make sure you change this from the default,
                 ## or else you'll overwrite your logo when you upgrade!
-                $wgLogo = "$wgScriptPath/resources/assets/desktop_logo.png";
+                $wgLogo = "$wgScriptPath/images/desktop_logo.png";
 
                 ## UPO means: this is also a user preference option
 
@@ -906,7 +908,7 @@ Resources:
                 # http://www.mediawiki.org/wiki/Extension:MobileFrontend
                 require_once("$IP/extensions/MobileFrontend/MobileFrontend.php");
                 $wgMFAutodetectMobileView = true;
-                $wgMobileFrontendLogo = "$wgScriptPath/resources/assets/mobile_logo.png";
+                $wgMobileFrontendLogo = "$wgScriptPath/images/mobile_logo.png";
 
                 ##########################################
                 # END MOBILEFRONTEND
