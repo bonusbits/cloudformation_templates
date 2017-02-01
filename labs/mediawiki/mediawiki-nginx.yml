@@ -1417,7 +1417,7 @@ Outputs:
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
-     # Ownership
+      # Ownership
       - Label:
           default: Ownership
         Parameters:
