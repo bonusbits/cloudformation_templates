@@ -1,8 +1,8 @@
-# Wordpress on Nginx
+# Mediawiki on Nginx
 
 ## Purpose
 
-Create an EC2 Instance on a Private Subnet, install Nginx, Php-Fpm and Wordpress on Nginx.
+Create an EC2 Instance on a Private Subnet, install Nginx, Php-Fpm and Mediawiki on Nginx.
 Designed to use MySQL RDS backend, live behind a Load Balancer (Sophos, ELB, etc.), and 
 configured for SSL termination is handled by the Load Balancer.
 
@@ -11,6 +11,7 @@ From the web it's HTTPS (443) to LB. Then from the LB to the instance it is HTTP
 # Prerequisites
 * Create RDS Instance
 * Create empty Wordpress Database and User
+* Internet Access from EC2 Instance
 
 # Summary
 1. AWS Service APIs (i.e. CFN Init, ECS, SNS, SES)
@@ -20,7 +21,7 @@ From the web it's HTTPS (443) to LB. Then from the LB to the instance it is HTTP
 5. docs.google.com (Temp) for Sheets access (Wordpress Plugin)
 
 # Launcher
-[![Wordpress Lab](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/wordpress-nginx.yml)<br>
+[![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mediawiki-nginx.yml)<br>
 Click this button to open AWS CloudFormation web console to enter parameters and create the stack.
 
 
@@ -56,11 +57,11 @@ The [CloudFormation Template](https://github.com/bonusbits/cloudformation_templa
     1. Install Nginx
     2. Install Php-Fpm 7.0
     3. Install MySQL 5.6 Client
-    4. Download Latest Wordpress
-    5. Install Wordpress
-3. Configure Wordpress
+    4. Download Latest Mediawiki
+    5. Download Plugins
+3. Configure Mediawiki
     1. Create Nginx Virtual Host Config
-    2. Create Wordpress Config
+    2. Create Mediawiki Config
 4. Configure Php-Fpm
     1. Replace apache user with nginx user
     2. Set Ownership on Logs Directory
@@ -76,4 +77,4 @@ The [CloudFormation Template](https://github.com/bonusbits/cloudformation_templa
     1. Use dd to warm EBS Volume
 
 # Tips
-1. I put this behind a Sophos United Threat Management (UTM) v9 Instance. I have a Template [HERE](https://github.com/bonusbits/cloudformation_templates/blob/master/labs/sophos/sophos_utm9.yml)
+1. I put this behind a Sophos United Threat Management (UTM) v9 Instance. I have a Template [HERE](https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/utm9.yml)
