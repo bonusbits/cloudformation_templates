@@ -46,5 +46,29 @@
   {
     "ParameterKey": "InstanceType",
     "ParameterValue": "t2.micro"
+  },
+  {
+    "ParameterKey": "EfsMountPoint",
+    "ParameterValue": "/path/to/mount1"
+  },
+  {
+    "ParameterKey": "EfsFileSystemId",
+    "ParameterValue": "fs-00000000"
+  },
+  {
+    "ParameterKey": "DbHost",
+    "ParameterValue": "db.domain.com"
+  },
+  {
+    "ParameterKey": "DbName",
+    "ParameterValue": "mediawiki"
+  },
+  {
+    "ParameterKey": "DbUser",
+    "ParameterValue": "mediawiki"
+  },
+  {
+    "ParameterKey": "DbPassword",
+    "ParameterValue": "secret"
   }
 ]
