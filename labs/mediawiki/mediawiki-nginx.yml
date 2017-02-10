@@ -765,7 +765,7 @@ Resources:
                     #    in the wiki's deny alls.
                     location ^~ /bin/ { deny all; }
                     location ^~ /docs/ { deny all; }
-                    location ^~ /extensions/ { deny all; }
+                    #location ^~ /extensions/ { deny all; }
                     location ^~ /includes/ { deny all; }
                     location ^~ /maintenance/ { deny all; }
                     location ^~ /mw-config/ { deny all; } #Uncomment after installation
