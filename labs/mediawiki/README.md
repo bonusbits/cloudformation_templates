@@ -10,7 +10,7 @@ From the web it's HTTPS (443) to LB. Then from the LB to the instance it is HTTP
 
 # Prerequisites
 * Create RDS Instance
-* Create empty Wordpress Database and User
+* Create empty Mediawiki Database and User
 * Internet Access from EC2 Instance
 
 # Summary

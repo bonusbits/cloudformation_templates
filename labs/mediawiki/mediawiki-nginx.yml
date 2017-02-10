@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Single EC2 Running Mediawiki on Nginx, RDS Backed, Behind LB by Levon Becker v20170129-1900
+Description: Single EC2 Running Mediawiki on Nginx, RDS Backed, Behind LB by Levon Becker v20170210-1430
 Parameters:
   # Ownership
   Owner:
@@ -23,6 +23,10 @@ Parameters:
     Type: AWS::EC2::SecurityGroup::Id
   EfsSecurityGroup:
     Type: AWS::EC2::SecurityGroup::Id
+  LbLanIp:
+    Type: String
+    Description: Load Balancer LAN IP for Reverse Proxy
+    Default: "10.0.0.1"
 
 
   # DNS
@@ -42,9 +46,6 @@ Parameters:
   EfsFileSystemId:
     Type: String
     Default: fs-00000000
-  EfsMountOwner:
-    Type: String
-    Default: nginx
 
   # Instance
   KeyPairName:
@@ -88,10 +89,10 @@ Parameters:
   SiteURL:
     Type: String
     Default: https://www.example.com
-  LbDnsAlias:
+  VirtaulServerNames:
     Type: String
     Description: Load Balancer Alias
-    Default: www.example.com
+    Default: "example.com www.example.com"
   ContactEmail:
     Type: String
     Default: first.last@domain.com
@@ -116,6 +117,157 @@ Parameters:
   S3ContentPath:
     Type: String
     Default: bucket-name
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      # Ownership
+      - Label:
+          default: Ownership
+        Parameters:
+          - Owner
+          - DeleteAfter
+
+      # Network
+      - Label:
+          default: Network
+        Parameters:
+          - VPC
+          - SubnetId
+          - SecurityGroup
+          - InternalAccessSecurityGroup
+          - RemoteSecurityGroup
+          - RdsSecurityGroup
+          - EfsSecurityGroup
+          - LbLanIp
+
+      # Instance Settings
+      - Label:
+          default: Instance
+        Parameters:
+          - KeyPairName
+          - InstanceType
+
+      # DNS
+      - Label:
+          default: DNS
+        Parameters:
+          - RecordName
+          - HostedZoneId
+
+      # EFS
+      - Label:
+          default: EFS
+        Parameters:
+          - EfsMountPoint
+          - EfsFileSystemId
+
+      # Database
+      - Label:
+          default: Database Config
+        Parameters:
+          - DbHost
+          - DbName
+          - DbUser
+          - DbPassword
+
+      # Mediawiki
+      - Label:
+          default: Mediawiki
+        Parameters:
+          - MediawikiMajorRelease
+          - MediawikiMinorRelease
+          - SiteTitle
+          - SiteURL
+          - VirtaulServerNames
+          - ContactEmail
+          - SecretKey
+          - UpgradeKey
+          - GoogleAnalyticsAccount
+
+      # Deployment
+      - Label:
+          default: Deployment
+        Parameters:
+          - Environment
+          - S3ContentPath
+
+    ParameterLabels:
+      # Ownership
+      Owner:
+        default: Team or Individual Owner
+      DeleteAfter:
+        default: Delete After Date
+
+      # Network
+      VPC:
+        default: VPC ID
+      SubnetId:
+        default: Subnet ID
+      InternalAccessSecurityGroup:
+        default: Internal Access Security Group
+      RemoteSecurityGroup:
+        default: Remote Security Group
+      RdsSecurityGroup:
+        default: RDS Security Group
+      EfsSecurityGroup:
+        default: EFS Security Group
+      LbLanIp:
+        default: Load Balancer LAN IP
+
+      # Instance Settings
+      KeyPairName:
+        default: EC2 Key Pair Name
+      InstanceType:
+        default: Instance Type
+
+      # DNS
+      RecordName:
+        default: Record Name
+      HostedZoneId:
+        default: Hosted Zone ID
+
+      # EFS
+      EfsMountPoint:
+        default: EFS Mount Point
+      EfsFileSystemId:
+        default: EFS File System Id
+
+      # Database
+      DbHost:
+        default: Database Host
+      DbName:
+        default: Database Name
+      DbUser:
+        default: Database User
+      DbPassword:
+        default: Database Password
+
+      # MediaWiki
+      MediawikiMajorRelease:
+        default: Mediawiki Major Release
+      MediawikiMinorRelease:
+        default: Mediawiki Minor Release
+      SiteTitle:
+        default: Site Title
+      SiteURL:
+        default: Site URL
+      VirtaulServerNames:
+        default: Virtual Server Names
+      ContactEmail:
+        default: Contact Email
+      SecretKey:
+        default: Secret Key
+      UpgradeKey:
+        default: Upgrade Key
+      GoogleAnalyticsAccount:
+        default: Google Analytics Account
+
+      # Deployment
+      Environment:
+        default: Environment
+      S3ContentPath:
+        default: "S3 Deploy Bucket Name"
 
 Mappings:
   RegionMap:
@@ -309,6 +461,7 @@ Resources:
             - install_packages
             - install_mediawiki
             - setup_uploads_efs
+            - set_backlog_sockets
             - install_mediawiki_extensions
             - mediawiki_customizations
             - config_mediawiki
@@ -369,9 +522,23 @@ Resources:
             02_update_fstab:
               cwd: /var/www/html
               command: !Sub |
-                echo "efs-wiki-$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone).bonusbits-${Environment}-${AWS::Region}.com:/ ${EfsMountPoint} nfs4 nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 0 0" >> /etc/fstab
+                echo "${EfsFileSystemId}.efs.${AWS::Region}.amazonaws.com:/ ${EfsMountPoint} nfs4 nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 0 0" >> /etc/fstab
             03_mount_efs:
               command: "mount -a -t nfs4"
+        set_backlog_sockets:
+          commands:
+            01_set_somaxconn_in_memory:
+              cwd: /var/www/html
+              command: "sysctl -w net.core.somaxconn=1024"
+            02_set_somaxcoon_for_reboot:
+              cwd: /var/www/html
+              command: "echo 'net.core.somaxconn = 1024' >> /etc/sysctl.conf"
+            03_set_syncookies_in_memory:
+              cwd: /var/www/html
+              command: "sysctl -w net.ipv4.tcp_syncookies=4096"
+            04_set_syncookies_for_reboot:
+              cwd: /var/www/html
+              command: "echo 'net.ipv4.tcp_syncookies = 4096' >> /etc/sysctl.conf"
         install_mediawiki_extensions:
           commands:
             001_MobileFrontend:
@@ -455,6 +622,12 @@ Resources:
             030_WikiEditor:
               cwd: /var/www/html/mediawiki/extensions
               command: !Sub "git clone --branch REL${MediawikiMajorRelease}_${MediawikiMinorRelease} https://gerrit.wikimedia.org/r/p/mediawiki/extensions/WikiEditor.git"
+            030b_Scribunto:
+              cwd: /var/www/html/mediawiki/extensions
+              command: !Sub "git clone --branch REL${MediawikiMajorRelease}_${MediawikiMinorRelease} https://gerrit.wikimedia.org/r/p/mediawiki/extensions/Scribunto.git"
+            030c_AutoSitemap:
+              cwd: /var/www/html/mediawiki/extensions
+              command: !Sub "git clone https://github.com/bonusbits/AutoSitemap.git"
             031_mkdir_HideNamespace:
               cwd: /var/www/html/mediawiki/extensions
               command: "mkdir HideNamespace"
@@ -516,24 +689,29 @@ Resources:
             "/etc/nginx/conf.d/mediawiki.conf":
               content: !Sub |
                 server {
-                    listen 80;
-                    server_name ${LbDnsAlias};
-                    root   /var/www/html/mediawiki;
+                    listen 80 backlog=1024;
+                    set_real_ip_from ${LbLanIp};
+                    real_ip_header X-Forwarded-For;
+                    real_ip_recursive on;
+                    server_name ${VirtaulServerNames};
+                    root /var/www/html/mediawiki;
                     index index.php;
+                    client_max_body_size 24000M;
                     #access_log /var/log/nginx/mediawiki_access.log;
-                    #error_log /var/log/nginx/mediawiki_error.log;
+                    #error_log /var/log/nginx/debug.log debug;
 
                     location / {
+                        #   Recognize if HTTPS Terminate Prior to Nginx Getting Hands on it
                         if ($http_x_forwarded_proto != 'https') {
-                                rewrite ^ https://$host$request_uri? permanent;
+                            rewrite ^ https://$host$request_uri? permanent;
                         }
                         try_files $uri $uri/ @handler;
                         error_page 404 = @mediawiki;
                     }
 
-                    location @mediawiki {
-                      rewrite ^/wiki([^?]*)(?:\?(.*))? /index.php?title=$1&$2 last;
-                    }
+                    # location @mediawiki {
+                    #     rewrite ^/wiki([^?]*)(?:\?(.*))? /index.php?title=$1&$2 last;
+                    # }
 
                     location @handler {
                         fastcgi_pass 127.0.0.1:9000;
@@ -549,10 +727,13 @@ Resources:
                         fastcgi_param SCRIPT_FILENAME /var/www/html/mediawiki$fastcgi_script_name;
                         include fastcgi_params;
                     }
-                    #    Common deny, drop, or internal locations
 
                     #    Exclude all access from the cache directory
                     location ^~ /cache/ { deny all; }
+
+                    #    Prevent access to any files starting with a dot, like .htaccess
+                    #    or text editor temp files
+                    location ~ /\. { access_log off; log_not_found off; deny all; }
 
                     #    Prevent access to any files starting with a dot, like .htaccess
                     #    or text editor temp files
@@ -571,44 +752,44 @@ Resources:
                     #    to cut down on server load
                     location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
                         try_files $uri /index.php;
-                        expires max;
+                        expires 7d;
                         log_not_found off;
                     }
 
-                    #    Mark all of these directories as "internal", which means that they cannot
+                    # Exception for AutoSitemap sitemap.xml template
+                    location = /extensions/AutoSitemap/sitemap.xsl { allow all; }
+
+                    #    Mark all of these directories as "deny all", which means that they cannot
                     #    be explicitly accessed by clients. However, the web server can still use
                     #    and serve the files inside of them. This keeps people from poking around
-                    #    in the wiki's internals.
-                    location ^~ /bin/ { internal; }
-                    location ^~ /docs/ { internal; }
-                    location ^~ /extensions/ { internal; }
-                    location ^~ /includes/ { internal; }
-                    location ^~ /maintenance/ { internal; }
-                    location ^~ /mw-config/ { internal; } #Uncomment after installation
-                    location ^~ /resources/ { internal; } # Breaks Default Logo (mv logo to images)
-                    location ^~ /serialized/ { internal; }
-                    location ^~ /tests/ { internal; }
-                    location ^~ /skins/ { internal; }
-                    location ^~ /vendor/ { internal; }
+                    #    in the wiki's deny alls.
+                    location ^~ /bin/ { deny all; }
+                    location ^~ /docs/ { deny all; }
+                    location ^~ /extensions/ { deny all; }
+                    location ^~ /includes/ { deny all; }
+                    location ^~ /maintenance/ { deny all; }
+                    location ^~ /mw-config/ { deny all; } #Uncomment after installation
+                    #location ^~ /resources/ { deny all; }
+                    location ^~ /resources/lib/ { deny all; }
+                    location ^~ /resources/src/ { deny all; }
+                    location ^~ /resources/Resources.php { deny all; } # ResourcesOOUI.php  Resources.php
+                    location ^~ /resources/ResourcesOOUI.php { deny all; } # ResourcesOOUI.php  Resources.php
+                    location ^~ /serialized/ { deny all; }
+                    location ^~ /tests/ { deny all; }
+                    location ^~ /skins/ { deny all; }
+                    location ^~ /vendor/ { deny all; }
 
                     #    Force potentially-malicious files in the /images directory to be served
                     #    with a text/plain mime type, to prevent them from being executed by
                     #    the PHP handler
-                    location ~* ^/images/.*.(html|htm|shtml|php)$ {
-                        types { }
-                        default_type text/plain;
-                    }
+                    location ~* ^/images/.*.(html|htm|shtml|php)$ { types { } default_type text/plain; }
 
                     #    Redirect all requests for unknown URLs out of images and back to the
                     #    root index.php file
-                    location ^~ /images/ {
-                        try_files $uri /index.php;
-                    }
+                    location ^~ /images/ { try_files $uri /index.php; }
 
-                    # Deny direct access to uploads directory
-                    location ~* /(?:uploads|nfsuploads|files)/.*\.php$ {
-                        deny all;
-                    }
+                    #    Deny direct access to uploads directory
+                    location ~* /(?:uploads|nfsuploads|files)/.*\.php$ { deny all; }
                 }
             "/var/www/html/mediawiki/robots.txt":
               mode: "000644"
@@ -617,6 +798,9 @@ Resources:
               encoding: plain
               content: !Sub |
                 User-agent: *
+                Disallow: /wiki/File:*
+                Disallow: /wiki/Project:*
+                Disallow: /wiki/Image:*
                 Disallow: /wiki/Help:*
                 Disallow: /wiki/MediaWiki:*
                 Disallow: /wiki/Special:*
@@ -624,6 +808,7 @@ Resources:
                 Disallow: /wiki/Manual:*
                 Disallow: /wiki/User:*
                 Disallow: /wiki/List:*
+                Disallow: /wiki/Video:*
                 Disallow: /wiki/Category:*
                 Disallow: /index.php?*
                 Disallow: /images/*
@@ -638,8 +823,6 @@ Resources:
                 Disallow: /*.php
                 Disallow: /*.json
                 Disallow: /*.php5
-                Disallow: /wiki/Main_Page
-                #Allow: /wiki/HowTo:*
             "/var/www/html/mediawiki/LocalSettings.php":
               mode: "000444"
               owner: nginx
@@ -650,116 +833,70 @@ Resources:
 
                 # Protect against web entry
                 if ( !defined( 'MEDIAWIKI' ) ) {
-                	exit;
+                        exit;
                 }
 
-                ## Debug
+                ## Debugging
                 #$wgShowExceptionDetails = true;
                 #$wgShowSQLErrors = true;
                 #$wgDebugDumpSql = true;
                 #$wgShowDBErrorBacktrace = true;
+                #$wgDebugLogFile = "/var/log/mediawiki.log";
 
-                ## Uncomment this to disable output compression
+                ## Web Settings
                 # $wgDisableOutputCompression = true;
-
                 $wgSitename = "${SiteTitle}";
                 $wgMetaNamespace = "${SiteTitle}";
-
-                ## The URL base path to the directory containing the wiki;
-                ## defaults for all runtime URL paths are based off of this.
-                ## For more information on customizing the URLs
-                ## (like /w/index.php/Page_title to /wiki/Page_title) please see:
-                ## https://www.mediawiki.org/wiki/Manual:Short_URL
                 $wgScriptPath = "";
-
-                ## The protocol and server name to use in fully-qualified URLs
+                $wgArticlePath = "/wiki/$1";
+                $wgUsePathInfo = true;
+                $wgScriptExtension = ".php";
+                $wgFavicon = "$wgScriptPath/favicon.ico";
                 $wgServer = "${SiteURL}";
-
-                ## The relative URL path to the skins directory
                 $wgStylePath = "$wgScriptPath/skins";
-
-                ## The relative URL path to the logo.  Make sure you change this from the default,
-                ## or else you'll overwrite your logo when you upgrade!
                 $wgLogo = "$wgScriptPath/images/desktop_logo.png";
-
-                ## UPO means: this is also a user preference option
-
                 $wgEnableEmail = true;
                 $wgEnableUserEmail = true; # UPO
-
                 $wgEmergencyContact = "${ContactEmail}";
                 $wgPasswordSender = "${ContactEmail}";
-
                 $wgEnotifUserTalk = true; # UPO
                 $wgEnotifWatchlist = true; # UPO
                 $wgEmailAuthentication = true;
+                $wgExternalLinkTarget = '_blank';
+                $wgUniversalEditButton = true;
 
-                ## Database settings
+                ## Database Settings
                 $wgDBtype = "mysql";
                 $wgDBserver = "${DbHost}";
                 $wgDBname = "${DbName}";
                 $wgDBuser = "${DbUser}";
                 $wgDBpassword = "${DbPassword}";
-
-                # MySQL specific settings
                 $wgDBprefix = "";
-
-                # MySQL table options to use during installation or update
                 $wgDBTableOptions = "ENGINE=InnoDB, DEFAULT CHARSET=binary";
-
-                # Experimental charset support for MySQL 5.0.
                 $wgDBmysql5 = false;
 
-                ## Shared memory settings
+                ## Cache and Uploads
                 $wgMainCacheType = CACHE_ACCEL;
                 $wgMemCachedServers = array();
-
-                ## To enable image uploads, make sure the 'images' directory
-                ## is writable, then set this to true:
+                $wgCacheDirectory = "$IP/cache";
                 $wgEnableUploads = true;
                 $wgUseImageMagick = true;
                 $wgImageMagickConvertCommand = "/usr/bin/convert";
-
-                # InstantCommons allows wiki to use images from http://commons.wikimedia.org
                 $wgUseInstantCommons = true;
-
-                ## If you use ImageMagick (or any other shell command) on a
-                ## Linux server, this will need to be set to the name of an
-                ## available UTF-8 locale
                 $wgShellLocale = "en_US.utf8";
-
-                ## If you want to use image uploads under safe mode,
-                ## create the directories images/archive, images/thumb and
-                ## images/temp, and make them all writable. Then uncomment
-                ## this, if it's not already uncommented:
                 $wgHashedUploadDirectory = false;
 
-                ## Set $wgCacheDirectory to a writable directory on the web server
-                ## to make your wiki go slightly faster. The directory should not
-                ## be publically accessible from the web.
-                $wgCacheDirectory = "$IP/cache";
-
-                # Site language code, should be one of the list in ./languages/Names.php
+                ## Site Settings
                 $wgLanguageCode = "en";
-
                 $wgSecretKey = "${SecretKey}";
-
-                # Site upgrade key. Must be set to a string (default provided) to turn on the
-                # web installer while LocalSettings.php is in place
                 $wgUpgradeKey = "${UpgradeKey}";
-
-                ## For attaching licensing metadata to pages, and displaying an
-                ## appropriate copyright notice / icon. GNU Free Documentation
-                ## License and Creative Commons licenses are supported so far.
                 $wgRightsPage = ""; # Set to the title of a wiki page that describes your license/copyright
                 $wgRightsUrl = "http://www.gnu.org/copyleft/fdl.html";
                 $wgRightsText = "GNU Free Documentation License 1.3 or later";
                 $wgRightsIcon = "{$wgResourceBasePath}/resources/assets/licenses/gnu-fdl.png";
-
-                # Path to the GNU diff3 utility. Used for conflict resolution.
                 $wgDiff3 = "/usr/bin/diff3";
 
-                # The following permissions were set based on your choice in the installer
+                ## Permissions
                 $wgGroupPermissions['*']['createaccount'] = false;
                 $wgGroupPermissions['*']['read'] = true;
                 $wgGroupPermissions['*']['edit'] = false;
@@ -767,21 +904,11 @@ Resources:
                 $wgGroupPermissions['*']['createtalk'] = false;
                 $wgGroupPermissions['*']['writeapi'] = false;
 
-                ## Default skin: you can change the default skin. Use the internal symbolic
-                ## names, ie 'vector', 'monobook':
+                ## Skin
+                require_once "$IP/skins/Vector/Vector.php";
                 $wgDefaultSkin = "vector";
 
-                # Enabled skins.
-                # The following skins were automatically enabled:
-                #require_once "$IP/skins/CologneBlue/CologneBlue.php";
-                #require_once "$IP/skins/Modern/Modern.php";
-                #require_once "$IP/skins/MonoBook/MonoBook.php";
-                require_once "$IP/skins/Vector/Vector.php";
-
-
-                # Enabled Extensions. Most extensions are enabled by including the base extension file here
-                # but check specific extension documentation for more details
-                # The following extensions were automatically enabled:
+                ## Base Extensions
                 require_once "$IP/extensions/Cite/Cite.php";
                 require_once "$IP/extensions/ConfirmEdit/ConfirmEdit.php";
                 require_once "$IP/extensions/Gadgets/Gadgets.php";
@@ -799,40 +926,19 @@ Resources:
                 require_once "$IP/extensions/TitleBlacklist/TitleBlacklist.php";
                 require_once "$IP/extensions/WikiEditor/WikiEditor.php";
 
-
                 # End of automatically generated settings.
                 # Add more configuration options below.
 
                 ##########################################
-                # START GENERAL SETTINGS
+                # START: UNC Links
                 ##########################################
-
-                ## Favicon
-                # Custom Favicon Path
-                $wgFavicon = "$wgScriptPath/favicon.ico";
-
-                ## General Configuration Settings
-                # https://www.mediawiki.org/wiki/Manual:Configuration_settings
-                $wgUniversalEditButton = true;
-
-                ## Enable use of pretty URLs
-                $wgUsePathInfo = true;
-
-                ## External Link Target Setting
-                # http://www.mediawiki.org/wiki/Manual:Opening_external_links_in_a_new_window
-                # So external web links open in new page instead of self
-                $wgExternalLinkTarget = '_blank';
 
                 ## Enable UNC Links
                 # http://www.mediawiki.org/wiki/UNC_links
-                array_push($wgUrlProtocols, "file://");
-
-                ## Enable Short URL
-                # http://www.mediawiki.org/wiki/Manual:Short_URL
-                $wgArticlePath = "/wiki/$1";
+                #array_push($wgUrlProtocols, "file://");
 
                 ##########################################
-                # END GENERAL SETTINGS
+                # END: UNC Links
                 ##########################################
 
 
@@ -944,7 +1050,6 @@ Resources:
                 define( "NS_LIST_TALK", 513);
                 define( "NS_VIDEO", 516);
                 define( "NS_VIDEO_TALK", 517);
-
 
                 // Create Custom NameSpaces
                 $wgExtraNamespaces[NS_HOWTO] = "HowTo";
@@ -1173,7 +1278,7 @@ Resources:
                 ## AntiSpoof Extension
                 # https://www.mediawiki.org/wiki/Extension:AntiSpoof
                 require_once( "$IP/extensions/AntiSpoof/AntiSpoof.php" );
-                $wgSharedTables[] = 'spoofuser';
+                $wgSharedTables[] = "spoofuser";
 
                 ## SimpleAntiSpam Extension
                 # https://www.mediawiki.org/wiki/Extension:SimpleAntiSpam
@@ -1242,6 +1347,7 @@ Resources:
                 # END: Mantle
                 ##########################################
 
+
                 ##########################################
                 # START: Widgets
                 ##########################################
@@ -1254,9 +1360,66 @@ Resources:
                 # END: Widgets
                 ##########################################
 
-                #$wgDebugLogFile = "/tmp/wiki.log";
 
-                ?>
+                ##########################################
+                # START: AutoSitemap
+                ##########################################
+
+                # https://github.com/dolfinus/AutoSitemap
+                wfLoadExtension( 'AutoSitemap' );
+                $wgAutoSitemap["filename"] = "sitemap.xml";
+                $wgAutoSitemap["server"] = "https://www.bonusbits.com";
+                #$wgAutoSitemap["notify"] = [
+                #    'https://www.google.com/webmasters/sitemaps/ping?sitemap=https://www.bonusbits.com/sitemap.xml',
+                #    'https://www.bing.com/webmaster/ping.aspx?sitemap=https://www.bonusbits.com/sitemap.xml',
+                #];
+
+                $wgAutoSitemap["exclude_namespaces"] = [
+                    NS_TALK,
+                    NS_FILE,
+                    NS_FILE_TALK,
+                    NS_USER,
+                    NS_USER_TALK,
+                    NS_PROJECT,
+                    NS_PROJECT_TALK,
+                    NS_IMAGE,
+                    NS_IMAGE_TALK,
+                    NS_MEDIAWIKI,
+                    NS_MEDIAWIKI_TALK,
+                    NS_TEMPLATE,
+                    NS_TEMPLATE_TALK,
+                    NS_HELP,
+                    NS_HELP_TALK,
+                    NS_CATEGORY,
+                    NS_CATEGORY_TALK,
+                    NS_LIST,
+                    NS_LIST_TALK,
+                    NS_VIDEO,
+                    NS_VIDEO_TALK
+                ];
+
+                $wgAutoSitemap["exclude_pages"] = ['page title to exclude', 'other one'];
+                $wgAutoSitemap["freq"] = "daily";
+
+                ##########################################
+                # END: AutoSitemap
+                ##########################################
+
+
+                ##########################################
+                # START: Scribunto
+                ##########################################
+
+                # https://www.mediawiki.org/wiki/Extension:Scribunto
+                # For Modules + Templates
+                # Lua script support
+                require_once "$IP/extensions/Scribunto/Scribunto.php";
+                $wgScribuntoDefaultEngine = 'luastandalone';
+                $wgScribuntoUseGeSHi = true;
+
+                ##########################################
+                # END: Scribunto
+                ##########################################
         config_php_fpm:
           commands:
             01_replace_apache_with_nginx_user:
@@ -1412,154 +1575,3 @@ Outputs:
   HostedZoneId:
     Description: Hosted Zone ID.
     Value: !Ref HostedZoneId
-
-Metadata:
-  AWS::CloudFormation::Interface:
-    ParameterGroups:
-      # Ownership
-      - Label:
-          default: Ownership
-        Parameters:
-          - Owner
-          - DeleteAfter
-
-      # Network
-      - Label:
-          default: Network
-        Parameters:
-          - VPC
-          - SubnetId
-          - SecurityGroup
-          - InternalAccessSecurityGroup
-          - RemoteSecurityGroup
-          - RdsSecurityGroup
-          - EfsSecurityGroup
-
-      # Instance Settings
-      - Label:
-          default: Instance
-        Parameters:
-          - KeyPairName
-          - InstanceType
-
-      # DNS
-      - Label:
-          default: DNS
-        Parameters:
-          - RecordName
-          - HostedZoneId
-
-      # EFS
-      - Label:
-          default: EFS
-        Parameters:
-          - EfsMountPoint
-          - EfsFileSystemId
-          - EfsMountOwner
-
-      # Database
-      - Label:
-          default: Database Config
-        Parameters:
-          - DbHost
-          - DbName
-          - DbUser
-          - DbPassword
-
-      # Mediawiki
-      - Label:
-          default: Mediawiki
-        Parameters:
-          - MediawikiMajorRelease
-          - MediawikiMinorRelease
-          - SiteTitle
-          - SiteURL
-          - LbDnsAlias
-          - ContactEmail
-          - SecretKey
-          - UpgradeKey
-          - GoogleAnalyticsAccount
-
-      # Deployment
-      - Label:
-          default: Deployment
-        Parameters:
-          - Environment
-          - S3ContentPath
-
-    ParameterLabels:
-      # Ownership
-      Owner:
-        default: Team or Individual Owner
-      DeleteAfter:
-        default: Delete After Date
-
-      # Network
-      VPC:
-        default: VPC ID
-      SubnetId:
-        default: Subnet ID
-      InternalAccessSecurityGroup:
-        default: Internal Access Security Group
-      RemoteSecurityGroup:
-        default: Remote Security Group
-      RdsSecurityGroup:
-        default: RDS Security Group
-      EfsSecurityGroup:
-        default: EFS Security Group
-
-      # Instance Settings
-      KeyPairName:
-        default: EC2 Key Pair Name
-      InstanceType:
-        default: Instance Type
-
-      # DNS
-      RecordName:
-        default: Record Name
-      HostedZoneId:
-        default: Hosted Zone ID
-
-      # EFS
-      EfsMountPoint:
-        default: EFS Mount Point
-      EfsFileSystemId:
-        default: EFS File System Id
-      EfsMountOwner:
-        default: EFS Mount Owner
-
-      # Database
-      DbHost:
-        default: Database Host
-      DbName:
-        default: Database Name
-      DbUser:
-        default: Database User
-      DbPassword:
-        default: Database Password
-
-      # MediaWiki
-      MediawikiMajorRelease:
-        default: Mediawiki Major Release
-      MediawikiMinorRelease:
-        default: Mediawiki Minor Release
-      SiteTitle:
-        default: Site Title
-      SiteURL:
-        default: Site URL
-      LbDnsAlias:
-        default: Load Balancer DNS Alias
-      ContactEmail:
-        default: Contact Email
-      SecretKey:
-        default: Secret Key
-      UpgradeKey:
-        default: Upgrade Key
-      GoogleAnalyticsAccount:
-        default: Google Analytics Account
-
-      # Deployment
-      Environment:
-        default: Environment
-      S3ContentPath:
-        default: "S3 Deploy Bucket Name"
