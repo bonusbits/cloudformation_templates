@@ -789,7 +789,7 @@ Resources:
                     location ^~ /images/ { try_files $uri /index.php; }
 
                     #    Deny direct access to uploads directory
-                    location ~* /(?:uploads|nfsuploads|files)/.*\.php$ { deny all; }
+                    location ~* /(?:uploads|files)/.*\.php$ { deny all; }
                 }
             "/var/www/html/mediawiki/robots.txt":
               mode: "000644"
@@ -1144,11 +1144,11 @@ Resources:
 
                 ## Set URL Upload Path
                 # http://www.mediawiki.org/wiki/Manual:$wgUploadPath
-                $wgUploadPath = "{$wgScriptPath}/nfsuploads";
+                $wgUploadPath = "{$wgScriptPath}/uploads";
 
                 ## Set Local Upload Path
                 # http://www.mediawiki.org/wiki/Manual:$wgUploadDirectory
-                $wgUploadDirectory = "{$IP}/nfsuploads";
+                $wgUploadDirectory = "{$IP}/uploads";
 
                 ## Upload Wizard
                 # http://www.mediawiki.org/wiki/Extension:UploadWizard
