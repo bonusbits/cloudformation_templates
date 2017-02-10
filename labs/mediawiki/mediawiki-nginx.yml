@@ -769,7 +769,6 @@ Resources:
                     location ^~ /includes/ { deny all; }
                     location ^~ /maintenance/ { deny all; }
                     location ^~ /mw-config/ { deny all; } #Uncomment after installation
-                    #location ^~ /resources/ { deny all; }
                     location ^~ /resources/lib/ { deny all; }
                     location ^~ /resources/src/ { deny all; }
                     location ^~ /resources/Resources.php { deny all; } # ResourcesOOUI.php  Resources.php
