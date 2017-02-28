@@ -696,9 +696,10 @@ Resources:
                     server_name ${VirtaulServerNames};
                     root /var/www/html/mediawiki;
                     index index.php;
-                    client_max_body_size 24000M;
+                    # client_max_body_size 24000M;
                     #access_log /var/log/nginx/mediawiki_access.log;
-                    #error_log /var/log/nginx/debug.log debug;
+                    #error_log /var/log/nginx/mediawiki_error.log;
+                    #error_log /var/log/nginx/medaiwiki_debug.log debug;
 
                     location / {
                         #   Recognize if HTTPS Terminate Prior to Nginx Getting Hands on it
@@ -706,7 +707,7 @@ Resources:
                             rewrite ^ https://$host$request_uri? permanent;
                         }
                         try_files $uri $uri/ @handler;
-                        error_page 404 = @mediawiki;
+                        # error_page 404 = @mediawiki;
                     }
 
                     # location @mediawiki {
@@ -765,7 +766,6 @@ Resources:
                     #    in the wiki's deny alls.
                     location ^~ /bin/ { deny all; }
                     location ^~ /docs/ { deny all; }
-                    #location ^~ /extensions/ { deny all; }
                     location ^~ /includes/ { deny all; }
                     location ^~ /maintenance/ { deny all; }
                     location ^~ /mw-config/ { deny all; } #Uncomment after installation
@@ -797,31 +797,32 @@ Resources:
               encoding: plain
               content: !Sub |
                 User-agent: *
+                Disallow: /*.json
+                Disallow: /*.php
+                Disallow: /*.php5
+                Disallow: /cache/*
+                Disallow: /extensions/*
+                Disallow: /images/*
+                Disallow: /includes/*
+                Disallow: /index.php?*
+                Disallow: /maintenance/*
+                Disallow: /mw-config/*
+                Disallow: /resources/*
+                Disallow: /skins/*
+                Disallow: /uploads/*
+                Disallow: /vendor/*
+                Disallow: /wiki/Category:*
                 Disallow: /wiki/File:*
-                Disallow: /wiki/Project:*
-                Disallow: /wiki/Image:*
                 Disallow: /wiki/Help:*
+                Disallow: /wiki/Image:*
+                Disallow: /wiki/List:*
+                Disallow: /wiki/Manual:*
+                Disallow: /wiki/Module:*
                 Disallow: /wiki/MediaWiki:*
+                Disallow: /wiki/Project:*
                 Disallow: /wiki/Special:*
                 Disallow: /wiki/Template:*
-                Disallow: /wiki/Manual:*
                 Disallow: /wiki/User:*
-                Disallow: /wiki/List:*
-                Disallow: /wiki/Video:*
-                Disallow: /wiki/Category:*
-                Disallow: /index.php?*
-                Disallow: /images/*
-                Disallow: /skins/*
-                Disallow: /extensions/*
-                Disallow: /cache/*
-                Disallow: /uploads/*
-                Disallow: /mw-config/*
-                Disallow: /vendor/*
-                Disallow: /resources/*
-                Disallow: /includes/*
-                Disallow: /*.php
-                Disallow: /*.json
-                Disallow: /*.php5
             "/var/www/html/mediawiki/LocalSettings.php":
               mode: "000444"
               owner: nginx
@@ -1039,16 +1040,14 @@ Resources:
 
                 // Define Constants for Name Spaces
                 // (Only letters, numbers and underscores allowed)
-                define( "NS_HOWTO", 500);
-                define( "NS_HOWTO_TALK", 501);
-                define( "NS_REFERENCE", 502);
-                define( "NS_REFERENCE_TALK", 503);
-                define( "NS_KB", 506);
-                define( "NS_KB_TALK", 507);
-                define( "NS_LIST", 512);
-                define( "NS_LIST_TALK", 513);
-                define( "NS_VIDEO", 516);
-                define( "NS_VIDEO_TALK", 517);
+                define( "NS_HOWTO", 3000);
+                define( "NS_HOWTO_TALK", 3001);
+                define( "NS_REFERENCE", 3002);
+                define( "NS_REFERENCE_TALK", 3003);
+                define( "NS_KB", 3004);
+                define( "NS_KB_TALK", 3005);
+                define( "NS_LIST", 3006);
+                define( "NS_LIST_TALK", 3007);
 
                 // Create Custom NameSpaces
                 $wgExtraNamespaces[NS_HOWTO] = "HowTo";
@@ -1059,8 +1058,6 @@ Resources:
                 $wgExtraNamespaces[NS_KB_TALK] = "KB_talk";
                 $wgExtraNamespaces[NS_LIST] = "List";
                 $wgExtraNamespaces[NS_LIST_TALK] = "List_talk";
-                $wgExtraNamespaces[NS_VIDEO] = "Video";
-                $wgExtraNamespaces[NS_VIDEO_TALK] = "Video_talk";
 
                 $wgExportFromNamespaces = true;
 
@@ -1071,40 +1068,39 @@ Resources:
                         NS_MAIN,
                         NS_HOWTO,
                         NS_REFERENCE,
-                        NS_KB,
-                        NS_VIDEO,
+                        NS_KB
                 );
 
                 // Added All Custom Namespaces to Default Search
                 // http://www.mediawiki.org/wiki/Manual:$wgNamespacesToBeSearchedDefault
                 #Set default searching
                 $wgNamespacesToBeSearchedDefault = array(
-                        NS_MAIN                 => true,
-                        NS_TALK                 => false,
-                        NS_USER                 => false,
-                        NS_USER_TALK            => false,
-                        NS_PROJECT              => false,
-                        NS_PROJECT_TALK         => false,
-                        NS_IMAGE                => false,
-                        NS_IMAGE_TALK           => false,
-                        NS_MEDIAWIKI            => false,
-                        NS_MEDIAWIKI_TALK       => false,
-                        NS_TEMPLATE             => false,
-                        NS_TEMPLATE_TALK        => false,
-                        NS_HELP                 => false,
-                        NS_HELP_TALK            => false,
                         NS_CATEGORY             => false,
                         NS_CATEGORY_TALK        => false,
+                        NS_HELP                 => false,
+                        NS_HELP_TALK            => false,
                         NS_HOWTO                => true,
                         NS_HOWTO_TALK           => false,
-                        NS_REFERENCE            => true,
-                        NS_REFERENCE_TALK       => false,
+                        NS_IMAGE                => false,
+                        NS_IMAGE_TALK           => false,
                         NS_KB                   => true,
                         NS_KB_TALK              => false,
                         NS_LIST                 => false,
                         NS_LIST_TALK            => false,
-                        NS_VIDEO                => true,
-                        NS_VIDEO_TALK           => false,
+                        NS_MAIN                 => true,
+                        NS_MEDIAWIKI            => false,
+                        NS_MEDIAWIKI_TALK       => false,
+                        NS_MODULE               => false,
+                        NS_MODULE_TALK          => false,
+                        NS_PROJECT              => false,
+                        NS_PROJECT_TALK         => false,
+                        NS_REFERENCE            => true,
+                        NS_REFERENCE_TALK       => false,
+                        NS_TALK                 => false,
+                        NS_TEMPLATE             => false,
+                        NS_TEMPLATE_TALK        => false,
+                        NS_USER                 => false,
+                        NS_USER_TALK            => false
                 );
 
                 ##########################################
@@ -1124,12 +1120,12 @@ Resources:
                 // Put the namespaces here
                 $wgHidensNamespaces = array(
                         NS_CATEGORY,
-                        NS_TEMPLATE,
                         NS_HOWTO,
-                        NS_REFERENCE,
                         NS_KB,
                         NS_LIST,
-                        NS_VIDEO,
+                        NS_MODULE,
+                        NS_REFERENCE,
+                        NS_TEMPLATE
                 );
 
                 ##########################################
@@ -1156,33 +1152,33 @@ Resources:
                 $wgUseInstantCommons = true;
                 $wgUploadNavigationUrl = '/wiki/Special:UploadWizard';
                 $wgFileExtensions = array(
-                        'png',
-                        'gif',
-                        'jpg',
-                        'jpeg',
-                        'doc',
-                        'xls',
-                        'mpp',
-                        'pdf',
-                        'ppt',
-                        'tiff',
                         'bmp',
+                        'doc',
                         'docx',
-                        'xlsx',
+                        'gif',
+                        'jpeg',
+                        'jpg',
+                        'mp3',
+                        'mp4',
+                        'mpp',
+                        'odg',
+                        'odp',
+                        'ods',
+                        'odt',
+                        'ogg',
+                        'ogv',
+                        'pdf',
+                        'png',
+                        'ppt',
                         'pptx',
                         'ps',
-                        'odt',
-                        'ods',
-                        'odp',
-                        'odg',
-                        'wmv',
-                        'mp3',
-                        'zip',
                         'svg',
-                        'mp4',
+                        'tiff',
                         'webm',
-                        'ogg',
-                        'ogv'
+                        'wmv',
+                        'xls',
+                        'xlsx',
+                        'zip'
                 );
 
                 ##########################################
@@ -1374,27 +1370,27 @@ Resources:
                 #];
 
                 $wgAutoSitemap["exclude_namespaces"] = [
-                    NS_TALK,
-                    NS_FILE,
-                    NS_FILE_TALK,
-                    NS_USER,
-                    NS_USER_TALK,
-                    NS_PROJECT,
-                    NS_PROJECT_TALK,
-                    NS_IMAGE,
-                    NS_IMAGE_TALK,
-                    NS_MEDIAWIKI,
-                    NS_MEDIAWIKI_TALK,
-                    NS_TEMPLATE,
-                    NS_TEMPLATE_TALK,
-                    NS_HELP,
-                    NS_HELP_TALK,
                     NS_CATEGORY,
                     NS_CATEGORY_TALK,
+                    NS_FILE,
+                    NS_FILE_TALK,
+                    NS_HELP,
+                    NS_HELP_TALK,
+                    NS_IMAGE,
+                    NS_IMAGE_TALK,
                     NS_LIST,
                     NS_LIST_TALK,
-                    NS_VIDEO,
-                    NS_VIDEO_TALK
+                    NS_MEDIAWIKI,
+                    NS_MEDIAWIKI_TALK,
+                    NS_MODULE,
+                    NS_MODULE_TALK,
+                    NS_PROJECT,
+                    NS_PROJECT_TALK,
+                    NS_TALK,
+                    NS_TEMPLATE,
+                    NS_TEMPLATE_TALK,
+                    NS_USER,
+                    NS_USER_TALK
                 ];
 
                 $wgAutoSitemap["exclude_pages"] = ['page title to exclude', 'other one'];

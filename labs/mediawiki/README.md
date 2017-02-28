@@ -26,7 +26,7 @@ Click this button to open AWS CloudFormation web console to enter parameters and
 
 
 # CloudFormation Template Details
-The [CloudFormation Template](https://github.com/bonusbits/cloudformation_templates/blob/master/labs/wordpress/wordpress-nginx.yml) does the following:
+The [CloudFormation Template](https://github.com/bonusbits/cloudformation_templates/blob/master/labs/mediawiki/mediawiki-nginx.yml) does the following:
 
 1. EC2 Instance
     1. Amazon Linux
