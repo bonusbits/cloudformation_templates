@@ -10,7 +10,7 @@ From the web it's HTTPS (443) to LB. Then from the LB to the instance it is HTTP
 
 # Prerequisites
 * Create RDS Instance
-* Create empty Wordpress Database and User
+* Create empty Mediawiki Database and User
 * Internet Access from EC2 Instance
 
 # Summary
@@ -26,7 +26,7 @@ Click this button to open AWS CloudFormation web console to enter parameters and
 
 
 # CloudFormation Template Details
-The [CloudFormation Template](https://github.com/bonusbits/cloudformation_templates/blob/master/labs/wordpress/wordpress-nginx.yml) does the following:
+The [CloudFormation Template](https://github.com/bonusbits/cloudformation_templates/blob/master/labs/mediawiki/mediawiki-nginx.yml) does the following:
 
 1. EC2 Instance
     1. Amazon Linux

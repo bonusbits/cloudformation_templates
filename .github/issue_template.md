@@ -1,12 +1,11 @@
-# Category
-[ ] Fix Issue
-[ ] Feature Add
-[ ] Refactor
-[ ] Documentation
-[ ] Other
+## Request
+- [ ] Bug
+- [ ] New Feature
+- [ ] Refactor
+- [ ] Question
+- [ ] Documentation
+- [ ] Tests
+- [ ] Other
 
-# Details
+## Details
 * ...
-
-# Links
-[Template Link]()
