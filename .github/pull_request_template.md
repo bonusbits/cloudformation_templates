@@ -2,4 +2,4 @@
 * ...
 
 # Links
-* [Related Issue](https://github.com/bonusbits/cfn_converter/issues/00)
+* [Related Issue](https://github.com/bonusbits/cloudformation_templates/issues/0)

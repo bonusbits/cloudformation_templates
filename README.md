@@ -39,7 +39,7 @@ Coupled with a custom parameters JSON file can give you a one command solution t
 For instance you could have a VPC, NAT, RDS and Autoscaling Webapp behind an ELB and Update DNS all in one
 command using various foundational templates that I've creates to be used together.
 
-<table>
+<table width="100%">
     <tr>
         <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/orchestrators/infrastructure.yml">Infrastructure</a></h4></th>
     </tr>
@@ -156,7 +156,7 @@ command using various foundational templates that I've creates to be used togeth
     </tr>
 </table>
 
-<table>
+<table width="100%">
     <tr>
         <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/nat-gateway.yml">NAT Gateway (Network Addresss Translation)</a></h4></th>
     </tr>
@@ -223,7 +223,7 @@ command using various foundational templates that I've creates to be used togeth
     </tr>
 </table>
 
-<table>
+<table width="100%">
     <tr>
         <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpn-bgp.yml">VPN BGP (Virtual Private Network using Border Gateway Protocol)</a></h4></th>
     </tr>
@@ -294,7 +294,7 @@ command using various foundational templates that I've creates to be used togeth
     </tr>
 </table>
 
-<table>
+<table width="100%">
     <tr>
         <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/bastion.yml">Bastion</a></h4></th>
     </tr>
@@ -567,7 +567,7 @@ command using various foundational templates that I've creates to be used togeth
 ### Autoscaling
 [Back to Top](#purpose)
 
-<table>
+<table width="100%">
     <tr>
         <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/autoscaling/bakedami-elb-rdsbackend.yml">Baked AMI, ELB, RDS Backend</a></h4></th>
     </tr>
@@ -626,7 +626,7 @@ command using various foundational templates that I've creates to be used togeth
 ### Labs
 [Back to Top](#purpose)
 
-<table>
+<table width="100%">
     <tr>
         <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/chef">Chef Compliance Lab</a></h4></th>
     </tr>
@@ -686,7 +686,7 @@ command using various foundational templates that I've creates to be used togeth
     </tr>
 </table> 
     
-<table>    
+<table width="100%">    
     <tr>
         <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/bitbucket/bitbucket.yml">Bitbucket Lab</a></h4></th>
     </tr>
@@ -758,7 +758,7 @@ command using various foundational templates that I've creates to be used togeth
     </tr>
 </table> 
     
-<table>    
+<table width="100%"> 
     <tr>
         <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/test_instances/rhel-ubuntu-win2012.yml">Test Instances</a></h4></th>
     </tr>
