@@ -36,7 +36,7 @@
     "ParameterValue": "Z1234567890"
   },
   {
-    "ParameterKey": "RecordName",
+    "ParameterKey": "DnsRecordName",
     "ParameterValue": "www.example.com"
   },
   {
@@ -70,5 +70,13 @@
   {
     "ParameterKey": "DbPassword",
     "ParameterValue": "secret"
+  },
+  {
+    "ParameterKey": "ServerNames",
+    "ParameterValue": "example.com www.example.com"
+  },
+  {
+    "ParameterKey": "SiteURL",
+    "ParameterValue": "https://www.example.com"
   }
 ]
