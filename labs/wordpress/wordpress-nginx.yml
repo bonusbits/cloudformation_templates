@@ -29,7 +29,7 @@ Parameters:
     Type: String
     Description: Route53 Hosted Zone ID (Z1234567890).
     Default: Z1234567890
-  RecordName:
+  DnsRecordName:
     Type: String
     Description: DNS Record Name (www.example.com)
     Default: www.example.com
@@ -72,6 +72,16 @@ Parameters:
     AllowedPattern: "[a-zA-Z0-9!?]*"
     ConstraintDescription: Must only contain upper and lowercase letters, numbers and contain a minimum of 8 characters
 
+  # Nginx
+  ServerNames:
+    Type: String
+    Default: 'example.com www.example.com'
+
+  # Wordpress
+  SiteURL:
+    Type: String
+    Default: https://www.example.com
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -88,7 +98,6 @@ Metadata:
         Parameters:
           - VPC
           - SubnetId
-          - SecurityGroup
           - InternalAccessSecurityGroup
           - RemoteSecurityGroup
           - RdsSecurityGroup
@@ -105,7 +114,7 @@ Metadata:
       - Label:
           default: DNS
         Parameters:
-          - RecordName
+          - DnsRecordName
           - HostedZoneId
 
       # EFS
@@ -117,12 +126,24 @@ Metadata:
 
       # Database
       - Label:
-          default: Database Config
+          default: Database
         Parameters:
           - DbHost
           - DbName
           - DbUser
           - DbPassword
+
+      # Nginx
+      - Label:
+          default: Nginx
+        Parameters:
+          - ServerNames
+
+      # Wordpress
+      - Label:
+          default: Wordpress
+        Parameters:
+          - SiteURL
 
     ParameterLabels:
       # Ownership
@@ -152,7 +173,7 @@ Metadata:
         default: Instance Type
 
       # DNS
-      RecordName:
+      DnsRecordName:
         default: Record Name
       HostedZoneId:
         default: Hosted Zone ID
@@ -172,6 +193,77 @@ Metadata:
         default: Database User
       DbPassword:
         default: Database Password
+
+      # Nginx
+      ServerNames:
+        default: Server Names
+
+      # Wordpress
+      SiteURL:
+        default: Site URL
+
+Outputs:
+  # Ownership
+  Owner:
+    Description: Team or Individual that Owns this Formation.
+    Value: !Ref Owner
+  DeleteAfter:
+    Description: It is ok to delete the Formation after this date.
+    Value: !Ref DeleteAfter
+
+  # Network
+  VPC:
+    Value: !Ref VPC
+  SubnetId:
+    Value: !Ref SubnetId
+  SecurityGroup:
+    Value: !Ref SecurityGroup
+  InternalAccessSecurityGroup:
+    Value: !Ref InternalAccessSecurityGroup
+  RemoteSecurityGroup:
+    Value: !Ref RemoteSecurityGroup
+  RdsSecurityGroup:
+    Value: !Ref RdsSecurityGroup
+  EfsSecurityGroup:
+    Value: !Ref EfsSecurityGroup
+
+  # Instance Settings
+  AMI:
+    Description: AMI Used.
+    Value: !FindInMap [ RegionMap, !Ref "AWS::Region", EBS ]
+  InstanceType:
+    Description: Instance Type Used.
+    Value: !Ref InstanceType
+  KeyPairName:
+    Description: Key Pair Name Used.
+    Value: !Ref KeyPairName
+  IAMRole:
+    Description: IAM Instance Profile Role Created.
+    Value: !Ref IamRole
+
+  # DNS
+  DnsRecordName:
+    Description: Record Name.
+    Value: !Ref DnsRecordName
+  HostedZoneId:
+    Description: Hosted Zone ID.
+    Value: !Ref HostedZoneId
+
+  # Nginx
+  ServerNames:
+    Description: Nginx Virtual Server Names
+    Value: !Ref ServerNames
+
+  # Wordpress
+  SiteURL:
+    Description: Wordpress Site URL
+    Value: !Ref SiteURL
+
+  # Generated
+  InstanceURL:
+    Value: !Join [ "", [ "http://", !GetAtt EC2Instance.PrivateDnsName ] ]
+  DnsURL:
+    Value: !Join [ "", [ "http://", !Ref DnsRecordName ] ]
 
 Mappings:
   RegionMap:
@@ -426,7 +518,7 @@ Resources:
               content: !Sub |
                 server {
                         listen 80;
-                        server_name ${RecordName};
+                        server_name ${ServerNames};
                         root   /var/www/html/wordpress;
                         index index.php index.html index.htm;
                         #access_log /var/log/nginx/wordpress_access.log;
@@ -473,8 +565,8 @@ Resources:
                 <?php
 
                 // Override Site URL Links So can Change if Lose Access
-                define('WP_HOME','https://${RecordName}');
-                define('WP_SITEURL','https://${RecordName}');
+                define('WP_HOME','${SiteURL}');
+                define('WP_SITEURL','${SiteURL}');
 
                 // Use X-Forwarded-For HTTP Header to Get Visitor's Real IP Address
                 if ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
@@ -562,7 +654,7 @@ Resources:
                     {
                       "Action": "UPSERT",
                       "ResourceRecordSet": {
-                        "Name": "${RecordName}",
+                        "Name": "${DnsRecordName}",
                         "Type": "A",
                         "TTL": 60,
                         "ResourceRecords": [
@@ -589,54 +681,3 @@ Resources:
         ResourceSignal:
           Count: 1
           Timeout: PT20M
-
-Outputs:
-  # Ownership
-  Owner:
-    Description: Team or Individual that Owns this Formation.
-    Value: !Ref Owner
-  DeleteAfter:
-    Description: It is ok to delete the Formation after this date.
-    Value: !Ref DeleteAfter
-
-  # Network
-  VPC:
-    Value: !Ref VPC
-  SubnetId:
-    Value: !Ref SubnetId
-  SecurityGroup:
-    Value: !Ref SecurityGroup
-  InternalAccessSecurityGroup:
-    Value: !Ref InternalAccessSecurityGroup
-  RemoteSecurityGroup:
-    Value: !Ref RemoteSecurityGroup
-  RdsSecurityGroup:
-    Value: !Ref RdsSecurityGroup
-  EfsSecurityGroup:
-    Value: !Ref EfsSecurityGroup
-  InstanceURL:
-    Value: !Join [ "", [ "http://", !GetAtt EC2Instance.PrivateDnsName ] ]
-  DnsURL:
-    Value: !Join [ "", [ "http://", !Ref RecordName ] ]
-
-  # Instance Settings
-  AMI:
-    Description: AMI Used.
-    Value: !FindInMap [ RegionMap, !Ref "AWS::Region", EBS ]
-  InstanceType:
-    Description: Instance Type Used.
-    Value: !Ref InstanceType
-  KeyPairName:
-    Description: Key Pair Name Used.
-    Value: !Ref KeyPairName
-  IAMRole:
-    Description: IAM Instance Profile Role Created.
-    Value: !Ref IamRole
-
-  # DNS
-  RecordName:
-    Description: Record Name.
-    Value: !Ref RecordName
-  HostedZoneId:
-    Description: Hosted Zone ID.
-    Value: !Ref HostedZoneId
