@@ -451,7 +451,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/efs.yml" target="_blank"><img src="images/designer_thumbs/AWS_CloudFormation_Designer.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/efs.yml" target="_blank"><img src="images/designer_thumbs/efs.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -496,7 +496,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/s3-backup-bucket-delete-previous.yml" target="_blank"><img src="images/designer_thumbs/AWS_CloudFormation_Designer.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/s3-backup-bucket-delete-previous.yml" target="_blank"><img src="images/designer_thumbs/s3-backup-bucket-delete-previous.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -552,7 +552,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.yml" target="_blank"><img src="images/designer_thumbs/AWS_CloudFormation_Designer.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.yml" target="_blank"><img src="images/designer_thumbs/mysql-rds.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -610,7 +610,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/create-rds-from-snapshot.yml" target="_blank"><img src="images/designer_thumbs/AWS_CloudFormation_Designer.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/create-rds-from-snapshot.yml" target="_blank"><img src="images/designer_thumbs/create-rds-from-snapshot.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -906,7 +906,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/wordpress-nginx.yml" target="_blank"><img src="images/designer_thumbs/AWS_CloudFormation_Designer.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/wordpress-nginx.yml" target="_blank"><img src="images/designer_thumbs/wordpress-nginx.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -965,7 +965,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mediawiki-nginx.yml" target="_blank"><img src="images/designer_thumbs/AWS_CloudFormation_Designer.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mediawiki-nginx.yml" target="_blank"><img src="images/designer_thumbs/mediawiki-nginx.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
