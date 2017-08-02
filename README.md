@@ -75,7 +75,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/infrastructure.yml" target="_blank"><img src="images/designer_thumbs/infra-orchestrator-600x600.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/infrastructure.yml" target="_blank"><img src="images/designer_thumbs/infra-orchestrator.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -138,7 +138,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpc.yml" target="_blank"><img src="images/designer_thumbs/vpc-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpc.yml" target="_blank"><img src="images/designer_thumbs/vpc.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -205,7 +205,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/nat-gateway.yml" target="_blank"><img src="images/designer_thumbs/nat-gateway-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/nat-gateway.yml" target="_blank"><img src="images/designer_thumbs/nat-gateway.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -276,7 +276,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpn-bgp.yml" target="_blank"><img src="images/designer_thumbs/vpn-bgp-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/vpn-bgp.yml" target="_blank"><img src="images/designer_thumbs/vpn-bgp.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -340,7 +340,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bastion.yml" target="_blank"><img src="images/designer_thumbs/bastion-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bastion.yml" target="_blank"><img src="images/designer_thumbs/bastion.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -397,7 +397,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/proxy-awsapi-devops-access.yml" target="_blank"><img src="images/designer_thumbs/test-instances-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/proxy-awsapi-devops-access.yml" target="_blank"><img src="images/designer_thumbs/test-instances.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -625,7 +625,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.yml" target="_blank"><img src="images/designer_thumbs/autoscaling-bakedami-rdsbackend-200x181.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/autoscaling-bakedami-rdsbackend.yml" target="_blank"><img src="images/designer_thumbs/autoscaling-bakedami-rdsbackend.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -688,7 +688,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/chef-compliance.yml" target="_blank"><img src="images/designer_thumbs/chef-compliance-lab-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/chef-compliance.yml" target="_blank"><img src="images/designer_thumbs/chef-compliance.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -760,7 +760,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bitbucket.yml" target="_blank"><img src="images/designer_thumbs/bitbucket-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bitbucket.yml" target="_blank"><img src="images/designer_thumbs/bitbucket.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -803,7 +803,7 @@ command using various foundational templates that I've creates to be used togeth
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.yml" target="_blank"><img src="images/designer_thumbs/test-instances-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.yml" target="_blank"><img src="images/designer_thumbs/test-instances.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
