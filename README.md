@@ -379,6 +379,10 @@ command using various foundational templates that I've creates to be used togeth
              <li>Create Route53 DNS Update Script</li>
              <li>Configure DNS Update Cron Job</li>
             </ol>
+            <h6>Public S3 URL</h6>
+            <ol>
+             <oi>https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/proxy-awsapi-devops-access.yml</li>
+            </ol>
         </td>
         <td nowrap width="200" valign="top">
             <table>
@@ -441,6 +445,16 @@ command using various foundational templates that I've creates to be used togeth
                     </td>
                 </tr>
             </table>
+            <table>
+                <tr>
+                    <th align="left">View in Designer</th>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/efs.yml" target="_blank"><img src="images/designer_thumbs/AWS_CloudFormation_Designer.jpg" width:100% alt="View in Designer"></a>
+                    </td>
+                </tr>
+            </table>
         </td>
     </tr>
 </table>
@@ -473,6 +487,16 @@ command using various foundational templates that I've creates to be used togeth
                 <tr>
                     <td>
                         <a href="https://console.aws.amazon.com/cloudformation/home?#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/s3-backup-bucket-delete-previous.yml" target="_blank"><img src="images/cloudformation-launch-stack.png"></a>
+                    </td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <th align="left">View in Designer</th>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/s3-backup-bucket-delete-previous.yml" target="_blank"><img src="images/designer_thumbs/AWS_CloudFormation_Designer.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -522,6 +546,16 @@ command using various foundational templates that I've creates to be used togeth
                     </td>
                 </tr>
             </table>
+            <table>
+                <tr>
+                    <th align="left">View in Designer</th>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.yml" target="_blank"><img src="images/designer_thumbs/AWS_CloudFormation_Designer.jpg" width:100% alt="View in Designer"></a>
+                    </td>
+                </tr>
+            </table>
         </td>
     </tr>
 </table>
@@ -567,6 +601,16 @@ command using various foundational templates that I've creates to be used togeth
                 <tr>
                     <td>
                         <a href="https://console.aws.amazon.com/cloudformation/home?#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/create-rds-from-snapshot.yml" target="_blank"><img src="images/cloudformation-launch-stack.png"></a>
+                    </td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <th align="left">View in Designer</th>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/create-rds-from-snapshot.yml" target="_blank"><img src="images/designer_thumbs/AWS_CloudFormation_Designer.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -856,6 +900,16 @@ command using various foundational templates that I've creates to be used togeth
                     </td>
                 </tr>
             </table>
+            <table>
+                <tr>
+                    <th align="left">View in Designer</th>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/wordpress-nginx.yml" target="_blank"><img src="images/designer_thumbs/AWS_CloudFormation_Designer.jpg" width:100% alt="View in Designer"></a>
+                    </td>
+                </tr>
+            </table>
         </td>
     </tr>
 </table>
@@ -902,6 +956,16 @@ command using various foundational templates that I've creates to be used togeth
                 <tr>
                     <td>
                         <a href="https://console.aws.amazon.com/cloudformation/home?#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mediawiki-nginx.yml" target="_blank"><img src="images/cloudformation-launch-stack.png"></a>
+                    </td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <th align="left">View in Designer</th>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mediawiki-nginx.yml" target="_blank"><img src="images/designer_thumbs/AWS_CloudFormation_Designer.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
