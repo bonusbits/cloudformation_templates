@@ -62,6 +62,7 @@ Parameters:
     Default: ''
 
 Metadata:
+  TemplateAuthor: 'Levon Becker'
   AWS::CloudFormation::Interface:
     ParameterGroups:
       # Ownership

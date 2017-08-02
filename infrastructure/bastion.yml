@@ -658,6 +658,7 @@ Outputs:
     Value:
       Ref: PublicSubnet
 Metadata:
+  TemplateAuthor: 'Levon Becker'
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:

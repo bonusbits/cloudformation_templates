@@ -454,6 +454,7 @@ Outputs:
     Value: !Join [ "", [ !Ref SquidPort ] ]
 
 Metadata:
+  TemplateAuthor: 'Levon Becker'
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:

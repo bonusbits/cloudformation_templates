@@ -101,6 +101,7 @@ Outputs:
     Value:
       Ref: DeleteAfter
 Metadata:
+  TemplateAuthor: 'Levon Becker'
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:

@@ -1,6 +1,9 @@
 ---
+
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Create a VPC by Levon Becker v20161125-1430
+
+Description: Create a VPC v20170802-1430
+
 Parameters:
   # Ownership
   Owner:
@@ -20,7 +23,7 @@ Parameters:
     Default: 10.0.0.0/16
     MinLength: '10'
     MaxLength: '18'
-    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+    AllowedPattern: '(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})'
   AvailabilityZone1:
     Type: String
     Default: a
@@ -56,37 +59,37 @@ Parameters:
     Default: 10.0.1.0/24
     MinLength: '10'
     MaxLength: '18'
-    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+    AllowedPattern: '(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})'
   PublicSubnetCidrBlock2:
     Type: String
     Default: 10.0.2.0/24
     MinLength: '10'
     MaxLength: '18'
-    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+    AllowedPattern: '(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})'
   PublicSubnetCidrBlock3:
     Type: String
     Default: 10.0.3.0/24
     MinLength: '10'
     MaxLength: '18'
-    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+    AllowedPattern: '(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})'
   PrivateSubnetCidrBlock1:
     Type: String
     Default: 10.0.4.0/24
     MinLength: '10'
     MaxLength: '18'
-    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+    AllowedPattern: '(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})'
   PrivateSubnetCidrBlock2:
     Type: String
     Default: 10.0.5.0/24
     MinLength: '10'
     MaxLength: '18'
-    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+    AllowedPattern: '(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})'
   PrivateSubnetCidrBlock3:
     Type: String
     Default: 10.0.6.0/24
     MinLength: '10'
     MaxLength: '18'
-    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+    AllowedPattern: '(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})'
 
   # Remote Access Network
   RemoteCidrForSecurityGroup:
@@ -95,7 +98,7 @@ Parameters:
     MinLength: '9'
     MaxLength: '18'
     Default: 192.168.100.0/24
-    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+    AllowedPattern: '(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})'
     ConstraintDescription: must be a valid CIDR range of the form x.x.x.x/x.
   RemoteCidrForPublicAcl:
     Description: CIDR Block for Public ACL to Grant Access to Network (i.e. 32.159.24.111/32)
@@ -103,7 +106,7 @@ Parameters:
     MinLength: '9'
     MaxLength: '18'
     Default: 32.159.24.111/32
-    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+    AllowedPattern: '(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})'
     ConstraintDescription: must be a valid CIDR range of the form x.x.x.x/x.
 
   # Rule Numbers
@@ -146,15 +149,137 @@ Parameters:
   AllowReturnTrafficToPublicRuleNumber:
     Type: Number
     Default: '900'
-  AllowAllInboundPrivateRuleNumber:
+  AllowAllInPrivateRuleNumber:
     Type: Number
     Default: '150'
-  AllowAllOutboundPublicRuleNumber:
+  AllowAllOutPublicRuleNumber:
     Type: Number
     Default: '100'
-  AllowAllOutboundPrivateRuleNumber:
+  AllowAllOutPrivateRuleNumber:
     Type: Number
     Default: '100'
+
+Metadata:
+  TemplateAuthor: 'Levon Becker'
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    -
+      Label:
+        default: Ownership
+      Parameters:
+        - Owner
+        - Project
+        - DeleteAfter
+
+    -
+      Label:
+        default: Remote Access
+      Parameters:
+        - RemoteCidrForSecurityGroup
+        - RemoteCidrForPublicAcl
+
+    -
+      Label:
+        default: Subnets
+      Parameters:
+        - VPCSubnetCidrBlock
+        - PublicSubnetCidrBlock1
+        - PublicSubnetCidrBlock2
+        - PublicSubnetCidrBlock3
+        - PrivateSubnetCidrBlock1
+        - PrivateSubnetCidrBlock2
+        - PrivateSubnetCidrBlock3
+        - AvailabilityZone1
+        - AvailabilityZone2
+        - AvailabilityZone3
+
+    -
+      Label:
+        default: Public ACL Rule Numbers
+      Parameters:
+        - AllowVpcSubnetsRuleNumber
+        - AllowRemoteNetworkPublicRuleNumber
+        - AllowHttpToPublicRuleNumber
+        - AllowHttpsToPublicRuleNumber
+        - DenyMysqlToPublicRuleNumber
+        - DenyOracleToPublicRuleNumber
+        - DenyAuroraToPublicRuleNumber
+        - DenyNFSToPublicRuleNumber
+        - DenyRDPToPublicRuleNumber
+        - DenyPostgreToPublicRuleNumber
+        - Deny8080ToPublicRuleNumber
+        - Deny8443ToPublicRuleNumber
+        - AllowReturnTrafficToPublicRuleNumber
+        - AllowAllOutPublicRuleNumber
+
+    -
+      Label:
+        default: Private ACL Rule Numbers
+      Parameters:
+        - AllowAllInPrivateRuleNumber
+        - AllowAllOutPrivateRuleNumber
+
+    ParameterLabels:
+      Owner:
+        default: Team or Individual Owner
+      DeleteAfter:
+        default: Delete After Date
+      RemoteCidrForSecurityGroup:
+        default: Network CIDR for SG
+      RemoteCidrForPublicAcl:
+        default: Network CIDR for ACL
+      VPCSubnetCidrBlock:
+        default: VPC Subnet
+      PublicSubnetCidrBlock1:
+        default: Public Subnet 1
+      PublicSubnetCidrBlock2:
+        default: Public Subnet 2
+      PublicSubnetCidrBlock3:
+        default: Public Subnet 3
+      PrivateSubnetCidrBlock1:
+        default: Private Subnet 1
+      PrivateSubnetCidrBlock2:
+        default: Private Subnet 2
+      PrivateSubnetCidrBlock3:
+        default: Private Subnet 3
+      AvailabilityZone1:
+        default: Availability Zone 1
+      AvailabilityZone2:
+        default: Availability Zone 2
+      AvailabilityZone3:
+        default: Availability Zone 3
+      AllowVpcSubnetsRuleNumber:
+        default: Allow VPC Subnets
+      AllowRemoteNetworkPublicRuleNumber:
+        default: Allow Remote Network
+      AllowHttpToPublicRuleNumber:
+        default: Allow HTTP
+      AllowHttpsToPublicRuleNumber:
+        default: Allow HTTPS
+      DenyMysqlToPublicRuleNumber:
+        default: Deny MySQL
+      DenyOracleToPublicRuleNumber:
+        default: Deny Oracle
+      DenyAuroraToPublicRuleNumber:
+        default: Deny Aurora
+      DenyNFSToPublicRuleNumber:
+        default: Deny NFS
+      DenyRDPToPublicRuleNumber:
+        default: Deny RDP
+      DenyPostgreToPublicRuleNumber:
+        default: Deny Postgre
+      Deny8080ToPublicRuleNumber:
+        default: Deny 8080
+      Deny8443ToPublicRuleNumber:
+        default: Deny 8443
+      AllowReturnTrafficToPublicRuleNumber:
+        default: Allow Return Traffic
+      AllowAllOutPublicRuleNumber:
+        default: Public Outbound
+      AllowAllInPrivateRuleNumber:
+        default: Private Inbound
+      AllowAllOutPrivateRuleNumber:
+        default: Private Outbound
 
 Resources:
   VPC:
@@ -165,73 +290,78 @@ Resources:
       CidrBlock: !Ref VPCSubnetCidrBlock
       Tags:
       - Key: Name
-        Value: !Ref "AWS::StackName"
+        Value: !Ref 'AWS::StackName'
       - Key: Owner
         Value: !Ref Owner
       - Key: Project
         Value: !Ref Project
       - Key: DeleteAfter
         Value: !Ref DeleteAfter
+
   PublicSubnet1:
     Type: AWS::EC2::Subnet
     DependsOn: VPC
     Properties:
       VpcId: !Ref VPC
-      AvailabilityZone: !Join [ "", [ !Ref "AWS::Region", !Ref AvailabilityZone1 ] ]
+      AvailabilityZone: !Join [ '', [ !Ref 'AWS::Region', !Ref AvailabilityZone1 ] ]
       CidrBlock: !Ref PublicSubnetCidrBlock1
       Tags:
       - Key: Name
-        Value: !Join [ "", [ !Ref "AWS::StackName", "-public-az1" ] ]
+        Value: !Join [ '', [ !Ref 'AWS::StackName', '-public-az1' ] ]
       - Key: Owner
         Value: !Ref Owner
       - Key: Project
         Value: !Ref Project
       - Key: DeleteAfter
         Value: !Ref DeleteAfter
+
   PublicSubnet2:
     Type: AWS::EC2::Subnet
     DependsOn: VPC
     Properties:
       VpcId: !Ref VPC
-      AvailabilityZone: !Join [ "", [ !Ref "AWS::Region", !Ref AvailabilityZone2 ] ]
+      AvailabilityZone: !Join [ '', [ !Ref 'AWS::Region', !Ref AvailabilityZone2 ] ]
       CidrBlock: !Ref PublicSubnetCidrBlock2
       Tags:
       - Key: Name
-        Value: !Join [ "", [ !Ref "AWS::StackName", "-public-az2" ] ]
+        Value: !Join [ '', [ !Ref 'AWS::StackName', '-public-az2' ] ]
       - Key: Owner
         Value: !Ref Owner
       - Key: Project
         Value: !Ref Project
       - Key: DeleteAfter
         Value: !Ref DeleteAfter
+
   PublicSubnet3:
     Type: AWS::EC2::Subnet
     DependsOn: VPC
     Properties:
       VpcId: !Ref VPC
-      AvailabilityZone: !Join [ "", [ !Ref "AWS::Region", !Ref AvailabilityZone3 ] ]
+      AvailabilityZone: !Join [ '', [ !Ref 'AWS::Region', !Ref AvailabilityZone3 ] ]
       CidrBlock: !Ref PublicSubnetCidrBlock3
       Tags:
       - Key: Name
-        Value: !Join [ "", [ !Ref "AWS::StackName", "-public-az3" ] ]
+        Value: !Join [ '', [ !Ref 'AWS::StackName', '-public-az3' ] ]
       - Key: Owner
         Value: !Ref Owner
       - Key: Project
         Value: !Ref Project
       - Key: DeleteAfter
         Value: !Ref DeleteAfter
+
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
       - Key: Name
-        Value: !Ref "AWS::StackName"
+        Value: !Ref 'AWS::StackName'
       - Key: Owner
         Value: !Ref Owner
       - Key: Project
         Value: !Ref Project
       - Key: DeleteAfter
         Value: !Ref DeleteAfter
+
   GatewayToInternet:
     Type: AWS::EC2::VPCGatewayAttachment
     DependsOn:
@@ -240,6 +370,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       InternetGatewayId: !Ref InternetGateway
+
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     DependsOn: VPC
@@ -247,13 +378,14 @@ Resources:
       VpcId: !Ref VPC
       Tags:
       - Key: Name
-        Value: !Join [ "", [ !Ref "AWS::StackName", "-public" ] ]
+        Value: !Join [ '', [ !Ref 'AWS::StackName', '-public' ] ]
       - Key: Owner
         Value: !Ref Owner
       - Key: Project
         Value: !Ref Project
       - Key: DeleteAfter
         Value: !Ref DeleteAfter
+
   PublicRoute:
     Type: AWS::EC2::Route
     DependsOn:
@@ -263,7 +395,8 @@ Resources:
       RouteTableId: !Ref PublicRouteTable
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGateway
-  PublicSubnetRouteTableAssociation1:
+
+  PublicSubnetAssociation1:
     Type: AWS::EC2::SubnetRouteTableAssociation
     DependsOn:
     - PublicSubnet1
@@ -271,7 +404,8 @@ Resources:
     Properties:
       SubnetId: !Ref PublicSubnet1
       RouteTableId: !Ref PublicRouteTable
-  PublicSubnetRouteTableAssociation2:
+
+  PublicSubnetAssociation2:
     Type: AWS::EC2::SubnetRouteTableAssociation
     DependsOn:
     - PublicSubnet2
@@ -280,7 +414,8 @@ Resources:
     Properties:
       SubnetId: !Ref PublicSubnet2
       RouteTableId: !Ref PublicRouteTable
-  PublicSubnetRouteTableAssociation3:
+
+  PublicSubnetAssociation3:
     Type: AWS::EC2::SubnetRouteTableAssociation
     DependsOn:
     - PublicSubnet3
@@ -289,54 +424,58 @@ Resources:
     Properties:
       SubnetId: !Ref PublicSubnet3
       RouteTableId: !Ref PublicRouteTable
+
   PrivateSubnet1:
     Type: AWS::EC2::Subnet
     DependsOn: VPC
     Properties:
       VpcId: !Ref VPC
-      AvailabilityZone: !Join [ "", [ !Ref "AWS::Region", !Ref AvailabilityZone1 ] ]
+      AvailabilityZone: !Join [ '', [ !Ref 'AWS::Region', !Ref AvailabilityZone1 ] ]
       CidrBlock: !Ref PrivateSubnetCidrBlock1
       Tags:
       - Key: Name
-        Value: !Join [ "", [ !Ref "AWS::StackName", "-private-az1" ] ]
+        Value: !Join [ '', [ !Ref 'AWS::StackName', '-private-az1' ] ]
       - Key: Owner
         Value: !Ref Owner
       - Key: Project
         Value: !Ref Project
       - Key: DeleteAfter
         Value: !Ref DeleteAfter
+
   PrivateSubnet2:
     Type: AWS::EC2::Subnet
     DependsOn: VPC
     Properties:
       VpcId: !Ref VPC
-      AvailabilityZone: !Join [ "", [ !Ref "AWS::Region", !Ref AvailabilityZone2 ] ]
+      AvailabilityZone: !Join [ '', [ !Ref 'AWS::Region', !Ref AvailabilityZone2 ] ]
       CidrBlock: !Ref PrivateSubnetCidrBlock2
       Tags:
       - Key: Name
-        Value: !Join [ "", [ !Ref "AWS::StackName", "-private-az2" ] ]
+        Value: !Join [ '', [ !Ref 'AWS::StackName', '-private-az2' ] ]
       - Key: Owner
         Value: !Ref Owner
       - Key: Project
         Value: !Ref Project
       - Key: DeleteAfter
         Value: !Ref DeleteAfter
+
   PrivateSubnet3:
     Type: AWS::EC2::Subnet
     DependsOn: VPC
     Properties:
       VpcId: !Ref VPC
-      AvailabilityZone: !Join [ "", [ !Ref "AWS::Region", !Ref AvailabilityZone3 ] ]
+      AvailabilityZone: !Join [ '', [ !Ref 'AWS::Region', !Ref AvailabilityZone3 ] ]
       CidrBlock: !Ref PrivateSubnetCidrBlock3
       Tags:
       - Key: Name
-        Value: !Join [ "", [ !Ref "AWS::StackName", "-private-az3" ] ]
+        Value: !Join [ '', [ !Ref 'AWS::StackName', '-private-az3' ] ]
       - Key: Owner
         Value: !Ref Owner
       - Key: Project
         Value: !Ref Project
       - Key: DeleteAfter
         Value: !Ref DeleteAfter
+
   PrivateRouteTable:
     Type: AWS::EC2::RouteTable
     DependsOn: VPC
@@ -344,14 +483,15 @@ Resources:
       VpcId: !Ref VPC
       Tags:
       - Key: Name
-        Value: !Join [ "", [ !Ref "AWS::StackName", "-private" ] ]
+        Value: !Join [ '', [ !Ref 'AWS::StackName', '-private' ] ]
       - Key: Owner
         Value: !Ref Owner
       - Key: Project
         Value: !Ref Project
       - Key: DeleteAfter
         Value: !Ref DeleteAfter
-  PrivateSubnetRouteTableAssociation1:
+
+  PrivateSubnetAssociation1:
     Type: AWS::EC2::SubnetRouteTableAssociation
     DependsOn:
     - PrivateSubnet1
@@ -359,7 +499,8 @@ Resources:
     Properties:
       SubnetId: !Ref PrivateSubnet1
       RouteTableId: !Ref PrivateRouteTable
-  PrivateSubnetRouteTableAssociation2:
+
+  PrivateSubnetAssociation2:
     Type: AWS::EC2::SubnetRouteTableAssociation
     DependsOn:
     - PrivateSubnet2
@@ -367,7 +508,8 @@ Resources:
     Properties:
       SubnetId: !Ref PrivateSubnet2
       RouteTableId: !Ref PrivateRouteTable
-  PrivateSubnetRouteTableAssociation3:
+
+  PrivateSubnetAssociation3:
     Type: AWS::EC2::SubnetRouteTableAssociation
     DependsOn:
     - PrivateSubnet3
@@ -375,6 +517,7 @@ Resources:
     Properties:
       SubnetId: !Ref PrivateSubnet3
       RouteTableId: !Ref PrivateRouteTable
+
   S3VpcEndpoint:
     Type: AWS::EC2::VPCEndpoint
     DependsOn:
@@ -384,14 +527,14 @@ Resources:
     Properties:
       PolicyDocument:
         Statement:
-        - Action: "*"
+        - Action: '*'
           Effect: Allow
-          Resource: "*"
-          Principal: "*"
+          Resource: '*'
+          Principal: '*'
       RouteTableIds:
       - !Ref PrivateRouteTable
       - !Ref PublicRouteTable
-      ServiceName: !Join [ "", [ com.amazonaws., !Ref "AWS::Region", .s3 ] ]
+      ServiceName: !Join [ '', [ com.amazonaws., !Ref 'AWS::Region', .s3 ] ]
       VpcId: !Ref VPC
 
   # Public Network ACL
@@ -402,7 +545,7 @@ Resources:
       VpcId: !Ref VPC
       Tags:
       - Key: Name
-        Value: !Join [ "", [ !Ref "AWS::StackName", "-public-acl" ] ]
+        Value: !Join [ '', [ !Ref 'AWS::StackName', '-public-acl' ] ]
       - Key: Owner
         Value: !Ref Owner
       - Key: Project
@@ -411,33 +554,35 @@ Resources:
         Value: !Ref DeleteAfter
 
   # Public Network ACL Rules
-  InboundPublicNetworkAclAllowVPCSubnets:
+  InPublicAclAllowVPCSubnets:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PublicNetworkAcl
     Properties:
       NetworkAclId: !Ref PublicNetworkAcl
       RuleNumber: !Ref AllowVpcSubnetsRuleNumber
-      Protocol: "-1"
+      Protocol: '-1'
       RuleAction: allow
       Egress: 'false'
       CidrBlock: !Ref VPCSubnetCidrBlock
       PortRange:
         From: '0'
         To: '65535'
-  InboundPublicNetworkAclAllowRemoteNetwork:
+
+  InPublicAclAllowRemoteNetwork:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PublicNetworkAcl
     Properties:
       NetworkAclId: !Ref PublicNetworkAcl
       RuleNumber: !Ref AllowRemoteNetworkPublicRuleNumber
-      Protocol: "-1"
+      Protocol: '-1'
       RuleAction: allow
       Egress: 'false'
       CidrBlock: !Ref RemoteCidrForPublicAcl
       PortRange:
         From: '0'
         To: '65535'
-  InboundPublicNetworkAclAllowHTTP:
+
+  InPublicAclAllowHTTP:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PublicNetworkAcl
     Properties:
@@ -450,7 +595,8 @@ Resources:
       PortRange:
         From: '80'
         To: '80'
-  InboundPublicNetworkAclAllowHTTPS:
+
+  InPublicAclAllowHTTPS:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PublicNetworkAcl
     Properties:
@@ -463,7 +609,8 @@ Resources:
       PortRange:
         From: '443'
         To: '443'
-  InboundPublicNetworkAclDenyMssql:
+
+  InPublicAclDenyMssql:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PublicNetworkAcl
     Properties:
@@ -476,7 +623,8 @@ Resources:
       PortRange:
         From: '1433'
         To: '1433'
-  InboundPublicNetworkAclDenyOracle:
+
+  InPublicAclDenyOracle:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PublicNetworkAcl
     Properties:
@@ -489,7 +637,8 @@ Resources:
       PortRange:
         From: '1521'
         To: '1521'
-  InboundPublicNetworkAclDenyAurora:
+
+  InPublicAclDenyAurora:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PublicNetworkAcl
     Properties:
@@ -502,7 +651,8 @@ Resources:
       PortRange:
         From: '3306'
         To: '3306'
-  InboundPublicNetworkAclDenyNfs:
+
+  InPublicAclDenyNfs:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PublicNetworkAcl
     Properties:
@@ -515,7 +665,8 @@ Resources:
       PortRange:
         From: '2049'
         To: '2049'
-  InboundPublicNetworkAclDenyRdp:
+
+  InPublicAclDenyRdp:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PublicNetworkAcl
     Properties:
@@ -528,7 +679,8 @@ Resources:
       PortRange:
         From: '3389'
         To: '3389'
-  InboundPublicNetworkAclDenyPostgre:
+
+  InPublicAclDenyPostgre:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PublicNetworkAcl
     Properties:
@@ -541,7 +693,8 @@ Resources:
       PortRange:
         From: '5432'
         To: '5432'
-  InboundPublicNetworkAclDeny8080:
+
+  InPublicAclDeny8080:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PublicNetworkAcl
     Properties:
@@ -554,7 +707,8 @@ Resources:
       PortRange:
         From: '8080'
         To: '8080'
-  InboundPublicNetworkAclDeny8443:
+
+  InPublicAclDeny8443:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PublicNetworkAcl
     Properties:
@@ -567,20 +721,8 @@ Resources:
       PortRange:
         From: '8443'
         To: '8443'
-  InboundPublicNetworkAclDeny8443:
-    Type: AWS::EC2::NetworkAclEntry
-    DependsOn: PublicNetworkAcl
-    Properties:
-      NetworkAclId: !Ref PublicNetworkAcl
-      RuleNumber: !Ref Deny8443ToPublicRuleNumber
-      Protocol: '6'
-      RuleAction: deny
-      Egress: 'false'
-      CidrBlock: 0.0.0.0/0
-      PortRange:
-        From: '8443'
-        To: '8443'
-  InboundPublicNetworkAclAllowReturnTraffic:
+
+  InPublicAclAllowReturnTraffic:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PublicNetworkAcl
     Properties:
@@ -593,13 +735,14 @@ Resources:
       PortRange:
         From: '1024'
         To: '65535'
-  OutboundPublicNetworkAclAllowAll:
+
+  OutPublicAclAllowAll:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PublicNetworkAcl
     Properties:
       NetworkAclId: !Ref PublicNetworkAcl
-      RuleNumber: !Ref AllowAllOutboundPublicRuleNumber
-      Protocol: "-1"
+      RuleNumber: !Ref AllowAllOutPublicRuleNumber
+      Protocol: '-1'
       RuleAction: allow
       Egress: 'true'
       CidrBlock: 0.0.0.0/0
@@ -616,6 +759,7 @@ Resources:
     Properties:
       SubnetId: !Ref PublicSubnet1
       NetworkAclId: !Ref PublicNetworkAcl
+
   PublicSubnetNetworkAclAssociation2:
     Type: AWS::EC2::SubnetNetworkAclAssociation
     DependsOn:
@@ -624,6 +768,7 @@ Resources:
     Properties:
       SubnetId: !Ref PublicSubnet2
       NetworkAclId: !Ref PublicNetworkAcl
+
   PublicSubnetNetworkAclAssociation3:
     Type: AWS::EC2::SubnetNetworkAclAssociation
     DependsOn:
@@ -641,7 +786,7 @@ Resources:
       VpcId: !Ref VPC
       Tags:
       - Key: Name
-        Value: !Join [ "", [ !Ref "AWS::StackName", "-private-acl" ] ]
+        Value: !Join [ '', [ !Ref 'AWS::StackName', '-private-acl' ] ]
       - Key: Owner
         Value: !Ref Owner
       - Key: Project
@@ -650,26 +795,27 @@ Resources:
         Value: !Ref DeleteAfter
 
   # Private Network ACL Rules
-  InboundEphemeralPrivateNetworkAclAllowAll:
+  InEphemeralPrivateNetworkAclAllowAll:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PrivateNetworkAcl
     Properties:
       NetworkAclId: !Ref PrivateNetworkAcl
-      RuleNumber: !Ref AllowAllInboundPrivateRuleNumber
-      Protocol: "-1"
+      RuleNumber: !Ref AllowAllInPrivateRuleNumber
+      Protocol: '-1'
       RuleAction: allow
       Egress: 'false'
       CidrBlock: 0.0.0.0/0
       PortRange:
         From: '0'
         To: '65535'
-  OutboundPrivateNetworkAclAllowAll:
+
+  OutPrivateNetworkAclAllowAll:
     Type: AWS::EC2::NetworkAclEntry
     DependsOn: PrivateNetworkAcl
     Properties:
       NetworkAclId: !Ref PrivateNetworkAcl
-      RuleNumber: !Ref AllowAllOutboundPrivateRuleNumber
-      Protocol: "-1"
+      RuleNumber: !Ref AllowAllOutPrivateRuleNumber
+      Protocol: '-1'
       RuleAction: allow
       Egress: 'true'
       CidrBlock: 0.0.0.0/0
@@ -684,10 +830,9 @@ Resources:
     - PrivateSubnet1
     - PrivateNetworkAcl
     Properties:
-      SubnetId:
-        !Ref PrivateSubnet1
-      NetworkAclId:
-        !Ref PrivateNetworkAcl
+      SubnetId: !Ref PrivateSubnet1
+      NetworkAclId: !Ref PrivateNetworkAcl
+
   PrivateSubnetNetworkAclAssociation2:
     Type: AWS::EC2::SubnetNetworkAclAssociation
     DependsOn:
@@ -696,6 +841,7 @@ Resources:
     Properties:
       SubnetId: !Ref PrivateSubnet2
       NetworkAclId: !Ref PrivateNetworkAcl
+
   PrivateSubnetNetworkAclAssociation3:
     Type: AWS::EC2::SubnetNetworkAclAssociation
     DependsOn:
@@ -714,20 +860,22 @@ Resources:
       VpcId: !Ref VPC
       Tags:
       - Key: Name
-        Value: !Join [ "", [ !Ref "AWS::StackName", "-instance-to-instance" ] ]
+        Value: !Join [ '', [ !Ref 'AWS::StackName', '-instance-to-instance' ] ]
       - Key: Owner
         Value: !Ref Owner
       - Key: Project
         Value: !Ref Project
       - Key: DeleteAfter
         Value: !Ref DeleteAfter
+
   InternalAccessSecurityGroupIngress:
     Type: AWS::EC2::SecurityGroupIngress
     DependsOn: InternalAccessSecurityGroup
     Properties:
       GroupId: !Ref InternalAccessSecurityGroup
-      IpProtocol: "-1"
+      IpProtocol: '-1'
       SourceSecurityGroupId: !Ref InternalAccessSecurityGroup
+
   RemoteAccessSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -735,7 +883,7 @@ Resources:
       VpcId: !Ref VPC
       Tags:
       - Key: Name
-        Value: !Join [ "", [ !Ref "AWS::StackName", "-remote-to-instance" ] ]
+        Value: !Join [ '', [ !Ref 'AWS::StackName', '-remote-to-instance' ] ]
       - Key: Owner
         Value: !Ref Owner
       - Key: Project
@@ -743,11 +891,12 @@ Resources:
       - Key: DeleteAfter
         Value: !Ref DeleteAfter
       SecurityGroupIngress:
-      - IpProtocol: "-1"
+      - IpProtocol: '-1'
         CidrIp: !Ref RemoteCidrForSecurityGroup
       SecurityGroupEgress:
-      - IpProtocol: "-1"
+      - IpProtocol: '-1'
         CidrIp: 0.0.0.0/0
+
 Outputs:
   Owner:
     Description: Team or Individual that Owns this Formation.
@@ -830,153 +979,44 @@ Outputs:
   RemoteAccessSecurityGroup:
     Description: Remote Network or IP that can Access the instances of VPN or Direct Connect.
     Value: !Ref RemoteAccessSecurityGroup
-  PublicNetworkACLRuleNumbers:
+  PublicAclRuleNumbers:
     Description: Public Network ACL Rules Numbers Created.
-    Value:
-      Fn::Join:
-      - ''
-      - - "Inbound ("
-        - !Ref AllowVpcSubnetsRuleNumber
-        - ", "
-        - !Ref AllowRemoteNetworkPublicRuleNumber
-        - ", "
-        - !Ref AllowHttpToPublicRuleNumber
-        - ", "
-        - !Ref AllowHttpsToPublicRuleNumber
-        - ", "
-        - !Ref DenyMysqlToPublicRuleNumber
-        - ", "
-        - !Ref DenyOracleToPublicRuleNumber
-        - ", "
-        - !Ref DenyAuroraToPublicRuleNumber
-        - ", "
-        - !Ref DenyNFSToPublicRuleNumber
-        - ", "
-        - !Ref DenyRDPToPublicRuleNumber
-        - ", "
-        - !Ref DenyPostgreToPublicRuleNumber
-        - ", "
-        - !Ref Deny8080ToPublicRuleNumber
-        - ", "
-        - !Ref Deny8443ToPublicRuleNumber
-        - ", "
-        - !Ref AllowReturnTrafficToPublicRuleNumber
-        - ") Outbound ("
-        - !Ref AllowAllOutboundPublicRuleNumber
-        - ")"
+    Value: !Join [
+      '',
+      [ 'Inbound (',
+      !Ref AllowVpcSubnetsRuleNumber,
+      ', ',
+      !Ref AllowRemoteNetworkPublicRuleNumber,
+      ', ',
+      !Ref AllowHttpToPublicRuleNumber,
+      ', ',
+      !Ref AllowHttpsToPublicRuleNumber,
+      ', ',
+      !Ref DenyMysqlToPublicRuleNumber,
+      ', ',
+      !Ref DenyOracleToPublicRuleNumber,
+      ', ',
+      !Ref DenyAuroraToPublicRuleNumber,
+      ', ',
+      !Ref DenyNFSToPublicRuleNumber,
+      ', ',
+      !Ref DenyRDPToPublicRuleNumber,
+      ', ',
+      !Ref DenyPostgreToPublicRuleNumber,
+      ', ',
+      !Ref Deny8080ToPublicRuleNumber,
+      ', ',
+      !Ref Deny8443ToPublicRuleNumber,
+      ', ',
+      !Ref AllowReturnTrafficToPublicRuleNumber,
+      ') Outbound (',
+      !Ref AllowAllOutPublicRuleNumber,
+      ')'
+      ]
+    ]
   PrivateNetworkACLRuleNumbers:
     Description: Private Network ACL Rules Numbers Created.
-    Value: !Join [ "", [ "Inbound (", !Ref AllowAllInboundPrivateRuleNumber, ") Outbound (", !Ref AllowAllOutboundPrivateRuleNumber, ")" ] ]
+    Value: !Join [ '', [ 'Inbound (', !Ref AllowAllInPrivateRuleNumber, ') Outbound (', !Ref AllowAllOutPrivateRuleNumber, ')' ] ]
   DeleteAfter:
     Description: It is ok to delete this Formation after this date
     Value: !Ref DeleteAfter
-Metadata:
-  AWS::CloudFormation::Interface:
-    ParameterGroups:
-    - Label:
-        default: Ownership
-      Parameters:
-      - Owner
-      - Project
-      - DeleteAfter
-    - Label:
-        default: Remote Access
-      Parameters:
-      - RemoteCidrForSecurityGroup
-      - RemoteCidrForPublicAcl
-    - Label:
-        default: Subnets
-      Parameters:
-      - VPCSubnetCidrBlock
-      - PublicSubnetCidrBlock1
-      - PublicSubnetCidrBlock2
-      - PublicSubnetCidrBlock3
-      - PrivateSubnetCidrBlock1
-      - PrivateSubnetCidrBlock2
-      - PrivateSubnetCidrBlock3
-      - AvailabilityZone1
-      - AvailabilityZone2
-      - AvailabilityZone3
-    - Label:
-        default: Public ACL Rule Numbers
-      Parameters:
-      - AllowVpcSubnetsRuleNumber
-      - AllowRemoteNetworkPublicRuleNumber
-      - AllowHttpToPublicRuleNumber
-      - AllowHttpsToPublicRuleNumber
-      - DenyMysqlToPublicRuleNumber
-      - DenyOracleToPublicRuleNumber
-      - DenyAuroraToPublicRuleNumber
-      - DenyNFSToPublicRuleNumber
-      - DenyRDPToPublicRuleNumber
-      - DenyPostgreToPublicRuleNumber
-      - Deny8080ToPublicRuleNumber
-      - Deny8443ToPublicRuleNumber
-      - AllowReturnTrafficToPublicRuleNumber
-      - AllowAllOutboundPublicRuleNumber
-    - Label:
-        default: Private ACL Rule Numbers
-      Parameters:
-      - AllowAllInboundPrivateRuleNumber
-      - AllowAllOutboundPrivateRuleNumber
-    ParameterLabels:
-      Owner:
-        default: Team or Individual Owner
-      DeleteAfter:
-        default: Delete After Date
-      RemoteCidrForSecurityGroup:
-        default: Network CIDR for SG
-      RemoteCidrForPublicAcl:
-        default: Network CIDR for ACL
-      VPCSubnetCidrBlock:
-        default: VPC Subnet
-      PublicSubnetCidrBlock1:
-        default: Public Subnet 1
-      PublicSubnetCidrBlock2:
-        default: Public Subnet 2
-      PublicSubnetCidrBlock3:
-        default: Public Subnet 3
-      PrivateSubnetCidrBlock1:
-        default: Private Subnet 1
-      PrivateSubnetCidrBlock2:
-        default: Private Subnet 2
-      PrivateSubnetCidrBlock3:
-        default: Private Subnet 3
-      AvailabilityZone1:
-        default: Availability Zone 1
-      AvailabilityZone2:
-        default: Availability Zone 2
-      AvailabilityZone3:
-        default: Availability Zone 3
-      AllowVpcSubnetsRuleNumber:
-        default: Allow VPC Subnets
-      AllowRemoteNetworkPublicRuleNumber:
-        default: Allow Remote Network
-      AllowHttpToPublicRuleNumber:
-        default: Allow HTTP
-      AllowHttpsToPublicRuleNumber:
-        default: Allow HTTPS
-      DenyMysqlToPublicRuleNumber:
-        default: Deny MySQL
-      DenyOracleToPublicRuleNumber:
-        default: Deny Oracle
-      DenyAuroraToPublicRuleNumber:
-        default: Deny Aurora
-      DenyNFSToPublicRuleNumber:
-        default: Deny NFS
-      DenyRDPToPublicRuleNumber:
-        default: Deny RDP
-      DenyPostgreToPublicRuleNumber:
-        default: Deny Postgre
-      Deny8080ToPublicRuleNumber:
-        default: Deny 8080
-      Deny8443ToPublicRuleNumber:
-        default: Deny 8443
-      AllowReturnTrafficToPublicRuleNumber:
-        default: Allow Return Traffic
-      AllowAllOutboundPublicRuleNumber:
-        default: Public Outbound
-      AllowAllInboundPrivateRuleNumber:
-        default: Private Inbound
-      AllowAllOutboundPrivateRuleNumber:
-        default: Private Outbound

@@ -59,7 +59,7 @@ Collection of Laboratory Templates.
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/chef-compliance.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/chef-compliance-lab-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/chef-compliance.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/chef-compliance-lab-200x200.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -95,8 +95,8 @@ Collection of Laboratory Templates.
                 </tr>
                 <tr>
                     <td>
-                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/chef_compliance/chef-compliance.json">(Example Here)</a></h6>
-                        <code>--parameters file:///localpath/to/custom-parameters.json</code>
+                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/chef_compliance/chef-compliance.yml">(Example Here)</a></h6>
+                        <code>--parameters file:///localpath/to/custom-parameters.yml</code>
                     </td>
                 </tr>
                 <tr>
@@ -145,7 +145,7 @@ Collection of Laboratory Templates.
                 </tr>
                 <tr>
                     <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.json" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/test-instances-200x200.jpg" width:100% alt="View in Designer"></a>
+                        <a href="https://console.aws.amazon.com/cloudformation/designer/home?region=us-west-2&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/rhel-ubuntu-win2012.yml" target="_blank"><img src="https://s3.amazonaws.com/bonusbits-public/media/cloudformation-diagrams/test-instances-200x200.jpg" width:100% alt="View in Designer"></a>
                     </td>
                 </tr>
             </table>
@@ -181,8 +181,8 @@ Collection of Laboratory Templates.
                 </tr>
                 <tr>
                     <td>
-                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/test_instances/example-parameters.json">(Example Here)</a></h6>
-                        <code>--parameters file:///localpath/to/custom-parameters.json</code>
+                        <h6>Option 1 - Custom Parameters JSON File <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/labs/test_instances/example-parameters.yml">(Example Here)</a></h6>
+                        <code>--parameters file:///localpath/to/custom-parameters.yml</code>
                     </td>
                 </tr>
                 <tr>
