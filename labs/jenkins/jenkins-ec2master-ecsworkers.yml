@@ -1,32 +1,17 @@
 ---
 AWSTemplateFormatVersion: 2010-09-09
-Description: Jenkins EC2 Master and ECS Workers v20161209-1200
+
+Description: Jenkins EC2 Master & ECS Workers
+
 Parameters:
-  # Ownership
+  # Tags
   Owner:
     Type: String
-    Default: FirstName LastName
-  Project:
-    Type: String
-    Default: MySQL RDS Creation
+    Default: first.last@domain.com
   DeleteAfter:
     Type: String
     Default: 00/00/201x
 
-  # Shared
-  VpcId:
-    Type: AWS::EC2::VPC::Id
-  S3DeployBucketName:
-    Type: String
-  S3DeployBucketRegion:
-    Type: String
-  CookbookVersion:
-    Type: String
-    Default: 0.13.0
-  ProxyHost:
-    Type: String
-  ProxyPort:
-    Type: String
   # Master
   MasterAdminUserName:
     Type: String
@@ -39,23 +24,18 @@ Parameters:
   MasterAmiId:
     Type: String
   MasterSubnetIdList:
-    Description: Comma Delimited List i.e. subnet-00000000 (No Spaces)
-    Type: CommaDelimitedList
+    Type: List<AWS::EC2::Subnet::Id>
   MasterSecurityGroupIdList:
-    Description: Comma Delimited List i.e. sg-00000000 (No Spaces)
-    Type: CommaDelimitedList
+    Type: List<AWS::EC2::SecurityGroup::Id>
   MasterElbSecurityGroupIdList:
-    Description: Comma Delimited List i.e. sg-00000000 (No Spaces)
-    Type: CommaDelimitedList
+    Type: List<AWS::EC2::SecurityGroup::Id>
   MasterEc2Key:
-    Type: String
+    Type: AWS::EC2::KeyPair::KeyName
   MasterIamProfile:
     Type: String
   JenkinsVersion:
     Type: String
     Default: 2.7.4-1.1
-    AllowedValues:
-      - 2.7.4-1.1
   InstallPluginsOption:
     Type: String
     Default: minimum
@@ -65,11 +45,9 @@ Parameters:
       - none
   PluginBundleVersion:
     Type: String
-    Default: 1.0.0
-    AllowedValues:
-      - 1.0.0
+    Default: latest
   MasterElbSubnetIdList:
-    Type: CommaDelimitedList
+    Type: List<AWS::EC2::Subnet::Id>
   MasterInstanceType:
     Description: Master Instance Type
     Type: String
@@ -128,17 +106,18 @@ Parameters:
       - cr1.8xlarge
       - cc2.8xlarge
       - cg1.4xlarge
+
   # Worker
   WorkerAmiId:
     Type: String
-  WorkerSubnetIdList:
-    Description: Comma Delimited List i.e. subnet-00000000 (No Spaces)
-    Type: CommaDelimitedList
-  WorkerSecurityGroupIdList:
-    Description: Comma Delimited List i.e. sg-00000000 (No Spaces)
-    Type: CommaDelimitedList
-  WorkerEc2Key:
+  WorkerAmiVersion:
     Type: String
+  WorkerSubnetIdList:
+    Type: List<AWS::EC2::Subnet::Id>
+  WorkerSecurityGroupIdList:
+    Type: List<AWS::EC2::SecurityGroup::Id>
+  WorkerEc2Key:
+    Type: AWS::EC2::KeyPair::KeyName
   WorkerIamProfile:
     Type: String
   WorkerMinCount:
@@ -204,18 +183,224 @@ Parameters:
       - cr1.8xlarge
       - cc2.8xlarge
       - cg1.4xlarge
+
+  # Deployment
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+  S3DeployBucketName:
+    Type: String
+  CookbookVersion:
+    Type: String
+    Default: latest
+  ProxyHost:
+    Type: String
+  ProxyPort:
+    Type: String
+  ChefRpmVersion:
+    Type: String
+    Default: "12.17.44-1"
+
+  # Backup
+  S3BackupBucketName:
+    Type: String
+  SetupBackups:
+    Type: String
+    Default: false
+    AllowedValues:
+      - true
+      - false
+  BackupInterval:
+    Type: String
+    Default: daily
+    AllowedValues:
+      - daily
+      - hourly
+      - weekly
+
+  # Restore
+  RestoreFromBackup:
+    Type: String
+    Default: false
+    AllowedValues:
+      - true
+      - false
+  RestoreStackName:
+    Type: String
+    Default: none
+    Description: If restoring from backup, enter previous stack name to restore.
+
+Metadata:
+  AWS::CloudFormation::Interface:
+  TemplateAuthor: Levon Becker
+    ParameterGroups:
+    -
+      Label:
+        default: Tags
+      Parameters:
+        - Owner
+        - DeleteAfter
+    -
+      Label:
+        default: Jenkins Master
+      Parameters:
+        - MasterAdminUserName
+        - MasterAdminPassword
+        - MasterAmiId
+        - MasterInstanceType
+        - MasterSubnetIdList
+        - MasterEc2Key
+        - MasterSecurityGroupIdList
+        - MasterIamProfile
+        - JenkinsVersion
+        - PluginBundleVersion
+        - InstallPluginsOption
+        - MasterElbSubnetIdList
+        - MasterElbSecurityGroupIdList
+    -
+      Label:
+        default: Jenkins Worker
+      Parameters:
+        - WorkerAmiId
+        - WorkerAmiVersion
+        - WorkerInstanceType
+        - WorkerSubnetIdList
+        - WorkerEc2Key
+        - WorkerSecurityGroupIdList
+        - WorkerIamProfile
+        - WorkerMinCount
+        - WorkerMaxCount
+    -
+      Label:
+        default: Deployment
+      Parameters:
+        - VpcId
+        - S3DeployBucketName
+        - CookbookVersion
+        - ProxyHost
+        - ProxyPort
+        - ChefRpmVersion
+    -
+      Label:
+        default: Backup
+      Parameters:
+        - SetupBackups
+        - BackupInterval
+        - S3BackupBucketName
+    -
+      Label:
+        default: Restore (Re-Hydrate)
+      Parameters:
+        - RestoreFromBackup
+        - RestoreStackName
+    ParameterLabels:
+      # Tags
+      Owner:
+        default: Contact Owner
+      DeleteAfter:
+        default: ASV
+
+      # Master
+      MasterAdminUserName:
+        default: Jenkins Admin Username
+      MasterAdminPassword:
+        default: Jenkins Admin Password
+      MasterAmiId:
+        default: AMI ID
+      MasterInstanceType:
+        default: Instance Type
+      MasterSubnetIdList:
+        default: Subnet ID List
+      MasterEc2Key:
+        default: EC2 SSH Key
+      MasterSecurityGroupIdList:
+        default: Security Group ID List
+      MasterIamProfile:
+        default: IAM Instance Profile
+      JenkinsVersion:
+        default: Jenkins Version
+      InstallPluginsOption:
+        default: Install Bundled Plugins
+      PluginBundleVersion:
+        default: Plugins Bundle Version
+      MasterElbSubnetIdList:
+        default: ELB Subnet ID List
+      MasterElbSecurityGroupIdList:
+        default: ELB Security Group ID List
+
+      # Worker
+      WorkerAmiId:
+        default: AMI ID
+      WorkerAmiVersion:
+        default: AMI Version
+      WorkerInstanceType:
+        default: Instance Type
+      WorkerSubnetIdList:
+        default: Subnet ID List
+      WorkerEc2Key:
+        default: EC2 SSH Key
+      WorkerSecurityGroupIdList:
+        default: Security Group ID List
+      WorkerIamProfile:
+        default: IAM Instance Profile
+      WorkerMinCount:
+        default: Minimum Cluster Instance Count
+      WorkerMaxCount:
+        default: Maximum Cluster Instance Count
+
+      # Deployment
+      VpcId:
+        default: VPC ID
+      S3DeployBucketName:
+        default: S3 Deploy Bucket Name
+      CookbookVersion:
+        default: Chef Cookbook Version
+      ProxyHost:
+        default: Proxy Host
+      ProxyPort:
+        default: Proxy Port
+      ChefRpmVersion:
+        default: Chef Client Version
+
+      # Backup
+      S3BackupBucketName:
+        default: S3 Backup Bucket Name
+      SetupBackups:
+        default: Setup Backups?
+      BackupInterval:
+        default: Backup Interval
+
+      # Restore
+      RestoreFromBackup:
+        default: Restore From Backup?
+      RestoreStackName:
+        default: Restore Stack Name
+
 Conditions:
   HasMasterEc2Key:
     !Not [!Equals [ !Ref MasterEc2Key, '' ]]
   HasWorkerEc2Key:
     !Not [!Equals [ !Ref WorkerEc2Key, '' ]]
+
 Resources:
+  # CloudWatch Logs
+  CloudWatchLogsGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Ref AWS::StackName
+      RetentionInDays: 30
+
   MasterLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Scheme: internal
       Subnets: !Ref MasterElbSubnetIdList
       SecurityGroups: !Ref MasterElbSecurityGroupIdList
+      Tags:
+        - Key: OwnerContact
+          Value: !Ref Owner
+        - Key: ASV
+          Value: !Ref DeleteAfter
+
   MasterLoadBalancerListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     DependsOn:
@@ -228,6 +413,7 @@ Resources:
       LoadBalancerArn: !Ref MasterLoadBalancer
       Port: 80
       Protocol: HTTP
+
   MasterLoadBalancerTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -241,6 +427,7 @@ Resources:
       Port: 8080
       Protocol: HTTP
       VpcId: !Ref VpcId
+
   MasterAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     DependsOn:
@@ -252,20 +439,15 @@ Resources:
       MinSize: 1
       MaxSize: 1
       DesiredCapacity: 1
-      HealthCheckType: EC2
       Tags:
         - Key: Name
           Value: !Join [ '', [ !Ref "AWS::StackName", -master ] ]
           PropagateAtLaunch: true
-        - Key: Owner
+        - Key: OwnerContact
           Value: !Ref Owner
           PropagateAtLaunch: true
-        - Key: Project
-          Value: !Ref Project
-          PropagateAtLaunch: true
-        - Key: DeleteAfter
+        - Key: ASV
           Value: !Ref DeleteAfter
-          PropagateAtLaunch: true
       TargetGroupARNs:
         - !Ref MasterLoadBalancerTargetGroup
     CreationPolicy:
@@ -276,10 +458,32 @@ Resources:
       AutoScalingRollingUpdate:
         MinInstancesInService: 1
         MaxBatchSize: 1
+
   MasterInstances:
     Type: AWS::AutoScaling::LaunchConfiguration
     DependsOn:
       - MasterLoadBalancer
+    Properties:
+      ImageId: !Ref MasterAmiId
+      SecurityGroups: !Ref MasterSecurityGroupIdList
+      InstanceType: !Ref MasterInstanceType
+      IamInstanceProfile: !Ref MasterIamProfile
+      KeyName: !If [ HasMasterEc2Key, !Ref MasterEc2Key, !Ref "AWS::NoValue"]
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -xe
+            # export http_proxy=http://${ProxyHost}:${ProxyPort}
+            # export https_proxy=http://${ProxyHost}:${ProxyPort}
+            # export no_proxy=localhost,127.0.0.1,169.254.169.254,10.0.2.0/24,192.168.99.0/24,.kdc.capitalone.com,.ds.capitalone.com,repo.${AWS::Region}.amazonaws.com
+            # echo "export http_proxy=http://${ProxyHost}:${ProxyPort}" > /etc/profile.d/proxy.sh
+            # echo "export https_proxy=http://${ProxyHost}:${ProxyPort}" >> /etc/profile.d/proxy.sh
+            # echo "export no_proxy=localhost,127.0.0.1,169.254.169.254,10.0.2.0/24,192.168.99.0/24,.kdc.capitalone.com,.ds.capitalone.com,repo.${AWS::Region}.amazonaws.com" >> /etc/profile.d/proxy.sh
+            yum update -y
+            yum install -y aws-cfn-bootstrap aws-cli cloud-init
+            aws s3 cp s3://${S3DeployBucketName}/binaries/chef-${ChefRpmVersion}.el6.x86_64.rpm /tmp/ --sse && rpm -Uvh /tmp/chef-${ChefRpmVersion}.el6.x86_64.rpm
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource MasterInstances --region ${AWS::Region} --configsets jenkins_master_setup --https-proxy http://${ProxyHost}:${ProxyPort}
+            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource MasterAutoScalingGroup --region ${AWS::Region} --https-proxy http://${ProxyHost}:${ProxyPort}
     Metadata:
       AWS::CloudFormation::Init:
         configSets:
@@ -303,7 +507,7 @@ Resources:
                 [cfn-auto-reloader-hook]
                 triggers=post.update
                 path=Resources.MasterInstances.Metadata.AWS::CloudFormation::Init
-                action=/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource MasterInstances --region ${AWS::Region} --configsets jenkins_master_setup
+                action=/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource MasterInstances --region ${AWS::Region} --configsets jenkins_master_setup --https-proxy http://${ProxyHost}:${ProxyPort}
                 runas=root
           services:
             sysvinit:
@@ -322,14 +526,14 @@ Resources:
               command: "mkdir -p cookbooks checksums environments cache backup data_bags roles downloads"
             03_deploy_cookbooks:
               cwd: /opt/chef-repo
-              command: !Sub "aws s3 cp s3://${S3DeployBucketName}/cookbooks/jenkins_cookbooks-${CookbookVersion}.tar.gz /opt/chef-repo/downloads/ && tar -zxf /opt/chef-repo/downloads/jenkins_cookbooks-${CookbookVersion}.tar.gz -C /opt/chef-repo"
+              command: !Sub "aws s3 cp s3://${S3DeployBucketName}/cookbooks/jenkins_launcher-${CookbookVersion}.tar.gz /opt/chef-repo/downloads/ --sse && tar -zxf /opt/chef-repo/downloads/jenkins_launcher-${CookbookVersion}.tar.gz -C /opt/chef-repo"
             04_deploy_databags:
               cwd: /opt/chef-repo
-              command: "cp -R cookbooks/bonusbits_jenkins/test/data_bags/bonusbits_jenkins data_bags/"
+              command: "cp -R cookbooks/jenkins_launcher/test/data_bags/jenkins_launcher data_bags/"
           files:
             "/opt/chef-repo/client.rb":
               content: !Sub |
-                node_name 'jenkins-master'
+                node_name 'federated-jenkins-launcher'
                 checksum_path '/opt/chef-repo/checksums'
                 file_cache_path '/opt/chef-repo/cache'
                 file_backup_path '/opt/chef-repo/backup'
@@ -338,24 +542,33 @@ Resources:
                 environment_path '/opt/chef-repo/environments'
                 role_path '/opt/chef-repo/roles'
                 chef_server_url 'http://127.0.0.1:8889'
-                encrypted_data_bag_secret '/opt/chef-repo/cookbooks/bonusbits_jenkins/test/data_bags/encrypted_data_bag_secret'
-            "/opt/chef-repo/environments/bonusbits_jenkins_master.json":
+                encrypted_data_bag_secret '/opt/chef-repo/cookbooks/jenkins_launcher/test/data_bags/encrypted_data_bag_secret'
+            "/opt/chef-repo/environments/jenkins_launcher_master.json":
               content: !Sub |
                {
-                 "name": "bonusbits_jenkins_master",
-                 "description": "Example Environment",
+                 "name": "jenkins_launcher_master",
+                 "description": "Chef Environment",
                  "cookbook_versions": {},
                  "json_class": "Chef::Environment",
                  "chef_type": "environment",
                  "default_attributes": {
                  },
                  "override_attributes": {
-                   "bonusbits_jenkins": {
-                     "base_packages": {
-                       "install": true
-                     },
+                   "jenkins_launcher": {
                      "role": "master",
-                     "ecs_cluster_name": "${WorkerCluster}",
+                     "aws": {
+                       "stack_name": "${AWS::StackName}",
+                       "vpc_id": "${VpcId}",
+                       "ecs_cluster_name": "${WorkerCluster}",
+                       "ecs_cluster_arn": "arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:cluster/${WorkerCluster}",
+                       "s3_deploy_bucket_name": "${S3DeployBucketName}",
+                       "logs_group_name": "${CloudWatchLogsGroup}"
+                     },
+                     "proxy": {
+                       "configure": true,
+                       "host": "${ProxyHost}",
+                       "port": "${ProxyPort}"
+                     },
                      "master": {
                        "users": {
                          "create_default_admin": true,
@@ -373,21 +586,28 @@ Resources:
                          "version": "${JenkinsVersion}"
                        },
                        "ecs_cluster": {
-                         "configure": true,
-                         "region": "${AWS::Region}",
-                         "cluster_arn": "arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:cluster/${WorkerCluster}"
+                         "configure": true
                        },
                        "ad": {
                          "configure": false
                        }
+                     },
+                     "restore": {
+                       "restore_from_backup": ${RestoreFromBackup},
+                       "previous_stack_name": "${RestoreStackName}"
+                     },
+                     "backups": {
+                       "configure": ${SetupBackups},
+                       "s3_backup_bucket": "${S3BackupBucketName}",
+                       "backup_interval": "${BackupInterval}"
                      }
                    }
                  }
                }
-            "/opt/chef-repo/roles/bonusbits_jenkins.json":
+            "/opt/chef-repo/roles/jenkins_launcher.json":
               content: !Sub |
                 {
-                  "name": "bonusbits_jenkins",
+                  "name": "jenkins_launcher",
                   "description": "Default Role",
                   "json_class": "Chef::Role",
                   "default_attributes": {},
@@ -395,7 +615,7 @@ Resources:
                   },
                   "chef_type": "role",
                   "run_list": [
-                    "recipe[bonusbits_jenkins]"
+                    "recipe[jenkins_launcher]"
                   ],
                   "env_run_lists": {
                   }
@@ -404,27 +624,15 @@ Resources:
           commands:
             01_run_chef:
               cwd: /opt/chef-repo
-              command: "/opt/chef/bin/chef-client -z -o 'role[bonusbits_jenkins]' --environment bonusbits_jenkins_master --config /opt/chef-repo/client.rb --log_level info --force-formatter --chef-zero-port 8889"
+              command: "/opt/chef/bin/chef-client -z -o 'role[jenkins_launcher]' --environment jenkins_launcher_master --config /opt/chef-repo/client.rb --log_level info --force-formatter --chef-zero-port 8889"
         warm_ebs:
           commands:
             01_warm_ebs:
               command: "# echo 'ACTION: Performing EBS Warming' && dd if=/dev/xvda of=/dev/xvda conv=notrunc bs=1M status=progress"
-    Properties:
-      ImageId: !Ref MasterAmiId
-      SecurityGroups: !Ref MasterSecurityGroupIdList
-      InstanceType: !Ref MasterInstanceType
-      IamInstanceProfile: !Ref MasterIamProfile
-      KeyName: !If [ HasMasterEc2Key, !Ref MasterEc2Key, !Ref "AWS::NoValue"]
-      UserData:
-        Fn::Base64:
-          !Sub |
-            #!/bin/bash -xe
-            yum update -y
-            yum install -y aws-cfn-bootstrap aws-cli cloud-init
-            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource MasterInstances --region ${AWS::Region} --configsets jenkins_master_setup
-            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource MasterAutoScalingGroup --region ${AWS::Region}
+
   WorkerCluster:
     Type: AWS::ECS::Cluster
+
   WorkerAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     DependsOn:
@@ -439,15 +647,11 @@ Resources:
         - Key: Name
           Value: !Join [ "", [ !Ref "AWS::StackName", -workers ] ]
           PropagateAtLaunch: true
-        - Key: Owner
+        - Key: OwnerContact
           Value: !Ref Owner
           PropagateAtLaunch: true
-        - Key: Project
-          Value: !Ref Project
-          PropagateAtLaunch: true
-        - Key: DeleteAfter
+        - Key: ASV
           Value: !Ref DeleteAfter
-          PropagateAtLaunch: true
     CreationPolicy:
       ResourceSignal:
         Count: !Ref WorkerMinCount
@@ -456,10 +660,32 @@ Resources:
       AutoScalingRollingUpdate:
         MinInstancesInService: 1
         MaxBatchSize: 1
+
   WorkerInstances:
     DependsOn:
       - WorkerCluster
     Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      ImageId: !Ref WorkerAmiId
+      SecurityGroups: !Ref WorkerSecurityGroupIdList
+      InstanceType: !Ref WorkerInstanceType
+      IamInstanceProfile: !Ref WorkerIamProfile
+      KeyName: !If [ HasWorkerEc2Key, !Ref WorkerEc2Key, !Ref "AWS::NoValue"]
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -xe
+            # export http_proxy=http://${ProxyHost}:${ProxyPort}
+            # export https_proxy=http://${ProxyHost}:${ProxyPort}
+            # export no_proxy=localhost,127.0.0.1,169.254.169.254,10.0.2.0/24,192.168.99.0/24,.kdc.capitalone.com,.ds.capitalone.com,repo.${AWS::Region}.amazonaws.com
+            # echo "export http_proxy=http://${ProxyHost}:${ProxyPort}" > /etc/profile.d/proxy.sh
+            # echo "export https_proxy=http://${ProxyHost}:${ProxyPort}" >> /etc/profile.d/proxy.sh
+            # echo "export no_proxy=localhost,127.0.0.1,169.254.169.254,10.0.2.0/24,192.168.99.0/24,.kdc.capitalone.com,.ds.capitalone.com,repo.${AWS::Region}.amazonaws.com" >> /etc/profile.d/proxy.sh
+            yum update -y
+            yum install -y aws-cfn-bootstrap aws-cli cloud-init
+            aws s3 cp s3://${S3DeployBucketName}/binaries/chef-${ChefRpmVersion}.el6.x86_64.rpm /tmp/ --sse && rpm -Uvh /tmp/chef-${ChefRpmVersion}.el6.x86_64.rpm
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WorkerInstances --region ${AWS::Region} --configsets jenkins_worker_setup --https-proxy http://${ProxyHost}:${ProxyPort}
+            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WorkerAutoScalingGroup --region ${AWS::Region} --https-proxy http://${ProxyHost}:${ProxyPort}
     Metadata:
       AWS::CloudFormation::Init:
         configSets:
@@ -483,7 +709,7 @@ Resources:
                 [cfn-auto-reloader-hook]
                 triggers=post.update
                 path=Resources.WorkerInstances.Metadata.AWS::CloudFormation::Init
-                action=/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WorkerInstances --region ${AWS::Region} --configsets jenkins_worker_setup
+                action=/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WorkerInstances --region ${AWS::Region} --configsets jenkins_worker_setup --https-proxy http://${ProxyHost}:${ProxyPort}
                 runas=root
           services:
             sysvinit:
@@ -502,14 +728,14 @@ Resources:
               command: "mkdir -p cookbooks checksums environments cache backup data_bags roles downloads"
             03_deploy_cookbooks:
               cwd: /opt/chef-repo
-              command: !Sub "aws s3 cp s3://${S3DeployBucketName}/cookbooks/jenkins_cookbooks-${CookbookVersion}.tar.gz /opt/chef-repo/downloads/ && tar -zxf /opt/chef-repo/downloads/jenkins_cookbooks-${CookbookVersion}.tar.gz -C /opt/chef-repo"
+              command: !Sub "aws s3 cp s3://${S3DeployBucketName}/cookbooks/jenkins_launcher-${CookbookVersion}.tar.gz /opt/chef-repo/downloads/ --sse && tar -zxf /opt/chef-repo/downloads/jenkins_launcher-${CookbookVersion}.tar.gz -C /opt/chef-repo"
             04_deploy_databags:
               cwd: /opt/chef-repo
-              command: "cp -R cookbooks/bonusbits_jenkins/test/data_bags/bonusbits_jenkins data_bags/"
+              command: "cp -R cookbooks/jenkins_launcher/test/data_bags/jenkins_launcher data_bags/"
           files:
             "/opt/chef-repo/client.rb":
               content: !Sub |
-                node_name 'jenkins-worker'
+                node_name 'federated-jenkins-launcher'
                 checksum_path '/opt/chef-repo/checksums'
                 file_cache_path '/opt/chef-repo/cache'
                 file_backup_path '/opt/chef-repo/backup'
@@ -518,36 +744,36 @@ Resources:
                 environment_path '/opt/chef-repo/environments'
                 role_path '/opt/chef-repo/roles'
                 chef_server_url 'http://127.0.0.1:8889'
-                encrypted_data_bag_secret '/opt/chef-repo/cookbooks/bonusbits_jenkins/test/data_bags/encrypted_data_bag_secret'
-            "/opt/chef-repo/environments/bonusbits_jenkins_worker.json":
+                encrypted_data_bag_secret '/opt/chef-repo/cookbooks/jenkins_launcher/test/data_bags/encrypted_data_bag_secret'
+            "/opt/chef-repo/environments/jenkins_launcher_worker.json":
               content: !Sub |
                 {
-                  "name": "bonusbits_jenkins_worker",
-                  "description": "Example Environment",
+                  "name": "jenkins_launcher_worker",
+                  "description": "Chef Environment",
                   "cookbook_versions": {},
                   "json_class": "Chef::Environment",
                   "chef_type": "environment",
                   "default_attributes": {
                   },
                   "override_attributes": {
-                    "bonusbits_jenkins": {
-                      "base_packages": {
-                        "install": true
-                      },
+                    "jenkins_launcher": {
                       "role": "worker",
-                     "ecs_cluster_name": "${WorkerCluster}",
-                      "worker": {
-                        "ecs_agent": {
-                          "configure": true
-                        }
+                      "aws": {
+                        "ecs_cluster_name": "${WorkerCluster}",
+                        "logs_group_name": "${CloudWatchLogsGroup}"
+                      },
+                      "proxy": {
+                        "configure": true,
+                        "host": "${ProxyHost}",
+                        "port": "${ProxyPort}"
                       }
                     }
                   }
                 }
-            "/opt/chef-repo/roles/bonusbits_jenkins.json":
+            "/opt/chef-repo/roles/jenkins_launcher.json":
               content: !Sub |
                 {
-                  "name": "bonusbits_jenkins",
+                  "name": "jenkins_launcher",
                   "description": "Default Role",
                   "json_class": "Chef::Role",
                   "default_attributes": {},
@@ -555,7 +781,7 @@ Resources:
                   },
                   "chef_type": "role",
                   "run_list": [
-                    "recipe[bonusbits_jenkins]"
+                    "recipe[jenkins_launcher]"
                   ],
                   "env_run_lists": {
                   }
@@ -564,25 +790,12 @@ Resources:
           commands:
             01_run_chef:
               cwd: /opt/chef-repo
-              command: "/opt/chef/bin/chef-client -z -o 'role[bonusbits_jenkins]' --environment bonusbits_jenkins_worker --config /opt/chef-repo/client.rb --log_level info --force-formatter --chef-zero-port 8889"
+              command: "/opt/chef/bin/chef-client -z -o 'role[jenkins_launcher]' --environment jenkins_launcher_worker --config /opt/chef-repo/client.rb --log_level info --force-formatter --chef-zero-port 8889"
         warm_ebs:
           commands:
             01_warm_ebs:
               command: "# echo 'ACTION: Performing EBS Warming' && dd if=/dev/xvda of=/dev/xvda conv=notrunc bs=1M status=progress"
-    Properties:
-      ImageId: !Ref WorkerAmiId
-      SecurityGroups: !Ref WorkerSecurityGroupIdList
-      InstanceType: !Ref WorkerInstanceType
-      IamInstanceProfile: !Ref WorkerIamProfile
-      KeyName: !If [ HasWorkerEc2Key, !Ref WorkerEc2Key, !Ref "AWS::NoValue"]
-      UserData:
-        Fn::Base64:
-          !Sub |
-            #!/bin/bash -xe
-            yum update -y
-            yum install -y aws-cfn-bootstrap aws-cli cloud-init
-            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WorkerInstances --region ${AWS::Region} --configsets jenkins_worker_setup
-            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WorkerAutoScalingGroup --region ${AWS::Region}
+
   WorkerScaleUpPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
     DependsOn:
@@ -592,6 +805,7 @@ Resources:
       AutoScalingGroupName: !Ref WorkerAutoScalingGroup
       Cooldown: 300
       ScalingAdjustment: 1
+
   WorkerScaleDownPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
     DependsOn:
@@ -601,6 +815,7 @@ Resources:
       AutoScalingGroupName: !Ref WorkerAutoScalingGroup
       Cooldown: 300
       ScalingAdjustment: -1
+
   WorkerMemoryAlarmHigh:
     Type: AWS::CloudWatch::Alarm
     DependsOn:
@@ -620,6 +835,7 @@ Resources:
         - Name: ClusterName
           Value: !Ref WorkerCluster
       ComparisonOperator: GreaterThanThreshold
+
   WorkerMemoryAlarmLow:
     Type: AWS::CloudWatch::Alarm
     DependsOn:
@@ -639,6 +855,7 @@ Resources:
         - Name: ClusterName
           Value: !Ref WorkerCluster
       ComparisonOperator: LessThanThreshold
+
 Outputs:
   MasterURL:
     Description: Jenkins Master ELB URL
@@ -648,11 +865,9 @@ Outputs:
     Value: !Ref WorkerCluster
   Owner:
     Description: Owner Contact
-    Value: !Ref TagOwnerContact
-  Project:
-    Value: !Ref Project
-  DeleteAfter:
-    Description: It is ok to delete this Formation after this date
+    Value: !Ref Owner
+  ADeleteAfterSV:
+    Description: Delete After
     Value: !Ref DeleteAfter
   MasterAmiId:
     Description: AMI ID
@@ -690,6 +905,9 @@ Outputs:
   WorkerAmiId:
     Description: AMI ID
     Value: !Ref WorkerAmiId
+  WorkerAmiVersion:
+    Description: AMI Version
+    Value: !Ref WorkerAmiVersion
   WorkerInstanceType:
     Description: Instance Type
     Value: !Ref WorkerInstanceType
@@ -711,113 +929,14 @@ Outputs:
   S3DeployBucketName:
     Description: S3 Deploy Bucket Name
     Value: !Ref S3DeployBucketName
-  S3DeployBucketRegion:
-    Description: S3 Deploy Bucket Region
-    Value: !Ref S3DeployBucketRegion
   CookbookVersion:
     Description: Chef Cookbook Version
     Value: !Ref CookbookVersion
-Metadata:
-  AWS::CloudFormation::Interface:
-    ParameterGroups:
-    -
-      Label:
-        default: Ownership
-      Parameters:
-        - Owner
-        - Project
-        - DeleteAfter
-        - MasterAdminUserName
-        - MasterAdminPassword
-    -
-      Label:
-        default: Jenkins Master
-      Parameters:
-        - MasterAmiId
-        - MasterInstanceType
-        - MasterSubnetIdList
-        - MasterEc2Key
-        - MasterSecurityGroupIdList
-        - MasterIamProfile
-        - JenkinsVersion
-        - PluginBundleVersion
-        - InstallPluginsOption
-        - MasterElbSubnetIdList
-        - MasterElbSecurityGroupIdList
-    -
-      Label:
-        default: Jenkins Worker
-      Parameters:
-        - WorkerAmiId
-        - WorkerInstanceType
-        - WorkerSubnetIdList
-        - WorkerEc2Key
-        - WorkerSecurityGroupIdList
-        - WorkerIamProfile
-        - WorkerMinCount
-        - WorkerMaxCount
-    -
-      Label:
-        default: Shared Configuration
-      Parameters:
-        - VpcId
-        - S3DeployBucketName
-        - S3DeployBucketRegion
-        - CookbookVersion
-    ParameterLabels:
-      Owner:
-        default: Team or Individual Owner
-      Project:
-        default: Project Name
-      DeleteAfter:
-        default: Delete After Date
-      MasterAdminUserName:
-        default: Jenkins Admin Username
-      MasterAdminPassword:
-        default: Jenkins Admin Password
-      MasterAmiId:
-        default: AMI ID
-      MasterInstanceType:
-        default: Instance Type
-      MasterSubnetIdList:
-        default: Subnet ID List
-      MasterEc2Key:
-        default: EC2 SSH Key
-      MasterSecurityGroupIdList:
-        default: Security Group ID List
-      MasterIamProfile:
-        default: IAM Instance Profile
-      JenkinsVersion:
-        default: Jenkins Version
-      InstallPluginsOption:
-        default: Install Bundled Plugins
-      PluginBundleVersion:
-        default: Plugins Bundle Version
-      MasterElbSubnetIdList:
-        default: ELB Subnet ID List
-      MasterElbSecurityGroupIdList:
-        default: ELB Security Group ID List
-      WorkerAmiId:
-        default: AMI ID
-      WorkerInstanceType:
-        default: Instance Type
-      WorkerSubnetIdList:
-        default: Subnet ID List
-      WorkerEc2Key:
-        default: EC2 SSH Key
-      WorkerSecurityGroupIdList:
-        default: Security Group ID List
-      WorkerIamProfile:
-        default: IAM Instance Profile
-      WorkerMinCount:
-        default: Minimum Cluster Instance Count
-      WorkerMaxCount:
-        default: Maximum Cluster Instance Count
-      VpcId:
-        default: VPC ID
-      S3DeployBucketName:
-        default: S3 Deploy Bucket Name
-      S3DeployBucketRegion:
-        default: S3 Deploy Bucket Region
-      CookbookVersion:
-        default: Chef Cookbook Version
+  S3BackupBucketName:
+    Value: !Ref S3BackupBucketName
+  RestoreFromBackup:
+    Value: !Ref RestoreFromBackup
+  RestoreStackName:
+    Value: !Ref RestoreStackName
+  SetupBackups:
+    Value: !Ref SetupBackups
