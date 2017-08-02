@@ -1,98 +1,73 @@
-# Database CloudFormation Templates
+# [Create RDS From Snapshot](https://github.com/bonusbits/cloudformation_templates/blob/master/database/create-rds-from-snapshot.yml)
 
 ## Purpose
+Create an new RDS from an RDS Snapshot. Can be great for Blue/Green or pull Prd DB to Nonprod for testing.
 
-Collection of Database Templates that use various nested templates from this repository.
+## Prerequisites
+* RDS Snapshot in Same Region
+* 2+ Subnets if Enabling Multi AZ
 
-## Templates
+## Summary
+1. Create RDS Instance from Snapshot
+2. Create Subnet Group
+3. Create Access Security Group
+4. Optionally Configure DNS Record in Route53
 
-### Database
+## Notes
+Because it's a restore several options are not available. Such as:
+* Can't set Master User and Password
+* Can't select what DB Engine
+* Can't set allocated storage
 
-<table width="100%">
-    <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/storage/mysql-rds.yml">MySQL RDS</a></h4></th>
-    </tr>
-    <tr>
-        <td width="100%" valign="top">
-           <p>Creates a MySQL RDS Database Instance.</p>
-           <h6>Prerequisites</h6>
-           <ol>
-            <li>VPC</li>
-            <ul>
-              <li>Public Subnet, IGW, Private Subnet/s.</li>
-              <li>Either use an existing VPC Infrastructure or you can use the following <a href="https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc.yml" target="_blank">VPC Template</a> to create a one.</li>
-            </ul>
-           </ol>
-           <h6>Create Details</h6>
-           <ol>
-            <li>DB Instance</li>
-            <li>DB Subnet Group</li>
-            <li>Security Group</li>
-            <li>Cloud Watch Alarms</li>
-            <li>Route 53 Record Set (Optional)</li>
-           </ol>
-        </td>
-        <td nowrap width="200" valign="top">
-            <table>
-                <tr>
-                    <th align="left">Launch</th>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.yml" target="_blank"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"></a>
-                        <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.yml" target="_blank"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"></a>
-                        <p>us-east-1</p>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+## Launcher
+[![](../images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/create-rds-from-snapshot.yml)<br>
+
+Click this button to open AWS CloudFormation web console to enter parameters and create the stack.
+
+
+## CloudFormation Template Details
+The [CloudFormation Template](https://github.com/bonusbits/cloudformation_templates/blob/master/database/create-rds-from-snapshot.yml) does the following:
+
+1. Create RDS from Snapshot ...
+
+
+## View in Designer
+[![](../images/designer_thumbs/create-rds-from-snapshot.jpg)](https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/create-rds-from-snapshot.yml)
+
+# [MySQL RDS](https://github.com/bonusbits/cloudformation_templates/blob/master/database/mysql-rds.yml)
+
+## Purpose
+Create an new MySQL RDS Instance.
+
+## Prerequisites
+* [VPC](https://github.com/bonusbits/cloudformation_templates/blob/master/infrastructure/vpc.yml)
+    * 3 Private Subnets
+    * 3 Public Subnets
+    * Internal AccessSecurity Group
+    * RemoteSecurityGroup
+
+## Notes
+Because it's a restore several options are not available. Such as:
+* Can't set Master User and Password
+* Can't select what DB Engine
+* Can't set allocated storage
+
+## Launcher
+[![](../images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.yml)<br>
+
+Click this button to open AWS CloudFormation web console to enter parameters and create the stack.
+
+
+## CloudFormation Template Details
+The [CloudFormation Template](https://github.com/bonusbits/cloudformation_templates/blob/master/database/mysql-rds.yml) does the following:
+
+1. Create DB Instance
+2. Create DB Subnet Group
+3. Create Security Group
+4. Create Cloud Watch Alarms
+5. Set Route 53 Record Set (Optional)
+
+
+## View in Designer
+[![](../images/designer_thumbs/mysql-rds.jpg)](https://console.aws.amazon.com/cloudformation/designer/home?templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/mysql-rds.yml)
     
-<table width="100%">    
-    <tr>
-        <th align="left" colspan="2"><h4><a href="https://github.com/bonusbits/cloudformation_templates/blob/master/storage/create-rds-from-snapshot.yml">Create RDS From Snapshot</a></h4></th>
-    </tr>
-    <tr>
-        <td width="100%" valign="top">
-            <p>Creates an RDS Instance From Snapshot. Can be great for Blue/Green or pull Prd DB to Nonprod for testing.</p>
-            <h6>Prerequisites</h6>
-            <ol>
-             <li>RDS Snapshot in Same Region</li>
-             <li>2+ Subnets if Enabling Multi AZ</li>
-            </ol>
-            <h6>Create Details</h6>
-            <ol>
-             <li>Create RDS Instance from Snapshot</li>
-             <li>Create Subnet Group</li>
-             <li>Create Access Security Group</li>
-             <li>Optionally Configure DNS Record in Route53</li>
-            </ol>
-            <h6>Notes</h6>
-            <ol>
-             <li>Because it's a restore several options are not available. Such as:</li>
-             <ol>
-                 <li>Can't set Master User and Password</li>
-                 <li>Can't select what DB Engine</li>
-                 <li>Can't set allocated storage</li>
-                </ol>
-            </ol>
-        </td>
-        <td nowrap width="200" valign="top">
-            <table>
-                <tr>
-                    <th align="left">Launch</th>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/create-rds-from-snapshot.yml" target="_blank"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"></a>
-                        <p>us-west-2</p>
-                        <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/create-rds-from-snapshot.yml" target="_blank"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"></a>
-                        <p>us-east-1</p>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>

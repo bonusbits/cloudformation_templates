@@ -28,7 +28,7 @@ Option to use SSL/TLS on ELB. Option to update Route 53 Hosted DNS alias to poin
 5. docs.google.com (Temp) for Sheets access (Wordpress Plugin)
 
 ## Launcher
-[![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bakedami-elb-rdsbackend.yml)<br>
+[![](../images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?&templateURL=https://s3.amazonaws.com/bonusbits-public/cloudformation-templates/github/bakedami-elb-rdsbackend.yml)<br>
 
 Click this button to open AWS CloudFormation web console to enter parameters and create the stack.
 
