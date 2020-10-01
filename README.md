@@ -1,4 +1,4 @@
-# BonusBits CloudFormation Templates
+# BonusBits CloudFormation Templates _ An Amazing Template
 
 ## Purpose
 This repository contains a collaboration of general and specific Amazon Web Services CloudFormation Template Examples.
