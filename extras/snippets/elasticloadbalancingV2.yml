@@ -1,0 +1,34 @@
+Resources:
+  LoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Certificates:
+        - CertificateArn: !Join [ '', [ "arn:aws:iam::", !Ref "AWS::AccountId", ":server-certificate/", !Ref "AWS::certName" ] ]
+      DefaultActions:
+        - TargetGroupArn: !Ref LoadBalancerTargetGroup
+        - Type: forward
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 443
+      Protocol: HTTPS
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Ref "AWS::StackName"
+      Scheme: internal
+      Subnets:
+        - !Ref MasterElbSubnetId1
+        - !Ref MasterElbSubnetId2
+      SecurityGroups:
+        - !Ref MasterElbSecurityGroupId
+  LoadBalancerTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 30
+      HealthCheckProtocol: HTTPS
+      HealthCheckPath: /health
+      HealthCheckTimeoutSeconds: 7
+      HealthyThresholdCount: 2
+      Port: 8443
+      Protocol: HTTPS
+      UnhealthyThresholdCount: 10
+      VpcId: vpc
